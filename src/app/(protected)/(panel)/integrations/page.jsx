@@ -330,6 +330,7 @@ const IntegrationPage = () => {
                 const active = getActiveIntegration(platform.key);
                 const isConnected = !!active?.isConnected;
                 const isLocked = !subscription?.platformIntegrationAllowed && platform.key !== "PERSONAL_WEBSITE";
+                // console.log("Subscription -> ", subscription)
 
                 return (
                   <div

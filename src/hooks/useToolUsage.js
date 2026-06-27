@@ -9,12 +9,17 @@ export default function useToolUsage() {
 
   const fetchUsage = useCallback(async () => {
     try {
-      const res = await api.get("/api/v1/tools/usage-remaining");
+      const res = await api.get("/tools/usage-remaining");
       if (res.data?.data) {
         setUsage(res.data.data);
       }
-    } catch {
-      // silently fail - don't block the user
+    } catch (err) {
+      // If we get a 429, the user has exhausted their limit — reflect that
+      const data = err?.response?.data?.data;
+      if (err?.response?.status === 429 && data) {
+        setUsage(data);
+      }
+      // For other errors, leave default state so user isn't blocked unfairly
     } finally {
       setLoading(false);
     }
@@ -22,6 +27,11 @@ export default function useToolUsage() {
 
   useEffect(() => {
     fetchUsage();
+
+    // Refetch whenever a tool call completes (success or 429)
+    const handler = () => fetchUsage();
+    window.addEventListener("tool-usage-changed", handler);
+    return () => window.removeEventListener("tool-usage-changed", handler);
   }, [fetchUsage]);
 
   // Call this after a successful tool use to update the count

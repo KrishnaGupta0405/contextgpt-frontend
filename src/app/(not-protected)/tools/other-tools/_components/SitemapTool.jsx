@@ -10,14 +10,18 @@ export default function SitemapTool({ tool }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [elapsed, setElapsed] = useState(null);
 
   const handleSubmit = async () => {
     if (!url.trim()) return toast.error("Please enter a URL.");
     setLoading(true);
     setResult(null);
+    setElapsed(null);
+    const startTime = Date.now();
     try {
       const res = await api.post(tool.apiEndpoint, { url: url.trim() });
       setResult(res.data.data);
+      setElapsed(((Date.now() - startTime) / 1000).toFixed(1));
       toast.success("Done!");
     } catch (err) {
       if (err.response?.status === 429) {
@@ -30,7 +34,7 @@ export default function SitemapTool({ tool }) {
     }
   };
 
-  const handleReset = () => { setUrl(""); setResult(null); };
+  const handleReset = () => { setUrl(""); setResult(null); setElapsed(null); };
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -73,6 +77,10 @@ export default function SitemapTool({ tool }) {
           )}
         </button>
       </div>
+
+      {elapsed && (
+        <p className="text-xs text-gray-400 text-right">Completed in {elapsed}s</p>
+      )}
 
       {result && (
         <div className="space-y-4">

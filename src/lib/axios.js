@@ -48,11 +48,26 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+// Notify useToolUsage hook whenever a tool API call settles
+function notifyToolUsageChanged(url) {
+  if (typeof window !== "undefined" && url?.includes("/api/v1/tools/") && !url?.includes("/usage-remaining")) {
+    window.dispatchEvent(new Event("tool-usage-changed"));
+  }
+}
+
 // ── Response interceptor ────────────────────────────────────────────────────
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    notifyToolUsageChanged(response.config?.url);
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+
+    // For any tool endpoint error (including 429, cancellation, network errors),
+    // notify the usage hook to refetch — the middleware already inserted a DB row
+    // before the controller ran, so the count may have changed regardless of outcome.
+    notifyToolUsageChanged(originalRequest?.url);
 
     // Only handle 401 errors, skip if this is already a retry or an auth request
     // Also skip endpoints that are intentionally called without auth (e.g. pricing page

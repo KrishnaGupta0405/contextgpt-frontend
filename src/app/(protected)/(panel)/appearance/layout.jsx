@@ -1,10 +1,5 @@
 import React from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
 
 export default function AppearanceLayout({ children, middle, right }) {
   return (
@@ -16,17 +11,10 @@ export default function AppearanceLayout({ children, middle, right }) {
         ]}
       />
       <div className="flex flex-1 overflow-hidden">
-        <ResizablePanelGroup direction="horizontal" className="flex-1">
-          <ResizablePanel defaultSize={65} minSize={30} className="overflow-y-auto">
-            {middle}
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={35} minSize={20} className="hidden lg:block overflow-y-auto">
-            <div className="flex items-start justify-center h-full">
-              {right}
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+        <div className="bg-background w-full lg:w-2/3 min-w-[300px] border-r overflow-y-auto">
+          {middle}
+        </div>
+        <div className="hidden flex-1 lg:flex lg:items-start lg:justify-center fixed right-[0.5rem] top-2 h-screen overflow-y-auto">{right}</div>
       </div>
     </div>
   );

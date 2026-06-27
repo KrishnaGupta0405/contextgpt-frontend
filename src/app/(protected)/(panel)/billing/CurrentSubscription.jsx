@@ -35,6 +35,7 @@ import {
   Play,
   AlertTriangle,
   Clock,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,7 +43,7 @@ export function CurrentSubscription() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
-  const [actionLoading, setActionLoading] = useState(null); // "cancel" | "pause" | "resume" | "payNow"
+  const [actionLoading, setActionLoading] = useState(null); // "cancel" | "pause" | "resume" | "payNow" | "reactivate"
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // const [pauseDialogOpen, setPauseDialogOpen] = useState(false);
 
@@ -136,6 +137,19 @@ export function CurrentSubscription() {
   };
 
   // ── Action handlers ──
+
+  const handleReactivate = async () => {
+    setActionLoading("reactivate");
+    try {
+      await api.post("/billing/subscription/reactivate");
+      toast.success("Subscription reactivated — you will continue to be billed normally.");
+      await fetchSubscriptionData();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to reactivate subscription.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const handleCancel = async () => {
     setActionLoading("cancel");
@@ -517,6 +531,20 @@ export function CurrentSubscription() {
                   disabled={!!actionLoading}
                 >
                   Cancel
+                </Button>
+              )}
+
+              {/* Reactivate button — shown when cancel is scheduled at period end */}
+              {["active", "trialing"].includes(subscription.status) && subscription.cancelAtPeriodEnd && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-green-600 hover:bg-green-50 hover:text-green-700 dark:text-green-400 dark:hover:bg-green-900/20"
+                  onClick={handleReactivate}
+                  disabled={!!actionLoading}
+                >
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  {actionLoading === "reactivate" ? "Reactivating..." : "Keep Subscription"}
                 </Button>
               )}
 

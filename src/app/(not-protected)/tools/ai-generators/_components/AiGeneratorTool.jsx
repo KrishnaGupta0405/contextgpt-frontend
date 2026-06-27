@@ -13,6 +13,7 @@ export default function AiGeneratorTool({ tool }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   const [copied, setCopied] = useState(false);
+  const [elapsed, setElapsed] = useState(null);
 
   const set = (name, val) => setValues((prev) => ({ ...prev, [name]: val }));
 
@@ -20,9 +21,12 @@ export default function AiGeneratorTool({ tool }) {
     const missing = (tool.fields || []).find((f) => f.required && !values[f.name]?.trim());
     if (missing) return toast.error(`${missing.label} is required.`);
     setLoading(true);
+    setElapsed(null);
+    const startTime = Date.now();
     try {
       const res = await api.post(tool.apiEndpoint, values);
       setResult(res.data.data.result);
+      setElapsed(((Date.now() - startTime) / 1000).toFixed(1));
       toast.success("Generated successfully!");
     } catch (err) {
       if (err.response?.status === 429) {
@@ -35,7 +39,7 @@ export default function AiGeneratorTool({ tool }) {
     }
   };
 
-  const handleReset = () => { setValues(initialValues); setResult(""); };
+  const handleReset = () => { setValues(initialValues); setResult(""); setElapsed(null); };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(result);
@@ -149,9 +153,14 @@ export default function AiGeneratorTool({ tool }) {
       {result && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">
-              {tool.outputLabel || "Generated Output"}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-gray-700">
+                {tool.outputLabel || "Generated Output"}
+              </p>
+              {elapsed && (
+                <span className="text-xs text-gray-400">({elapsed}s)</span>
+              )}
+            </div>
             <button
               onClick={handleCopy}
               className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"

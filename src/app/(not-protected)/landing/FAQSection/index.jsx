@@ -25,10 +25,10 @@ export default function FAQSection() {
       </div>
 
       <Tabs defaultValue={faqCategories[0].value}>
-        <div className="mb-8 overflow-x-auto overflow-y-hidden justify-center items-center flex">
+        <div className="mb-8 w-full overflow-x-auto">
           <TabsList
             variant="line"
-            className="flex h-auto w-max flex-nowrap gap-1 bg-transparent p-0 justify-center items-center"
+            className="flex h-auto min-w-max mx-auto flex-nowrap gap-1 bg-transparent p-0 justify-center items-center"
           >
             {faqCategories.map((cat) => (
               <TabsTrigger

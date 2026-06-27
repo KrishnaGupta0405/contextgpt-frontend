@@ -5,11 +5,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { LayoutDashboard, BarChart2, MessageSquare, Settings, Plug } from 'lucide-react';
 
 const tabs = [
-  { id: 'dashboard',     label: 'Dashboard',     icon: LayoutDashboard, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=675&fit=crop' },
-  { id: 'analytics',    label: 'Analytics',     icon: BarChart2,        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=675&fit=crop' },
-  { id: 'conversations', label: 'Conversations', icon: MessageSquare,   image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=675&fit=crop' },
-  { id: 'settings',     label: 'Settings',      icon: Settings,         image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=675&fit=crop' },
-  { id: 'integrations', label: 'Integrations',  icon: Plug,             image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=675&fit=crop' },
+  { id: 'dashboard',     label: 'Dashboard',     icon: LayoutDashboard, image: '/landing/dashboard.avif' },
+  { id: 'analytics',    label: 'Analytics',     icon: BarChart2,        image: '/landing/analytics.avif' },
+  { id: 'conversations', label: 'Conversations', icon: MessageSquare,   image: '/landing/conversations.avif' },
+  // { id: 'settings',     label: 'Settings',      icon: Settings,         image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=675&fit=crop' },
+  { id: 'integrations', label: 'Integrations',  icon: Plug,             image: '/landing/integrations.avif' },
 ];
 
 const ANIMATION_DURATION = 1400;
@@ -152,7 +152,7 @@ const ShowcaseCarousel = () => {
           100% { opacity: 1; transform: scale(1); }
         }
 
-        .tab-hidden { display: none; }
+        .tab-hidden { visibility: hidden; pointer-events: none; position: absolute; inset: 0; }
 
         .tab-exit {
           position: absolute; inset: 0;
@@ -226,21 +226,21 @@ const ShowcaseCarousel = () => {
           </div>
 
           {/* Image container with dummy background */}
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden">
+          <div className="relative w-full h-[32rem] aspect-video rounded-xl overflow-hidden">
             {/* Gradient background with effects */}
             <div className=" absolute inset-0">
               <img src="/landing/carousel-bg.avif" alt="Showcase" className="absolute inset-0 w-full h-full object-cover" />
             </div>
 
             {/* Real image overlay */}
-            <div className="absolute inset-0 flex items-center justify-center p-6 z-10">
-              <div className="relative w-full h-full max-w-4xl rounded-lg overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="relative w-full h-full max-w-4xl rounded-lg overflow-hidden">
                 {tabs.map((tab) => (
                   <div key={tab.id} className={getTabClass(tab.id)}>
                     <img
                       src={tab.image}
                       alt={tab.label}
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${loadedImages.has(tab.id) ? 'opacity-100' : 'opacity-0'}`}
+                      className={`absolute inset-0 w-full my-auto object-contain transition-opacity duration-300 ${loadedImages.has(tab.id) ? 'opacity-100' : 'opacity-0'}`}
                       onLoad={() => handleImageLoad(tab.id)}
                     />
                     {!loadedImages.has(tab.id) && (

@@ -19,14 +19,16 @@ const PROCESSING_MESSAGES = [
 /**
  * Renders the real-time queue/processing status for a conversion job.
  *
- * @param {{ status: string, position: number|null, error: string, onRetry?: () => void }}
+ * @param {{ status: string, position: number|null, page: number|null, totalPages: number|null, error: string, onRetry?: () => void }}
  */
-export default function QueueStatus({ status, position, error, onRetry }) {
+export default function QueueStatus({ status, position, page, totalPages, error, onRetry }) {
   const [msgIndex, setMsgIndex] = useState(0);
   const intervalRef = useRef(null);
 
+  const hasPageProgress = page != null && totalPages != null;
+
   useEffect(() => {
-    if (status === "processing") {
+    if (status === "processing" && !hasPageProgress) {
       setMsgIndex(0);
       intervalRef.current = setInterval(() => {
         setMsgIndex((prev) =>
@@ -40,7 +42,7 @@ export default function QueueStatus({ status, position, error, onRetry }) {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [status]);
+  }, [status, hasPageProgress]);
 
   if (status === "queued") {
     return (
@@ -62,19 +64,33 @@ export default function QueueStatus({ status, position, error, onRetry }) {
 
   if (status === "processing") {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4">
-        <Loader2 className="h-5 w-5 shrink-0 animate-spin text-blue-500" />
-        <div>
-          <p className="text-sm font-semibold text-blue-800">
-            Your file is being processed
-          </p>
-          <p
-            key={msgIndex}
-            className="mt-0.5 text-xs text-blue-600 animate-fade-in"
-          >
-            {PROCESSING_MESSAGES[msgIndex]}
-          </p>
+      <div className="flex flex-col gap-3 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-5 w-5 shrink-0 animate-spin text-blue-500" />
+          <div>
+            <p className="text-sm font-semibold text-blue-800">
+              {hasPageProgress
+                ? `Processing page ${page} of ${totalPages}`
+                : "Your file is being processed"}
+            </p>
+            <p
+              key={hasPageProgress ? `${page}` : msgIndex}
+              className="mt-0.5 text-xs text-blue-600 animate-fade-in"
+            >
+              {hasPageProgress
+                ? "Converting page by page to keep things stable..."
+                : PROCESSING_MESSAGES[msgIndex]}
+            </p>
+          </div>
         </div>
+        {hasPageProgress && (
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-blue-100">
+            <div
+              className="h-1.5 rounded-full bg-blue-500 transition-all duration-500"
+              style={{ width: `${Math.round((page / totalPages) * 100)}%` }}
+            />
+          </div>
+        )}
       </div>
     );
   }

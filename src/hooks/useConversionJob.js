@@ -20,6 +20,8 @@ import { getSocket } from "@/lib/socket";
 export function useConversionJob() {
   const [status, setStatus] = useState("idle"); // idle | queued | processing | completed | failed
   const [position, setPosition] = useState(null);
+  const [page, setPage] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
   const [markdown, setMarkdown] = useState("");
   const [error, setError] = useState("");
   const socketRef = useRef(null);
@@ -53,6 +55,8 @@ export function useConversionJob() {
         case "processing":
           setStatus("processing");
           setPosition(null);
+          if (payload.page != null) setPage(payload.page);
+          if (payload.totalPages != null) setTotalPages(payload.totalPages);
           break;
 
         case "completed":
@@ -92,8 +96,16 @@ export function useConversionJob() {
 
   /** Reset everything back to idle. */
   const reset = useCallback(() => {
+    // Tell the server to stop processing immediately — the socket stays connected
+    // so disconnect-based cancellation never fires on a Reset click.
+    if (jobIdRef.current && socketRef.current?.connected) {
+      socketRef.current.emit("cancel:job", jobIdRef.current);
+    }
+
     setStatus("idle");
     setPosition(null);
+    setPage(null);
+    setTotalPages(null);
     setMarkdown("");
     setError("");
     jobIdRef.current = null;
@@ -117,5 +129,5 @@ export function useConversionJob() {
     };
   }, []);
 
-  return { status, position, markdown, error, submitJob, reset };
+  return { status, position, page, totalPages, markdown, error, submitJob, reset };
 }

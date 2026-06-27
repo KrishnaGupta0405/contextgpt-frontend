@@ -16,6 +16,7 @@ import { CreditCard, BarChart2, KeyRound, User } from "lucide-react";
 const ALLOWED_ROUTES = ["/account", "/billing", "/usage", "/usage/api-keys"];
 
 function isSubscriptionExpired(subscription) {
+  console.log("Subscription ->", subscription)
   if (!subscription) return false;
   if (subscription.status && subscription.status !== "active") return true;
   if (subscription.currentPeriodEnd) {

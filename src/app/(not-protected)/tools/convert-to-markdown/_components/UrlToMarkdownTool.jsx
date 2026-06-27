@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Copy, Check, RotateCcw, ArrowRight, Download } from "lucide-react";
 import { toast } from "sonner";
 // import { useGoogleReCaptcha } from "react-google-recaptcha-v3"; // BYPASSED
@@ -11,12 +11,28 @@ import QueueStatus from "./QueueStatus";
 export default function UrlToMarkdownTool({ tool }) {
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [elapsed, setElapsed] = useState(null);
+  const startTimeRef = useRef(null);
 
   // const { executeRecaptcha } = useGoogleReCaptcha(); // BYPASSED
   const { status, position, markdown, error, submitJob, reset } =
     useConversionJob();
 
   const loading = status === "queued" || status === "processing";
+
+  // Start timer when processing begins, stop when markdown arrives
+  useEffect(() => {
+    if (status === "processing") {
+      startTimeRef.current = Date.now();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (markdown && startTimeRef.current) {
+      setElapsed(((Date.now() - startTimeRef.current) / 1000).toFixed(1));
+      startTimeRef.current = null;
+    }
+  }, [markdown]);
 
   const handleConvert = async () => {
     if (!url.trim()) return toast.error("Please enter a URL.");
@@ -49,6 +65,8 @@ export default function UrlToMarkdownTool({ tool }) {
 
   const handleReset = () => {
     setUrl("");
+    setElapsed(null);
+    startTimeRef.current = null;
     reset();
   };
 
@@ -130,7 +148,10 @@ export default function UrlToMarkdownTool({ tool }) {
       {markdown && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+              {elapsed && <span className="text-xs text-gray-400">({elapsed}s)</span>}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownload}

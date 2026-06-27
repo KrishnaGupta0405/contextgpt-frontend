@@ -13,6 +13,7 @@ import FeaturesCards from "./FeaturesCards";
 import ChatAnimationCard from "./ChatAnimationCard";
 import DataSourcesCard from "./DataSourcesCard";
 import { useIsMobile } from "../../../hooks/use-mobile";
+import { VideoText } from "@/components/ui/video-text";
 // import Image from "next/image";
 
 const FloatingPathsBackground = dynamic(
@@ -107,71 +108,28 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
           </FloatingPathsBackground>
         )
       ) : item.hasCustomImages ? (
-        <div className="flex h-full w-full items-center justify-between gap-8">
-          <div className="min-w-[40%]">
-            <h3
-              className={item.titleClassName}
-              dangerouslySetInnerHTML={{ __html: item.title }}
-            />
-            <p
-              className={item.descriptionClassName}
-              dangerouslySetInnerHTML={{ __html: item.description }}
-            />
-          </div>
-          <div
-            className="relative flex-1"
-            style={{ height: "28rem", minWidth: "36rem" }}
-          >
-            {item.customImages?.map((image, i) => {
-              const angle = item.diagonalAngle || 45;
-
-              const getClipPath = (index, angle) => {
-                const normalizedAngle = ((angle % 360) + 360) % 360;
-
-                const getLinePoints = (angle) => {
-                  const rad = (angle * Math.PI) / 180;
-                  const centerX = 50;
-                  const centerY = 50;
-                  const distance = 100;
-
-                  const x1 = centerX + distance * Math.cos(rad);
-                  const y1 = centerY + distance * Math.sin(rad);
-                  const x2 = centerX - distance * Math.cos(rad);
-                  const y2 = centerY - distance * Math.sin(rad);
-
-                  return { x1, y1, x2, y2 };
-                };
-
-                const { x1, y1, x2, y2 } = getLinePoints(normalizedAngle);
-
-                if (index === 0) {
-                  return `polygon(0 0, 100% 0, ${x1}% ${y1}%, ${x2}% ${y2}%)`;
-                } else if (index === 1) {
-                  return `polygon(${x1}% ${y1}%, 100% 0, 100% 100%, 0 100%, ${x2}% ${y2}%)`;
-                } else {
-                  return `polygon(${x2}% ${y2}%, ${x1}% ${y1}%, 100% 100%, 0 100%)`;
-                }
-              };
-
-              return (
-                <div
-                  key={i}
-                  className="absolute inset-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100"
-                  style={{
-                    clipPath: getClipPath(i, angle),
-                    zIndex: i,
-                    boxShadow: i > 0 ? "0 4px 12px rgba(0,0,0,0.1)" : "none",
-                  }}
-                >
-                  <img
-                    src={image.src}
-                    alt={image.alt || `Brand Image ${i + 1}`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </div>
-              );
-            })}
-          </div>
+        <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+          <h1 className={item.titleClassName}>
+            <span className="tracking-tight" style={{ fontFamily: "'Josefin Sans' , 'Century Gothic', 'Trebuchet MS', sans-serif", fontWeight: 300 }}>
+              Reflects your
+            </span>
+            <span className="relative inline-block h-[1em] w-[6ch] align-middle">
+              <VideoText
+                src="https://cdn.magicui.design/ocean-small.webm"
+                fontSize="6rem"
+                fontWeight={600}
+              >
+                {item.title}
+              </VideoText>
+            </span>
+            <span className="tracking-tight" style={{ fontFamily: "'Century Gothic', 'Trebuchet MS', sans-serif", fontWeight: 300 }}>
+              identity
+            </span>
+          </h1>
+          <p
+            className={item.descriptionClassName}
+            dangerouslySetInnerHTML={{ __html: item.description }}
+          />
         </div>
       ) : (
         <>
@@ -190,8 +148,8 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
             {item.hasGlobe ? (
               <div className="absolute right-0 bottom-0">
                 <img
-                  src="/landing/map.jpg"
-                  alt="globe"
+                  src="/landing/map.avif"
+                  alt="cdv_map"
                   width={600}
                   height={500}
                   className="right-0 h-[20rem] w-[26rem] rounded-xl object-contain"
@@ -288,29 +246,27 @@ const BentoGrid = () => {
     },
     {
       id: 6,
-      title:
-        "Matches <span class='line-through'>any</span> <span class='underline decoration-dashed decoration-indigo-500 decoration-offset-2'> Your Brand</span> identity.",
-      description:
-        "Customize your chatbot to appear native—control every color, icon, and chat element",
-      titleClassName: "text-4xl font-semibold text-gray-900 mb-3",
-      descriptionClassName: "text-sm text-gray-700 leading-relaxed",
+      title: "Brand",
+      // description:
+      //   "Customize your chatbot to appear native—control every color, icon, and chat element",
+      titleClassName: "text-[5.5rem] font-bold text-gray-900 mb-6 leading-tight",
+      descriptionClassName: "text-2xl text-gray-600 leading-relaxed",
       icon: TrendingUp,
       bgGradient: "white",
       colSpan: 4,
       rowSpan: 1,
       bgGradient: "",
       hasCustomImages: true,
-      diagonalAngle: -60,
-      customImages: [
-        { src: "/landing/sla-demo.png", alt: "Brand Demo 1" },
-        { src: "/landing/sla-demo.png", alt: "Brand Demo 3" },
-        { src: "/landing/bg.avif", alt: "Brand Demo 2" },
-      ],
-      imageShifts: [
-        { x: -90, y: 0 },
-        { x: 0, y: 0 },
-        { x: 60, y: 0 },
-      ],
+      // diagonalAngle: -60,
+      // customImages: [
+        // { src: "/landing/showcase-1.avif", alt: "Brand Demo 1" },
+        // { src: "/landing/showcase-2.avif", alt: "Brand Demo 2" },
+        // { src: "/landing/showcase-3.avif", alt: "Brand Demo 3" },
+      // ],
+      // imageShifts: [
+      //   { x: -90, y: 0 },
+      //   { x: 0, y: 0 },
+      // ],
     },
     {
       id: 3,

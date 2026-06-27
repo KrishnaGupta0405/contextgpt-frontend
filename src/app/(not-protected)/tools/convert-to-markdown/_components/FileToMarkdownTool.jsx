@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, Copy, Check, RotateCcw, CloudUpload, Download } from "lucide-react";
 import { toast } from "sonner";
 // import { useGoogleReCaptcha } from "react-google-recaptcha-v3"; // BYPASSED
@@ -12,13 +12,29 @@ export default function FileToMarkdownTool({ tool }) {
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [elapsed, setElapsed] = useState(null);
   const inputRef = useRef(null);
+  const startTimeRef = useRef(null);
 
   // const { executeRecaptcha } = useGoogleReCaptcha(); // BYPASSED
-  const { status, position, markdown, error, submitJob, reset } =
+  const { status, position, page, totalPages, markdown, error, submitJob, reset } =
     useConversionJob();
 
   const loading = status === "queued" || status === "processing";
+
+  // Start timer when processing begins, stop when markdown arrives
+  useEffect(() => {
+    if (status === "processing") {
+      startTimeRef.current = Date.now();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (markdown && startTimeRef.current) {
+      setElapsed(((Date.now() - startTimeRef.current) / 1000).toFixed(1));
+      startTimeRef.current = null;
+    }
+  }, [markdown]);
 
   const handleFile = (f) => {
     if (!f) return;
@@ -79,6 +95,8 @@ export default function FileToMarkdownTool({ tool }) {
 
   const handleReset = () => {
     setFile(null);
+    setElapsed(null);
+    startTimeRef.current = null;
     reset();
     if (inputRef.current) inputRef.current.value = "";
   };
@@ -146,6 +164,8 @@ export default function FileToMarkdownTool({ tool }) {
       <QueueStatus
         status={status}
         position={position}
+        page={page}
+        totalPages={totalPages}
         error={error}
         onRetry={handleConvert}
       />
@@ -180,7 +200,10 @@ export default function FileToMarkdownTool({ tool }) {
       {markdown && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+              {elapsed && <span className="text-xs text-gray-400">({elapsed}s)</span>}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownload}

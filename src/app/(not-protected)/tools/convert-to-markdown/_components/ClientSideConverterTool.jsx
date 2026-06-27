@@ -119,10 +119,13 @@ export default function ClientSideConverterTool({ tool }) {
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [elapsed, setElapsed] = useState(null);
 
   const handleConvert = () => {
     if (!input.trim()) return toast.error("Please enter some content first.");
     setError("");
+    setElapsed(null);
+    const startTime = Date.now();
     try {
       let result = "";
       switch (tool.converterType) {
@@ -133,6 +136,7 @@ export default function ClientSideConverterTool({ tool }) {
         default:      result = input;
       }
       setOutput(result);
+      setElapsed(((Date.now() - startTime) / 1000).toFixed(1));
       toast.success("Converted successfully!");
     } catch (e) {
       setError(e.message);
@@ -140,7 +144,7 @@ export default function ClientSideConverterTool({ tool }) {
     }
   };
 
-  const handleReset = () => { setInput(""); setOutput(""); setError(""); };
+  const handleReset = () => { setInput(""); setOutput(""); setError(""); setElapsed(null); };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(output);
@@ -197,7 +201,10 @@ export default function ClientSideConverterTool({ tool }) {
       {output && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-gray-700">Markdown Output</p>
+              {elapsed && <span className="text-xs text-gray-400">({elapsed}s)</span>}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownload}

@@ -29,7 +29,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { Receipt, FileText, ChevronLeft, ChevronRight, Download, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { Receipt, FileText, ChevronLeft, ChevronRight, Download, ChevronDown, ChevronUp, Info, RotateCcw } from "lucide-react";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20];
 
@@ -40,6 +40,20 @@ export function TransactionHistory() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [expandedRows, setExpandedRows] = useState(new Set());
+  const [reactivateLoading, setReactivateLoading] = useState(false);
+
+  const handleReactivate = async () => {
+    setReactivateLoading(true);
+    try {
+      await api.post("/billing/subscription/reactivate");
+      toast.success("Subscription reactivated — you will continue to be billed normally.");
+      await fetchTransactions(page, pageSize);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to reactivate subscription.");
+    } finally {
+      setReactivateLoading(false);
+    }
+  };
 
   const toggleRow = (id) => {
     setExpandedRows((prev) => {
@@ -362,6 +376,28 @@ export function TransactionHistory() {
                                     </div>
                                   )}
                                 </div>
+                                {sub.cancelAtPeriodEnd && !sub.canceledAt && sub.subscriptionStatus?.toLowerCase() === "active" && (
+                                  <div className="mt-3 flex flex-col gap-2 rounded-md border border-orange-200 bg-orange-50/60 px-3 py-2 dark:border-orange-800 dark:bg-orange-900/20">
+                                    <div className="flex items-center gap-2">
+                                      <Info className="h-3.5 w-3.5 shrink-0 text-orange-500" />
+                                      <p className="text-xs text-orange-700 dark:text-orange-400">
+                                        Your subscription has been cancelled but remains active until{" "}
+                                        <span className="font-semibold">{formatDate(sub.currentPeriodEnd, "MMM dd, yyyy")}</span>.
+                                        You will not be charged again.
+                                      </p>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="self-start border-green-300 text-green-600 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-900/20"
+                                      onClick={handleReactivate}
+                                      disabled={reactivateLoading}
+                                    >
+                                      <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                                      {reactivateLoading ? "Reactivating..." : "Keep Subscription"}
+                                    </Button>
+                                  </div>
+                                )}
                               </div>
                             </TableCell>
                           </TableRow>
