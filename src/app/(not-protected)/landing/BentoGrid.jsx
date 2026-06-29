@@ -315,7 +315,7 @@ const BentoGrid = () => {
       // slaContent: '99.99% uptime SLA',
       // slaDescription: 'We guarantee 99.99% uptime SLA for our platform.',
       image: {
-        src: "/landing/sla-demo.png",
+        src: "/landing/analytics.avif",
         alt: "Analytics",
         width: "80%",
         height: "50%",

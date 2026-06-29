@@ -29,29 +29,30 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import {
-  TOOL_CATEGORIES,
-  getToolsByCategory,
-} from "@/app/(not-protected)/tools/_config/tools.config";
+// import {
+//   TOOL_CATEGORIES,
+//   getToolsByCategory,
+// } from "@/app/(not-protected)/tools/_config/tools.config";
 
 // Compact tool links shown in the navbar dropdown (first 4 per category)
-const NAV_TOOLS = TOOL_CATEGORIES.reduce((acc, cat) => {
-  acc[cat] = getToolsByCategory(cat).slice(0, 4);
-  return acc;
-}, {});
+// const NAV_TOOLS = TOOL_CATEGORIES.reduce((acc, cat) => {
+//   acc[cat] = getToolsByCategory(cat).slice(0, 4);
+//   return acc;
+// }, {});
 
 const NAV_LINKS = [
   { href: "/lead-generation", label: "Lead Generation" },
   { href: "/features", label: "Features" },
   { href: "/integration", label: "Integrations" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/security", label: "Security" },
 ];
 
 const RESOURCE_LINKS = [
-  { href: "/blog", title: "Blog", description: "Product updates, tips, and insights" },
-  { href: "/docs", title: "Docs", description: "API documentation and developer guides" },
-  { href: "/aboutus", title: "About Us", description: "Learn about our mission and team" },
-  { href: "/changelog", title: "Changelog", description: "Stay up to date with the latest updates" },
+  { href: "/", title: "Blog", description: "Product updates, tips, and insights" },
+  { href: "https://docs.contextgpt.in/", title: "Docs", description: "API documentation and developer guides" },
+  { href: "/book-a-demo", title: "Book a Demo", description: "Schedule a demo with our team" },
+  { href: "https://docs.contextgpt.in/docs/changelog/overview", title: "Changelog", description: "Stay up to date with the latest updates" },
 ];
 
 export default function NavigationMenuDemo() {
@@ -101,7 +102,7 @@ export default function NavigationMenuDemo() {
                     className={cn(
                       navigationMenuTriggerStyle(),
                       pathname === href && "bg-gray-100 text-blue-500",
-                      "text-sm leading-tight tracking-tight"
+                      "text-sm leading-loose tracking-tight"
                     )}
                   >
                     {label}
@@ -113,8 +114,8 @@ export default function NavigationMenuDemo() {
             <NavigationMenuItem>
               <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <div className="w-[580px] p-4">
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="w-[300px] p-4">
+                  <div className="grid grid-cols-1 gap-2">
                     <div>
                       <p className="mb-1.5 px-3 text-[10px] font-semibold tracking-widest text-blue-600 uppercase">
                         Quick Links
@@ -122,9 +123,9 @@ export default function NavigationMenuDemo() {
                       <ul>
                         {[
                           { href: "/blog", icon: <Rss className="h-4 w-4" />, title: "Blog", description: "Product updates, tips, and insights" },
-                          { href: "/docs", icon: <FileText className="h-4 w-4" />, title: "Docs", description: "API documentation and developer guides" },
-                          { href: "/aboutus", icon: <BookOpen className="h-4 w-4" />, title: "About Us", description: "Learn about our mission and team" },
-                          { href: "/changelog", icon: <Clock className="h-4 w-4" />, title: "Changelog", description: "Stay up to date with the latest updates" },
+                          { href: "https://docs.contextgpt.in/", icon: <FileText className="h-4 w-4" />, title: "Docs", description: "API documentation and developer guides" },
+                          { href: "/book-a-demo", icon: <BookOpen className="h-4 w-4" />, title: "Book a Demo", description: "Schedule a demo with our team" },
+                          { href: "https://docs.contextgpt.in/docs/changelog/overview", icon: <Clock className="h-4 w-4" />, title: "Changelog", description: "Stay up to date with the latest updates" },
                         ].map((item) => (
                           <li key={item.href}>
                             <NavigationMenuLink asChild>
@@ -145,7 +146,7 @@ export default function NavigationMenuDemo() {
                         ))}
                       </ul>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                       <p className="mb-1.5 px-3 text-[10px] font-semibold tracking-widest text-blue-600 uppercase">
                         What&apos;s New
                       </p>
@@ -164,14 +165,14 @@ export default function NavigationMenuDemo() {
                           </div>
                         </Link>
                       </NavigationMenuLink>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             {/* Tools mega-dropdown */}
-            <NavigationMenuItem>
+            {/* <NavigationMenuItem>
               <NavigationMenuTrigger>Free Tools</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="w-[700px] p-4">
@@ -216,7 +217,7 @@ export default function NavigationMenuDemo() {
                   </div>
                 </div>
               </NavigationMenuContent>
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -331,7 +332,7 @@ export default function NavigationMenuDemo() {
             )}
 
             {/* Free Tools section */}
-            <button
+            {/* <button
               className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium hover:bg-gray-100 transition-colors text-left"
               onClick={() => toggleMobileSection("tools")}
             >
@@ -365,7 +366,7 @@ export default function NavigationMenuDemo() {
                   View all free tools →
                 </Link>
               </div>
-            )}
+            )} */}
           </nav>
 
           {/* Mobile auth buttons */}

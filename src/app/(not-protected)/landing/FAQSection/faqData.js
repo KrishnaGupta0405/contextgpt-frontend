@@ -40,7 +40,7 @@ export const faqCategories = [
       {
         question: "Some of my files are larger than 10 MB. What do I do?",
         answer:
-          "Please contact us on <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a>. We can figure out a way for you to upload those files.",
+          "Please contact us on <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a>. We can figure out a way for you to upload those files.",
       },
       {
         question: "How do I add the chatbot to my website?",
@@ -109,7 +109,7 @@ export const faqCategories = [
       {
         question: "Is there a whitelabel option available for ContextGPT?",
         answer:
-          "Yes, contact <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> for whitelabel options. Pricing depends on your use case.",
+          "Yes, contact <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> for whitelabel options. Pricing depends on your use case.",
       },
       {
         question:
@@ -147,19 +147,19 @@ export const faqCategories = [
         question:
           "Can I have the ContextGPT on Facebook Messenger? Do you have Facebook Messenger Integration?",
         answer:
-          "Yes, Facebook Messenger integration is available. Contact <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> to enable it.",
+          "Yes, Facebook Messenger integration is available. Contact <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> to enable it.",
       },
       {
         question:
           "Can I have the ContextGPT on Whatsapp? Do you have Whatsapp Integration?",
         answer:
-          "No, WhatsApp integration is not currently supported. However, you can contact us at <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> to discuss a custom integration plan.",
+          "No, WhatsApp integration is not currently supported. However, you can contact us at <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> to discuss a custom integration plan.",
       },
       {
         question:
           "Can I have the ContextGPT on Slack? Do you have Slack Integration?",
         answer:
-          "Yes, Slack integration is supported. Reach out to <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> to get it enabled.",
+          "Yes, Slack integration is supported. Reach out to <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> to get it enabled.",
       },
       {
         question:
@@ -176,7 +176,7 @@ export const faqCategories = [
         question:
           "Does it integrate with ticketing platforms like Zendesk, Intercom, Freshdesk, Hubspot etc?",
         answer:
-          "Yes, but currently limited to Enterprise plans. Contact <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> to set up a custom plan.",
+          "Yes, but currently limited to Enterprise plans. Contact <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> to set up a custom plan.",
       },
       {
         question:
@@ -235,7 +235,7 @@ export const faqCategories = [
       {
         question: "Do you have a Data Processeing Agreement (DPA)?",
         answer:
-          "Yes. A DPA is available for Enterprise plan customers. You can generate one at <a href='http://localhost:3000/legal/dpa' class='text-blue-600 underline'>Data Processing Agreement (DPA)</a>. Contact us at <a href='mailto:krishnagupta0405@gmail.com' class='font-mono font-semibold text-black text-xs'>`krishnagupta0405@gmail.com`</a> for more details.",
+          "Yes. A DPA is available for Enterprise plan customers. You can generate one at <a href='http://localhost:3000/legal/dpa' class='text-blue-600 underline'>Data Processing Agreement (DPA)</a>. Contact us at <a href='mailto:support@contextgpt.in' class='font-mono font-semibold text-black text-xs'>`support@contextgpt.in`</a> for more details.",
       },
       {
         question: "Can I delete my data?",

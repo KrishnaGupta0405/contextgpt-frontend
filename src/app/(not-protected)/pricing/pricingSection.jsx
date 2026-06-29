@@ -110,7 +110,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
       !plan.price ||
       parseFloat(plan.price) === 0
     ) {
-      window.location.href = "mailto:krishnagupta0405@gmail.com?subject=Enterprise Plan Inquiry";
+      window.location.href = "mailto:support@contextgpt.in?subject=Enterprise Plan Inquiry";
       return;
     }
 

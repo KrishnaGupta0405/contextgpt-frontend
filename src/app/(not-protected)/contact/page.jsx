@@ -1,7 +1,6 @@
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { Mail } from "lucide-react";
-import { SUPPORT_EMAIL } from "@/components/constraint";
 export const metadata = {
   title: "ContextGPT | Contact Us",
   description: "Get in touch with the ContextGPT team — support, sales, or partnerships.",
@@ -57,10 +56,10 @@ export default function Contact() {
             </span>
             , the founder of ContextGPT, directly at{" "}
             <a
-              href={`mailto:${SUPPORT_EMAIL}`}
+              href="mailto:support@contextgpt.in"
               className="text-slate-800 underline font-semibold underline-offset-4 hover:text-blue-600"
             >
-              {SUPPORT_EMAIL}
+              support@contextgpt.in
             </a>
             . You will get a response as soon as possible.
           </p>

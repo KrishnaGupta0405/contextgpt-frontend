@@ -27,7 +27,6 @@ const tabBarStyles = `
 const ShowcaseCarousel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [exitingTab, setExitingTab] = useState(null);
-  const [loadedImages, setLoadedImages] = useState(new Set());
   const tabRefs = useRef({});
   const navRef = useRef(null);
   const exitTimer = useRef(null);
@@ -128,10 +127,6 @@ const ShowcaseCarousel = () => {
       clearTimeout(gapTimer.current);
     };
   }, []);
-
-  const handleImageLoad = (imageId) => {
-    setLoadedImages((prev) => new Set(prev).add(imageId));
-  };
 
   const getTabClass = (tabId) => {
     if (tabId === exitingTab) return 'tab-exit';
@@ -240,12 +235,8 @@ const ShowcaseCarousel = () => {
                     <img
                       src={tab.image}
                       alt={tab.label}
-                      className={`absolute inset-0 w-full my-auto object-contain transition-opacity duration-300 ${loadedImages.has(tab.id) ? 'opacity-100' : 'opacity-0'}`}
-                      onLoad={() => handleImageLoad(tab.id)}
+                      className="absolute inset-0 w-full my-auto object-contain"
                     />
-                    {!loadedImages.has(tab.id) && (
-                      <div className="absolute inset-0 bg-zinc-200 animate-pulse" />
-                    )}
                   </div>
                 ))}
               </div>

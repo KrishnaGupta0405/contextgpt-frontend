@@ -246,7 +246,7 @@ export default function Subprocesses() {
         <p>
           If you have any questions about our subprocessors or data processing
           practices, please contact us at{" "}
-          <a href="mailto:support@contextgpt.in">support@contextgpt.in</a>.
+          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
         </p>
       </article>
     </div>

@@ -1,6 +1,5 @@
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
-import { SUPPORT_EMAIL } from "@/components/constraint";
 export const metadata = {
   title: "ContextGPT | Refund Policy",
   description: "Read ContextGPT's refund policy — understand your rights and how to request a refund.",
@@ -207,7 +206,7 @@ export default function Refund() {
           </li>
           <li>
             For questions or special circumstances, you may email us at{" "}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>, and we will review your request.
+            <a href="mailto:billing@contextgpt.in">billing@contextgpt.in</a>, and we will review your request.
              However, refunds are generally not issued except in cases of billing errors .
           </li>
         </ul>

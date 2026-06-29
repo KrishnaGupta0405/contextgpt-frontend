@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { MailOpen, Twitter, Youtube } from "lucide-react";
 import CTASection from "@/app/(not-protected)/landing/CTASection";
-import { ADMIN_EMAIL } from "@/components/constraint";
 const CONVERT_TO_MARKDOWN = [
   { label: "Convert PDF to Markdown", href: "/tools/convert-pdf-to-markdown" },
   {
@@ -52,7 +51,7 @@ const PRODUCT = [
 const LEGAL = [
   { label: "Terms & Conditions", href: "/legal/terms" },
   { label: "Privacy Policy", href: "/legal/privacy" },
-  { label: "Refund Policy", href: "/legal/refund" },
+  // { label: "Refund Policy", href: "/legal/terms" },
   { label: "Contact us", href: "/contact" },
 ];
  
@@ -157,20 +156,20 @@ export default function Footer() {
   return (
     <footer className="w-full bg-white ">
       <div
-        className="w-full"
+        className="hidden lg:block w-full"
         style={{
           background:
-            "linear-gradient(to bottom, transparent 50%, #f4f7fb 50%)",
+            "linear-gradient(to bottom, transparent 50%, #f0f5ff 50%)",
         }}
       >
         <CTASection />
       </div>
-      <div className="w-full bg-[#f4f7fb] sm:p-6">
+      <div className="w-full bg-[#f0f5ff] sm:p-6">
         <div className="mx-auto max-w-7xl pt-8 pb-14">
           {/* Top row */}
-          <div className="grid grid-cols-2 gap-20 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {/* Brand block */}
-            <div className="col-span-2 flex flex-col gap-4 lg:col-span-1">
+            <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
               <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Link href="/" className="flex items-center gap-2">
@@ -190,7 +189,7 @@ export default function Footer() {
                 Instantly answer your visitors&apos; questions with a
                 personalized chatbot trained on your website content.
               </p>
-              <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> {ADMIN_EMAIL}</p>
+              <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> krishna@contextgpt.in</p>
 
               {/* Product Hunt badge */}
               {/* <div className="inline-flex w-fit items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5">

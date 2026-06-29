@@ -1,4 +1,3 @@
-import { SUPPORT_EMAIL } from "@/components/constraint";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -38,7 +37,7 @@ export default function Privacy() {
         <p>
           ContextGPT, operated by Krishna Gupta and our team (&ldquo;Company&rdquo;,
           &ldquo;us&rdquo;, &ldquo;we&rdquo;, or &ldquo;our&rdquo;) operates
-          contextgpt.in (hereinafter referred to as
+          <Link href="http://contextgpt.in" className="text-black underline">https://contextgpt.in</Link> (hereinafter referred to as
           &ldquo;Service&rdquo;).
         </p>
         <p>
@@ -107,6 +106,7 @@ export default function Privacy() {
           to provide and improve our Service to you.
         </p>
 
+        <h2>Types of Data Collected</h2>
         <h3>Personal Data</h3>
         <p>
           While using our Service, we may ask you to provide us with certain
@@ -125,7 +125,7 @@ export default function Privacy() {
           of interest to you. You may opt out of receiving any, or all, of these
           communications from us by following the unsubscribe link or by
           emailing at{" "}
-          <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
+          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
         </p>
 
         <h3>Usage Data</h3>
@@ -272,7 +272,7 @@ export default function Privacy() {
         <p>
           Under certain circumstances, we may be required to disclose your
           Personal Data if required to do so by law or in response to valid
-          requests by public authorities.
+          requests by public authorities. 
         </p>
         <h3>Business Transaction</h3>
         <p>
@@ -314,7 +314,7 @@ export default function Privacy() {
         <p>
           If you wish to be informed what Personal Data we hold about you and if
           you want it to be removed from our systems, please email us at{" "}
-          <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
+          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
         </p>
         <p>
           In certain circumstances, you have the following data protection
@@ -395,7 +395,7 @@ export default function Privacy() {
           <li>
             Users are able to change their personal information by emailing us
             at{" "}
-            <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
+            <span className="underline text-black font-semibold">support@contextgpt.in</span>.
           </li>
         </ul>
 
@@ -455,8 +455,8 @@ export default function Privacy() {
         <h2>Service Providers and Subprocessors</h2>
         <p>
           We use third-party service providers to help us deliver our services. A complete list of our current subprocessors is maintained at{" "}
-          <Link href="https://ContextGPT.in/legal/subprocessors" className="text-black underline">
-            ContextGPT.in/legal/subprocessors
+          <Link href="https://contextgpt.in/legal/subprocessors" className="text-black underline">
+            contextgpt.in/legal/subprocessors
           </Link>.
         </p>
         <p>Key service providers include:</p>
@@ -493,6 +493,22 @@ export default function Privacy() {
               </td>
             </tr>
             <tr>
+              <td className="border border-gray-300 p-2">OpenAI</td>
+              <td className="border border-gray-300 p-2">
+                <Link href="https://openai.com/policies/privacy-policy" className="text-black underline">
+                  https://openai.com/policies/privacy-policy
+                </Link>
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-gray-300 p-2">Firecrawl</td>
+              <td className="border border-gray-300 p-2">
+                <Link href="https://www.firecrawl.dev/privacy" className="text-black underline">
+                  https://www.firecrawl.dev/privacy
+                </Link>
+              </td>
+            </tr>
+            <tr>
               <td className="border border-gray-300 p-2">Pinecone</td>
               <td className="border border-gray-300 p-2">
                 <Link href="https://www.pinecone.io/privacy/" className="text-black underline">
@@ -521,6 +537,14 @@ export default function Privacy() {
               <td className="border border-gray-300 p-2">
                 <Link href="https://www.paddle.com/legal/privacy" className="text-black underline">
                   https://www.paddle.com/legal/privacy
+                </Link>
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-gray-300 p-2">Amazon Web Services - SES</td>
+              <td className="border border-gray-300 p-2">
+                <Link href="https://aws.amazon.com/privacy/" className="text-black underline">
+                  https://aws.amazon.com/privacy/
                 </Link>
               </td>
             </tr>
@@ -559,13 +583,13 @@ export default function Privacy() {
           </tbody>
         </table>
 
-        <h2>Visitor Identification and Marketing</h2>
+        {/* <h2>Visitor Identification and Marketing</h2>
         <p>
           When you visit or log in to our website, cookies and similar technologies may be used by our online data partners or vendors to associate these activities with other personal information they or others have about you, including by association with your email. We use service providers and online marketing and advertising partners for service communications and marketing to these email. You may opt out of receiving this advertising by visiting{" "}
           <Link href="https://app.retention.com/optout" className="text-black underline">
             https://app.retention.com/optout
           </Link>.
-        </p>
+        </p> */}
 
         <h2>Behavioral Remarketing</h2>
         <p>
@@ -702,7 +726,7 @@ export default function Privacy() {
         <p>
           If you have any questions about this Privacy Policy, please contact us
           by email:{" "}
-          <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
+          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
         </p>
       </article>
     </div>
