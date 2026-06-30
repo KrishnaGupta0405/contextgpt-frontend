@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
@@ -152,6 +153,7 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
                   alt="cdv_map"
                   width={600}
                   height={500}
+                  loading="lazy"
                   className="right-0 h-[20rem] w-[26rem] rounded-xl object-contain"
                 />
               </div>
@@ -162,6 +164,7 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
                     <img
                       src={item.image.src}
                       alt={item.image.alt}
+                      loading="lazy"
                       className="h-auto w-full object-cover"
                     />
                   </div>

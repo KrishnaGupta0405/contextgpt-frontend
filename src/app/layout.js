@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "600", "700"],
 });
 
 const geistMono = Geist_Mono({

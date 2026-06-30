@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-// import Image from 'next/image';
 import { LayoutDashboard, BarChart2, MessageSquare, Settings, Plug } from 'lucide-react';
 
 const tabs = [
@@ -236,6 +235,7 @@ const ShowcaseCarousel = () => {
                       src={tab.image}
                       alt={tab.label}
                       className="absolute inset-0 w-full my-auto object-contain"
+                      loading="lazy"
                     />
                   </div>
                 ))}

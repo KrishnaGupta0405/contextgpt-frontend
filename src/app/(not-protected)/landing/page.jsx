@@ -1,5 +1,3 @@
-"use client";
-
 import { lazy, Suspense } from "react";
 
 const HeroSection = lazy(() => import("./HeroSection"));
@@ -14,12 +12,12 @@ const ShowcaseCarousel = lazy(() => import("./ShowcaseCarousel"));
 export default function Landing() {
   return (
     <div className="min-h-screen">
-      <div className="px-[1rem] sm:px-26 lg:px-36 mt-8">
+      <div className="px-4 sm:px-26 lg:px-36 mt-8">
         <Suspense fallback={null}>
           <HeroSection />
         </Suspense>
       </div>
-      <div className="bg-gray-50 px-[1rem] sm:px-26 lg:px-36">
+      <div className="bg-gray-50 px-4 sm:px-26 lg:px-36">
         <Suspense fallback={null}>
           <BentoGrid />
         </Suspense>
@@ -28,7 +26,7 @@ export default function Landing() {
           <FeaturesSectionHero />
         </Suspense>
       </div>
-      <div className="bg-linear-to-b from-white to-blue-100 px-[1rem] sm:px-26 lg:px-36">
+      <div className="bg-linear-to-b from-white to-blue-100 px-4 sm:px-26 lg:px-36">
         <Suspense fallback={null}>
           <FromTheAuthor />
           <ThreeStepsSection />
@@ -36,7 +34,7 @@ export default function Landing() {
         </Suspense>
       </div>
 
-      <div className="bg-black px-[1rem] sm:px-26 lg:px-36">
+      <div className="bg-black px-4 sm:px-26 lg:px-36">
         {/* <HeroSection /> */}
         <Suspense fallback={null}>
           <ShowcaseCarousel />

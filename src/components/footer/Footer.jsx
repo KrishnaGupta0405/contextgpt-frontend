@@ -125,7 +125,7 @@ function FooterColumn({ heading, href, links }) {
       >
         {heading}
       </Link>
-      <ul className="space-y-2 text-xl font-medium">
+      <ul className="space-y-2">
         {links.map((link) => (
           <li key={link.label}>
             {link.external ? (

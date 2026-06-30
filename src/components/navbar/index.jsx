@@ -67,7 +67,7 @@ export default function NavigationMenuDemo() {
   React.useEffect(() => { setMobileOpen(false); setMobileExpanded(null); }, [pathname]);
 
   return (
-    <div
+    <header
       className={cn(
         "fixed bg-background/90 border-border top-0 right-0 left-0 z-50 border-b shadow-sm backdrop-blur-md",
       )}
@@ -93,7 +93,7 @@ export default function NavigationMenuDemo() {
         </div>
 
         {/* Desktop nav — hidden on mobile */}
-        <NavigationMenu className="hidden md:flex">
+        <NavigationMenu aria-label="Main navigation" className="hidden md:flex">
           <NavigationMenuList>
             {NAV_LINKS.map(({ href, label }) => (
               <NavigationMenuItem key={href}>
@@ -292,7 +292,7 @@ export default function NavigationMenuDemo() {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-100 bg-background px-4 pb-6 pt-2 overflow-y-auto max-h-[80vh]">
-          <nav className="flex flex-col gap-1">
+          <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
             {NAV_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
@@ -390,6 +390,6 @@ export default function NavigationMenuDemo() {
           </div>
         </div>
       )}
-    </div>
+    </header>
   );
 }

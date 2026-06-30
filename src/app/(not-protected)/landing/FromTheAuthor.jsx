@@ -11,16 +11,15 @@ export function IntegrationsSection() {
           >
             Direct Integrations{" "}
           </span>
-          with your
-          <br /> favorite tools
+          with your favorite tools
         </h2>
-        <h3 className="mx-auto mt-6 max-w-2xl text-xl text-slate-600">
+        <p className="mx-auto mt-6 max-w-2xl text-xl text-slate-600">
           With native integrations into platforms like{" "}
           <span className="underline underline-offset-2 decoration-dotted decoration-indigo-500">
             Crisp, Intercom, and Zendesk
           </span>{" "}
           our chatbot becomes an extended arm of your existing toolkit.
-        </h3>
+        </p>
 
         <div className="relative -mt-30 -mb-30 flex items-center justify-center">
           <img
@@ -45,11 +44,7 @@ export function ThreeStepsSection() {
           style={{ color: "#0f172a" }}
         >
           You&apos;re{" "}
-          <span style={{ color: "#2563eb" }}>three easy steps</span> away
-          <br />
-          from your own personalized AI
-          <br />
-          support chatbot
+          <span style={{ color: "#2563eb" }}>three easy steps</span> away from your own personalized AI support chatbot
         </h2>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">

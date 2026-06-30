@@ -20,7 +20,7 @@ export default function FAQSection() {
           >
             support team
           </a>{" "}
-          <br/>by sending us an email and we'll get back to you as soon as we can.
+          and we'll get back to you as soon as we can.
         </p>
       </div>
 

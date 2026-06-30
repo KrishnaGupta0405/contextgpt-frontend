@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,7 @@ import {
   Wrench,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
@@ -98,6 +99,7 @@ const WebsiteLinks = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [expandedChunks, setExpandedChunks] = useState({});
 
   useEffect(() => {
     let timer;
@@ -325,6 +327,25 @@ const WebsiteLinks = () => {
     setIsRefreshing(false);
     toast.success("List refreshed");
   };
+
+  const fetchChunks = useCallback(async (fileId) => {
+    if (expandedChunks[fileId]) {
+      setExpandedChunks((prev) => {
+        const next = { ...prev };
+        delete next[fileId];
+        return next;
+      });
+      return;
+    }
+    setExpandedChunks((prev) => ({ ...prev, [fileId]: "loading" }));
+    try {
+      const res = await api.get(`/ingestion/links/${fileId}/chunks`);
+      setExpandedChunks((prev) => ({ ...prev, [fileId]: res.data.data.chunks }));
+    } catch {
+      setExpandedChunks((prev) => ({ ...prev, [fileId]: [] }));
+      toast.error("Failed to load chunks");
+    }
+  }, [expandedChunks]);
 
   const fetchFiles = async (page = 1, status) => {
     try {
@@ -809,7 +830,8 @@ const WebsiteLinks = () => {
                     </TableRow>
                   ) : (
                     files.map((file) => (
-                      <TableRow key={file.id} className="hover:bg-slate-50/80">
+                      <React.Fragment key={file.id}>
+                      <TableRow className="hover:bg-slate-50/80">
                         <TableCell className="text-center">
                           <Checkbox
                             checked={selectedLinks.includes(file.id)}
@@ -1096,9 +1118,71 @@ const WebsiteLinks = () => {
                               </TooltipTrigger>
                               <TooltipContent>Delete</TooltipContent>
                             </Tooltip>
+                            {file.totalChunks > 1 && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 px-2 text-xs text-slate-500 hover:text-slate-700"
+                                    onClick={() => fetchChunks(file.id)}
+                                  >
+                                    <ChevronDown className="mr-1 h-3 w-3" />
+                                    Chunks ({file.totalChunks})
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>View chunks</TooltipContent>
+                              </Tooltip>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
+                      {expandedChunks[file.id] && (
+                        <TableRow key={`${file.id}-chunks`} className="bg-slate-50/60">
+                          <TableCell colSpan={7} className="px-6 py-3">
+                            {expandedChunks[file.id] === "loading" ? (
+                              <div className="flex items-center gap-2 text-xs text-slate-400">
+                                <RefreshCw className="h-3 w-3 animate-spin" />
+                                Loading chunks...
+                              </div>
+                            ) : expandedChunks[file.id].length === 0 ? (
+                              <p className="text-xs italic text-slate-400">No chunks found.</p>
+                            ) : (
+                              <div className="flex flex-col gap-1">
+                                {expandedChunks[file.id].map((chunk) => (
+                                  <div
+                                    key={chunk.id}
+                                    className="flex items-center gap-3 rounded-md border border-slate-100 bg-white px-3 py-2 text-xs text-slate-600"
+                                  >
+                                    <span className="w-16 font-medium text-slate-400">
+                                      Chunk {chunk.chunkIndex + 1}
+                                    </span>
+                                    <span className="flex-1 truncate text-slate-500">
+                                      {chunk.chunkText
+                                        ? chunk.chunkText.slice(0, 120) + (chunk.chunkText.length > 120 ? "…" : "")
+                                        : "—"}
+                                    </span>
+                                    <span className="shrink-0 text-slate-400">
+                                      {chunk.tokenCount} tokens
+                                    </span>
+                                    {chunk.chunkTextPreviewLink && (
+                                      <a
+                                        href={chunk.chunkTextPreviewLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="shrink-0 text-blue-500 hover:text-blue-700"
+                                      >
+                                        <Eye className="h-3 w-3" />
+                                      </a>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      </React.Fragment>
                     ))
                   )}
                 </TableBody>
