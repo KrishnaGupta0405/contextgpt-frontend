@@ -227,7 +227,7 @@ export default function NavigationMenuDemo() {
             <>
               <Link
                 href="/dashboard"
-                className="bg-[#155ded] text-white hover:bg-secondary/80 flex items-center gap-2 rounded-lg border border-transparent px-4 py-1.5 text-sm font-medium transition-all"
+                className="bg-[#155ded] text-white hover:bg-[#155ded]/80 flex items-center gap-2 rounded-lg border border-transparent px-4 py-1.5 text-sm font-medium transition-all"
               >
                 Dashboard
               </Link>

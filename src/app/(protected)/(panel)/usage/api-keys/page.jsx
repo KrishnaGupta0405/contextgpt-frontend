@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import api from "@/lib/axios";
+import { useChattingSocket } from "@/context/ChattingSocketContext";
 import {
   Card,
   CardContent,
@@ -303,9 +304,10 @@ function statusColor(code) {
 
 function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
   const [logs, setLogs] = useState([]);
-  const [pagination, setPagination] = useState({ total: 0, limit: 50, offset: 0, hasMore: false });
+  const [pagination, setPagination] = useState({ total: 0, limit: 20, offset: 0, hasMore: false });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addListener } = useChattingSocket();
 
   const keyMap = Object.fromEntries(apiKeys.map((k) => [k.id, k.keyName]));
 
@@ -318,7 +320,7 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
       setLoading(true);
       setError(null);
       const res = await api.get("/usage/api-keys/get-api-logs", {
-        params: { limit: 50, offset },
+        params: { limit: 20, offset },
       });
       if (res?.data?.success) {
         setLogs(res.data.data.logs ?? []);
@@ -337,6 +339,18 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Real-time API log streaming via WebSocket ──
+  // Only prepend while viewing the first page — deeper pages stay stable.
+  useEffect(() => {
+    if (!addListener) return;
+    const remove = addListener("apilogs:updated", ({ log }) => {
+      if (pagination.offset !== 0) return;
+      setLogs((prev) => [log, ...prev].slice(0, pagination.limit));
+      setPagination((prev) => ({ ...prev, total: prev.total + 1 }));
+    });
+    return remove;
+  }, [addListener, pagination.offset, pagination.limit]);
+
   const page = Math.floor(pagination.offset / pagination.limit) + 1;
   const totalPages = Math.ceil(pagination.total / pagination.limit) || 1;
 
@@ -350,7 +364,7 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
               API Request Logs
             </CardTitle>
             <CardDescription className="mt-1">
-              Recent requests made using your API keys.
+              Recent requests made using your API keys. The page auto-updates for every new request incoming to the backend
             </CardDescription>
           </div>
           <Button
@@ -523,11 +537,13 @@ export default function ApiKeysPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, totalPages: 1 });
 
   const apiAccessSupported = subscription?.apiAccess ?? false;
   const isStarterPlanUser = /^pri_starter_/i.test(subscription?.planType ?? "");
 
-  const fetchKeys = async () => {
+  const fetchKeys = async (p = 1) => {
     if (isStarterPlanUser || !apiAccessSupported) {
       setLoading(false);
       return;
@@ -535,9 +551,12 @@ export default function ApiKeysPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await api.get("/usage/api-keys/get-all-api-keys");
+      const res = await api.get("/usage/api-keys/get-all-api-keys", {
+        params: { page: p, limit: 20 },
+      });
       if (res?.data?.success) {
         setApiKeys(res.data.data.apiKeys ?? []);
+        setPagination(res.data.data.pagination ?? { total: 0, totalPages: 1 });
       }
     } catch (err) {
       console.error("Error fetching API keys:", err);
@@ -548,9 +567,9 @@ export default function ApiKeysPage() {
   };
 
   useEffect(() => {
-    fetchKeys();
+    fetchKeys(page);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]);
 
   const handleRevoke = (id) => {
     setApiKeys((prev) =>
@@ -656,11 +675,40 @@ export default function ApiKeysPage() {
               </Button>
             </div>
           ) : (
-            <div>
-              {apiKeys.map((key) => (
-                <KeyRow key={key.id} apiKey={key} onRevoke={handleRevoke} />
-              ))}
-            </div>
+            <>
+              <div>
+                {apiKeys.map((key) => (
+                  <KeyRow key={key.id} apiKey={key} onRevoke={handleRevoke} />
+                ))}
+              </div>
+              {pagination.totalPages > 1 && (
+                <div className="flex items-center justify-between border-t px-6 py-3">
+                  <span className="text-muted-foreground text-xs">
+                    Page {page} of {pagination.totalPages} · {pagination.total} total
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7"
+                      disabled={page === 1 || loading}
+                      onClick={() => setPage(Math.max(1, page - 1))}
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7"
+                      disabled={page >= pagination.totalPages || loading}
+                      onClick={() => setPage(page + 1)}
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

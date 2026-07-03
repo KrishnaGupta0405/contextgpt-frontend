@@ -82,7 +82,7 @@ export const OutgoingAccountInvitations = () => {
     } catch (error) {
       console.error("Failed to send account invitation:", error);
       toast.error(
-        error?.response?.data?.message || "Failed to send invitation.",
+        error?.response?.data?.error?.message || "Failed to send invitation.",
       );
     } finally {
       setSending(false);

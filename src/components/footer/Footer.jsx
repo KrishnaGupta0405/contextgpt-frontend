@@ -51,6 +51,7 @@ const PRODUCT = [
 const LEGAL = [
   { label: "Terms & Conditions", href: "/legal/terms" },
   { label: "Privacy Policy", href: "/legal/privacy" },
+  { label: "Acceptable Use Policy", href: "/legal/acceptable-use" },
   // { label: "Refund Policy", href: "/legal/terms" },
   { label: "Contact us", href: "/contact" },
 ];

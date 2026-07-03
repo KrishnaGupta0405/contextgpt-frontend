@@ -864,12 +864,12 @@ const WebsiteLinks = () => {
                                   <span>{file.filePages} pages</span>
                                 </>
                               )}
-                              {file.fileTokens && (
+                              {/* {file.fileTokens && (
                                 <>
                                   <span>•</span>
                                   <span>{file.fileTokens} tokens</span>
                                 </>
-                              )}
+                              )} */}
                             </div>
                           </div>
                         </TableCell>
@@ -1157,12 +1157,7 @@ const WebsiteLinks = () => {
                                     <span className="w-16 font-medium text-slate-400">
                                       Chunk {chunk.chunkIndex + 1}
                                     </span>
-                                    <span className="flex-1 truncate text-slate-500">
-                                      {chunk.chunkText
-                                        ? chunk.chunkText.slice(0, 120) + (chunk.chunkText.length > 120 ? "…" : "")
-                                        : "—"}
-                                    </span>
-                                    <span className="shrink-0 text-slate-400">
+                                    <span className="flex-1 text-slate-400">
                                       {chunk.tokenCount} tokens
                                     </span>
                                     {chunk.chunkTextPreviewLink && (
@@ -1170,9 +1165,10 @@ const WebsiteLinks = () => {
                                         href={chunk.chunkTextPreviewLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="shrink-0 text-blue-500 hover:text-blue-700"
+                                        className="shrink-0 inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-1 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
                                       >
                                         <Eye className="h-3 w-3" />
+                                        View
                                       </a>
                                     )}
                                   </div>

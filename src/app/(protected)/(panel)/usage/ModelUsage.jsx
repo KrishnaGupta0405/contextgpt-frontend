@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 
@@ -206,8 +207,10 @@ export function ModelUsage({ chatbotId } = {}) {
   const [creditsRemaining, setCreditsRemaining] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, totalPages: 1 });
 
-  const fetchData = async () => {
+  const fetchData = async (p = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -216,13 +219,14 @@ export function ModelUsage({ chatbotId } = {}) {
         : "/usage/chatbots-with-models";
 
       const [modelsRes, chatbotsRes, usageRes] = await Promise.all([
-        api.get("/usage/models"),
+        api.get("/usage/models", { params: { page: p, limit: 20 } }),
         api.get(chatbotsUrl),
         api.get("/usage"),
       ]);
 
       if (modelsRes?.data?.success) {
         setModels(modelsRes.data.data.models ?? []);
+        setPagination(modelsRes.data.data.pagination ?? { total: 0, totalPages: 1 });
       }
       if (chatbotsRes?.data?.success) {
         setChatbots(chatbotsRes.data.data.chatbots ?? []);
@@ -243,8 +247,8 @@ export function ModelUsage({ chatbotId } = {}) {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   const handleModelChange = async (chatbotId, newModelId) => {
     const chatbot = chatbots.find((c) => c.chatbotId === chatbotId);
@@ -358,7 +362,7 @@ export function ModelUsage({ chatbotId } = {}) {
           <h2 className="text-base font-semibold">
             Model Token Usage
             <span className="ml-2 text-sm font-normal text-muted-foreground">
-              ({models.length} model{models.length !== 1 ? "s" : ""})
+              ({pagination.total} model{pagination.total !== 1 ? "s" : ""})
             </span>
           </h2>
         </div>
@@ -374,11 +378,40 @@ export function ModelUsage({ chatbotId } = {}) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {models.map((model) => (
-              <ModelCard key={model.modelId} model={model} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {models.map((model) => (
+                <ModelCard key={model.modelId} model={model} />
+              ))}
+            </div>
+            {pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <span className="text-muted-foreground text-xs">
+                  Page {page} of {pagination.totalPages} · {pagination.total} total
+                </span>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7"
+                    disabled={page === 1 || loading}
+                    onClick={() => setPage(Math.max(1, page - 1))}
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7"
+                    disabled={page >= pagination.totalPages || loading}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

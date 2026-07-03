@@ -204,7 +204,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
         return;
       }
     } catch (error) {
-      const msg = error?.response?.data?.message || "Checkout failed";
+      const msg = error?.response?.data?.error?.message || "Checkout failed";
       toast.error(msg, { duration: 6000 });
       console.error("Checkout error:", error);
     } finally {
@@ -220,7 +220,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
       const subRes = await api.get("/billing/subscription/current");
       if (subRes?.data?.success) setCurrentSubscription(subRes.data.data);
     } catch (error) {
-      const msg = error?.response?.data?.message || "Failed to cancel downgrade";
+      const msg = error?.response?.data?.error?.message || "Failed to cancel downgrade";
       toast.error(msg, { duration: 6000 });
     } finally {
       setCancelDowngradeLoading(false);

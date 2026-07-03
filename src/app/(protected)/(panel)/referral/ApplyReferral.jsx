@@ -30,7 +30,7 @@ export const ApplyReferral = () => {
     } catch (error) {
       console.error("Failed to apply referral code:", error);
       toast.error(
-        error?.response?.data?.message || "Failed to apply referral code.",
+        error?.response?.data?.error?.message || "Failed to apply referral code.",
       );
     } finally {
       setApplying(false);

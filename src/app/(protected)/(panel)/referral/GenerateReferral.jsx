@@ -29,7 +29,7 @@ export const GenerateReferral = () => {
     } catch (error) {
       console.error("Failed to generate referral code:", error);
       toast.error(
-        error?.response?.data?.message || "Failed to generate referral code.",
+        error?.response?.data?.error?.message || "Failed to generate referral code.",
       );
     } finally {
       setGenerating(false);

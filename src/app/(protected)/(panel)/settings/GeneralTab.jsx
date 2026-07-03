@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import SwitchStopsSection from "./SwitchStopsSection";
 
 const GeneralTab = () => {
   const router = useRouter();
@@ -59,6 +60,11 @@ const GeneralTab = () => {
 
   const [availableModels, setAvailableModels] = useState([]);
 
+  const [switchStops, setSwitchStops] = useState([]);
+  const [switchModelUnavailablePolicy, setSwitchModelUnavailablePolicy] =
+    useState("next_cheaper");
+  const [switchResolution, setSwitchResolution] = useState(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -76,15 +82,19 @@ const GeneralTab = () => {
           const accountId = account?.id;
 
           if (accountId && currentChatbotId) {
-            const [basicRes, settingsRes, modelsRes] = await Promise.all([
-              api.get(
-                `/chatbots/account/${accountId}/chatbot/${currentChatbotId}`,
-              ),
-              api.get(
-                `/chatbots/chatbot/${currentChatbotId}/settings`,
-              ),
-              api.get(`/website/${currentChatbotId}/llm-models`),
-            ]);
+            const [basicRes, settingsRes, modelsRes, switchStopsRes] =
+              await Promise.all([
+                api.get(
+                  `/chatbots/account/${accountId}/chatbot/${currentChatbotId}`,
+                ),
+                api.get(
+                  `/chatbots/chatbot/${currentChatbotId}/settings`,
+                ),
+                api.get(`/website/${currentChatbotId}/llm-models`),
+                api.get(
+                  `/chatbots/chatbot/${currentChatbotId}/switch-stops`,
+                ),
+              ]);
 
             if (basicRes?.data?.success) {
               setName(basicRes.data.data.name || selectedChatbot.name || "");
@@ -133,6 +143,23 @@ const GeneralTab = () => {
                   setLlmModel(match ? match.id : settings.llmModel);
                 }
               }
+            }
+
+            if (switchStopsRes?.data?.success) {
+              const ssData = switchStopsRes.data.data;
+              setSwitchStops(
+                (ssData.stops || []).map((s) => ({
+                  localId: s.id,
+                  thresholdType: s.thresholdType,
+                  thresholdValue: String(s.thresholdValue),
+                  llmId: s.llmId,
+                  isEnabled: s.isEnabled,
+                })),
+              );
+              setSwitchModelUnavailablePolicy(
+                ssData.switchModelUnavailablePolicy || "next_cheaper",
+              );
+              setSwitchResolution(ssData.resolution || null);
             }
           }
         } catch (error) {
@@ -198,9 +225,18 @@ const GeneralTab = () => {
         ),
         enablePageContextAwareness,
         historyMessageContext: Number(historyMessageContext),
-        limitMessagesPerConversation,
-        maxMessagesPerConversation: Number(maxMessagesPerConversation),
         fallbackMessage,
+        switchModelUnavailablePolicy,
+        switchStops: switchStops.map((s) => ({
+          thresholdType: s.thresholdType,
+          thresholdValue: Number(s.thresholdValue),
+          llmId: s.llmId,
+          isEnabled: s.isEnabled,
+        })),
+        ...(hasConversationLimit && {
+          limitMessagesPerConversation,
+          maxMessagesPerConversation: Number(maxMessagesPerConversation),
+        }),
         ...(selectedModelId && { llmModel: selectedModelId }),
       };
 
@@ -209,19 +245,31 @@ const GeneralTab = () => {
         settingsPayload,
       );
 
-      if (settingsResponse.data.success) {
-        toast.success(
-          settingsResponse.data.message || "Settings updated successfully",
-        );
-        markClean();
-      } else {
+      if (!settingsResponse.data.success) {
         toast.error(
           settingsResponse.data.message || "Failed to update settings",
         );
+        return;
       }
+
+      const ssData = settingsResponse.data.data?.switchStops;
+      if (ssData) {
+        setSwitchStops(
+          (ssData.stops || []).map((s) => ({
+            localId: s.id,
+            thresholdType: s.thresholdType,
+            thresholdValue: String(s.thresholdValue),
+            llmId: s.llmId,
+            isEnabled: s.isEnabled,
+          })),
+        );
+        setSwitchResolution(ssData.resolution || null);
+      }
+      toast.success("Settings updated successfully");
+      markClean();
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to save changes");
+      toast.error(error.response?.data?.error?.message || "Failed to save changes");
     } finally {
       setLoading(false);
     }
@@ -552,6 +600,18 @@ const GeneralTab = () => {
               Select the GPT model you prefer.
             </p>
           </div>
+
+          {/* Quota-Based Model Switch Stops */}
+          <SwitchStopsSection
+            isLoading={isLoading}
+            stops={switchStops}
+            setStops={setSwitchStops}
+            switchModelUnavailablePolicy={switchModelUnavailablePolicy}
+            setSwitchModelUnavailablePolicy={setSwitchModelUnavailablePolicy}
+            switchResolution={switchResolution}
+            availableModels={availableModels}
+            markDirty={markDirty}
+          />
 
           {/* Limit Messages Per Conversation + Max Messages Per Conversation */}
           {!hasConversationLimit ? (

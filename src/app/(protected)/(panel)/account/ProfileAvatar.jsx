@@ -157,11 +157,17 @@ export function ProfileAvatar({
       const formData = new FormData();
       formData.append("avatar", croppedFile);
 
-      const response = await api.patch("/users/update-avatar", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      // accountId goes in the query string because the backend's
+      // requireSuperAdmin runs before multer parses the multipart body
+      const response = await api.patch(
+        `/users/update-avatar?accountId=${encodeURIComponent(account?.id ?? "")}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       if (response.data.success) {
         toast.success(response.data.message || "Avatar updated successfully");

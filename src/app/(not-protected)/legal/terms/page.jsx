@@ -233,6 +233,19 @@ export default function Terms() {
 
         <h2>Prohibited Uses</h2>
         <p>
+          You may not use ContextGPT to generate, request, distribute, or facilitate:
+        </p>
+        <ul>
+          <li>Sexually explicit or pornographic content.</li>
+          <li>NSFW or sexually suggestive content.</li>
+          <li>Child sexual abuse material (CSAM) or exploitation.</li>
+          <li>Violence, hate speech, harassment, or illegal activities.</li>
+          <li>Malware, phishing, fraud, or other malicious content.</li>
+        </ul>
+        <p>
+          Violation of these Terms may result in immediate suspension or permanent termination of your account without notice.
+        </p>
+        <p>
           You may use Service only for lawful purposes and in accordance with
           Terms. You agree not to use Service:
         </p>

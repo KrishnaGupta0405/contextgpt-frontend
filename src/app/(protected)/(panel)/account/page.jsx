@@ -141,7 +141,7 @@ const Account = () => {
       if (section === "personal") setSavingDetails(true);
       if (section === "social") setSavingLinks(true);
 
-      const payload = {};
+      const payload = { accountId: account?.id };
 
       // Determine what to send based on the section
       if (section === "personal") {
@@ -207,7 +207,7 @@ const Account = () => {
       }
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || "Failed to send OTP. Try again.",
+        error?.response?.data?.error?.message || "Failed to send OTP. Try again.",
       );
     } finally {
       setSendingOtp(false);
@@ -228,7 +228,7 @@ const Account = () => {
     } catch (error) {
       console.error("Error deleting account:", error);
       toast.error(
-        error?.response?.data?.message || "Failed to delete account.",
+        error?.response?.data?.error?.message || "Failed to delete account.",
       );
     } finally {
       setDeletingAccount(false);

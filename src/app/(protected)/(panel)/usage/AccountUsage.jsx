@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import api from "@/lib/axios";
+import { useChattingSocket } from "@/context/ChattingSocketContext";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,6 +103,7 @@ export function AccountUsage() {
   const [error, setError] = useState(null);
   const [periods, setPeriods] = useState([]);
   const [selectedTrackingId, setSelectedTrackingId] = useState(null);
+  const { addListener } = useChattingSocket();
 
   useEffect(() => {
     api.get("/usage/subscription-periods").then((res) => {
@@ -122,6 +124,7 @@ export function AccountUsage() {
       if (res?.data?.success) {
         setUsage(res.data.data);
       }
+      console.log("Usag->", res.data.data)
     } catch (err) {
       console.error("Error fetching usage:", err);
       setError("Failed to load usage data.");
@@ -133,6 +136,19 @@ export function AccountUsage() {
   useEffect(() => {
     fetchUsage(selectedTrackingId);
   }, [selectedTrackingId]);
+
+  // ── Real-time usage updates via WebSocket (streamed in, no refetch/reload) ──
+  useEffect(() => {
+    if (!addListener) return;
+    const remove = addListener("usage:updated", ({ usage: newUsage, usagePercentages }) => {
+      setUsage((prev) => {
+        // Only merge if it's the currently viewed period (or no specific period selected)
+        if (selectedTrackingId && newUsage?.id !== selectedTrackingId) return prev;
+        return { usage: newUsage, usagePercentages };
+      });
+    });
+    return remove;
+  }, [addListener, selectedTrackingId]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
@@ -226,8 +242,8 @@ export function AccountUsage() {
         <StatCard
           icon={MessageSquare}
           label="Messages Quato Used"
-          // used={(u?.messagesSentByHuman ?? 0) + (u?.messagesSentByAi ?? 0)}
-          used={u?.messagesSentByAi ?? 0}
+          used={(u?.messagesSentByHuman ?? 0) + (u?.messagesSentByAi ?? 0) + (u?.messagesReceived ?? 0)}
+          // used={u?.messagesSentByAi ?? 0}
           limit={u?.limitMessages ?? 0}
           percentage={pct?.messages}
           iconClass="bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400"

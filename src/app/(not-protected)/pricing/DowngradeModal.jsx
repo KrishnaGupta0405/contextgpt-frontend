@@ -75,7 +75,7 @@ export default function DowngradeModal({
       onSuccess?.();
       onClose();
     } catch (error) {
-      const msg = error?.response?.data?.message || "Downgrade failed";
+      const msg = error?.response?.data?.error?.message || "Downgrade failed";
       toast.error(msg);
       console.error("Downgrade error:", error);
     } finally {

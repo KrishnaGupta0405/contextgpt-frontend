@@ -50,6 +50,7 @@ import React, {
 } from "react";
 import { useRouter } from "next/navigation";
 import api, { registerLogoutCallback } from "@/lib/axios";
+import { getSocket } from "@/lib/socket";
 // [TEMPORARILY DISABLED] PostHog analytics
 // import posthog from "posthog-js";
 
@@ -150,6 +151,32 @@ export const AuthProvider = ({ children }) => {
       .finally(() => {
         setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    const handleUserUpdated = (payload) => {
+      setUser(payload.user);
+      localStorage.setItem("user", JSON.stringify(payload.user));
+    };
+
+    const handleSubscriptionUpdated = (payload) => {
+      setSubscription(payload.subscription);
+      if (payload.subscription) {
+        localStorage.setItem("subscription", JSON.stringify(payload.subscription));
+      } else {
+        localStorage.removeItem("subscription");
+      }
+    };
+
+    socket.on("user:updated", handleUserUpdated);
+    socket.on("subscription:updated", handleSubscriptionUpdated);
+
+    return () => {
+      socket.off("user:updated", handleUserUpdated);
+      socket.off("subscription:updated", handleSubscriptionUpdated);
+    };
   }, []);
 
   const login = (userData, accountData, subscriptionData) => {

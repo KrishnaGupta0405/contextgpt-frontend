@@ -7,8 +7,14 @@ import UsageBreakdown from "./UsageBreakdown";
 import UsageHistory from "./UsageHistory";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { Key } from "lucide-react";
+import { Key, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const UsagePage = () => {
   return (
@@ -16,7 +22,19 @@ const UsagePage = () => {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Account Usage</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold tracking-tight">Account Usage</h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  This page automatically updates every 5 seconds
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <p className="text-muted-foreground mt-2">
             View your usage of chatbots, pages, messages, and models.
           </p>
@@ -38,7 +56,7 @@ const UsagePage = () => {
       <UsageBreakdown />
 
       {/* Model Usage Section */}
-      <ModelUsage />
+      {/* <ModelUsage /> */}
 
 
       <Separator />

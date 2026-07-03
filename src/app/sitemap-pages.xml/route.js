@@ -24,6 +24,8 @@ export async function GET() {
   <url><loc>${baseUrl}/legal/dpa</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
   <url><loc>${baseUrl}/legal/subprocessors</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
   <url><loc>${baseUrl}/legal/refund</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>${baseUrl}/legal/acceptable-use</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>${baseUrl}/legal/</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
   <!-- Page does not exist yet: <url><loc>${baseUrl}/wordpress-plugin</loc><priority>0.7</priority><changefreq>monthly</changefreq></url> -->
   <url><loc>${baseUrl}/lead-generation</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <!-- Page does not exist yet: <url><loc>${baseUrl}/customer-support</loc><priority>0.8</priority><changefreq>monthly</changefreq></url> -->

@@ -66,9 +66,10 @@ export default function HeroSection() {
               </h1>
 
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-600">
-                The intelligence of LLMs like Chatgpt, Gemini, Anthropic
-                personalized to your brand, answer visitors immediate, accurate
-                answers based on your specific business data
+                Deploy a powerful AI assistant trained exclusively on your business. Answer customer inquiries instantly, 24/7, with a chatbot that understands your unique content and brand voice.
+              </p>
+              <p className="mt-4 max-w-xl text-sm text-gray-500">
+                Disclaimer: This platform is an independent product and is not affiliated with Google, Anthropic, OpenAi. We provide access to the LLMs through our custom interface.
               </p>
               <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
                 {features.map((f) => (

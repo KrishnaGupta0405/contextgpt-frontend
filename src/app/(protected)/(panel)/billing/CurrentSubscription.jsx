@@ -159,7 +159,7 @@ export function CurrentSubscription() {
       setCancelDialogOpen(false);
       await fetchSubscriptionData();
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to cancel subscription");
+      toast.error(error?.response?.data?.error?.message || "Failed to cancel subscription");
     } finally {
       setActionLoading(null);
     }
@@ -190,7 +190,7 @@ export function CurrentSubscription() {
       toast.success("Subscription resumed successfully.");
       await fetchSubscriptionData();
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to resume subscription");
+      toast.error(error?.response?.data?.error?.message || "Failed to resume subscription");
     } finally {
       setActionLoading(null);
     }
@@ -207,7 +207,7 @@ export function CurrentSubscription() {
         toast.error("Payment system not loaded. Please refresh and try again.");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to initiate payment");
+      toast.error(error?.response?.data?.error?.message || "Failed to initiate payment");
     } finally {
       setActionLoading(null);
     }
