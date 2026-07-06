@@ -6,7 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/axios";
 import { Check, Zap, Box, Loader2, Rocket } from "lucide-react";
 import { toast } from "sonner";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import { Button } from "@/components/ui/button";
 import DowngradeModal from "./DowngradeModal";
+import ActiveSubToTrialModal from "./ActiveSubToTrialModal";
 import AddonsSection from "@/app/(protected)/(panel)/billing/addons/AddonsSection";
 import PromoCodeButton from "./PromoCodeButton";
 import { useAuth } from "@/context/AuthContext";
@@ -15,7 +19,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
-  const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(true);
   const [currentSubscription, setCurrentSubscription] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -25,6 +29,8 @@ function PricingSectionContent({ plans = [], loading = true }) {
   const [cancelDowngradeLoading, setCancelDowngradeLoading] = useState(false);
   const [trialSwitchModal, setTrialSwitchModal] = useState({ open: false, plan: null });
   const [highlightedPlan, setHighlightedPlan] = useState(null);
+  const [activeSubTrialModal, setActiveSubTrialModal] = useState({ open: false, plan: null });
+  const [activeSubTrialLoading, setActiveSubTrialLoading] = useState(false);
 
   useEffect(() => {
     const interval = searchParams.get("interval");
@@ -142,6 +148,25 @@ function PricingSectionContent({ plans = [], loading = true }) {
         return;
       }
 
+      // If user has an active (non-trial) paid plan and wants to start a fresh
+      // trial of a DIFFERENT plan, the backend hard-blocks new checkouts while
+      // any subscription is active (matches Paddle/Creem). Warn the user that
+      // starting the trial requires ending their current plan first, and that
+      // doing so forfeits their current plan's remaining quota/usage.
+      if (
+        currentSubscription &&
+        currentSubscription.status === "active" &&
+        !currentSubscription.isTrial &&
+        !isCurrentPlan(plan) &&
+        !hasUsedTrial(plan) &&
+        !skipTrial &&
+        !confirmed
+      ) {
+        setActiveSubTrialModal({ open: true, plan });
+        setCheckoutLoading(null);
+        return;
+      }
+
       // F2: If user already has a subscription, use upgrade/downgrade endpoint
       // Exception: if this plan hasn't been trialed yet, offer a new trial checkout
       if (
@@ -166,9 +191,9 @@ function PricingSectionContent({ plans = [], loading = true }) {
           return;
         }
 
-        const currentPrice = parseFloat(currentSubscription.planPrice || 0);
-        const targetPrice = parseFloat(plan.price || 0);
-        const isDowngrade = targetPrice < currentPrice && !currentSubscription.isTrial;
+        const currentRank = getTierRank(currentSubscription.planType);
+        const targetRank = getTierRank(plan.type);
+        const isDowngrade = targetRank < currentRank && !currentSubscription.isTrial;
 
         // Downgrade: open modal with both options (scheduled vs immediate)
         if (isDowngrade) {
@@ -253,6 +278,23 @@ function PricingSectionContent({ plans = [], loading = true }) {
     }
   };
 
+  const handleConfirmActiveSubTrial = async () => {
+    const plan = activeSubTrialModal.plan;
+    if (!plan) return;
+    setActiveSubTrialLoading(true);
+    try {
+      await api.post("/billing/subscription/cancel", { effectiveFrom: "immediately" });
+      setActiveSubTrialModal({ open: false, plan: null });
+      await handleSubscribe(plan, true);
+    } catch (error) {
+      const msg = error?.response?.data?.error?.message || "Failed to switch plans";
+      toast.error(msg, { duration: 6000 });
+      console.error("Active-sub-to-trial switch error:", error);
+    } finally {
+      setActiveSubTrialLoading(false);
+    }
+  };
+
   const handleCancelDowngrade = async () => {
     setCancelDowngradeLoading(true);
     try {
@@ -297,6 +339,13 @@ function PricingSectionContent({ plans = [], loading = true }) {
     if (t.includes("enterprise") || t.includes("custom")) return "Enterprise";
     return type;
   };
+
+  // Tier rank is independent of billing interval/price so that a monthly
+  // plan's price never gets compared against a yearly plan's price (e.g.
+  // yearly Starter at $39 vs monthly Starter at $59 would otherwise look
+  // like a downgrade even though they're the same tier).
+  const TIER_RANK = { Starter: 1, Growth: 2, Scale: 3, Enterprise: 4 };
+  const getTierRank = (type) => TIER_RANK[getPlanName(type)] ?? 0;
 
   // F6: Determine if a plan is the current plan
   const isCurrentPlan = (plan) => {
@@ -362,9 +411,10 @@ function PricingSectionContent({ plans = [], loading = true }) {
       if (!hasUsedTrial(plan)) {
         return "Start a free trial";
       }
-      const currentPrice = parseFloat(currentSubscription.planPrice || 0);
-      const targetPrice = parseFloat(plan.price || 0);
-      return targetPrice > currentPrice ? "Upgrade" : "Downgrade";
+      const currentRank = getTierRank(currentSubscription.planType);
+      const targetRank = getTierRank(plan.type);
+      if (targetRank === currentRank) return "Switch Billing";
+      return targetRank > currentRank ? "Upgrade" : "Downgrade";
     }
 
     if (hasPreviouslySubscribed(plan)) return "Buy Now";
@@ -381,9 +431,10 @@ function PricingSectionContent({ plans = [], loading = true }) {
       currentSubscription &&
       ["active", "trialing"].includes(currentSubscription.status)
     ) {
-      const currentPrice = parseFloat(currentSubscription.planPrice || 0);
-      const targetPrice = parseFloat(plan.price || 0);
-      return targetPrice > currentPrice ? "Upgrade" : "Downgrade";
+      const currentRank = getTierRank(currentSubscription.planType);
+      const targetRank = getTierRank(plan.type);
+      if (targetRank === currentRank) return "Switch Billing";
+      return targetRank > currentRank ? "Upgrade" : "Downgrade";
     }
 
     return "Buy Now";
@@ -413,7 +464,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
     <div id="pricing-section" className="min-h-screen p-4 font-sans text-slate-900 md:p-8 lg:p-12">
       <div className="mx-auto mt-10 max-w-7xl">
         {/* Header & Toggle */}
-        <div className="mb-16 flex flex-col items-center">
+        <div className="mb-4 flex flex-col items-center">
           <div className="relative mb-10 flex w-full items-center justify-center">
             <div className="relative flex items-center gap-4">
               <span
@@ -776,11 +827,16 @@ function PricingSectionContent({ plans = [], loading = true }) {
                         )}
                       </div>
 
-                      {isDowngradeTarget ? (
-                        <button
+                      {/* Logged-out visitors only get actionable buttons that
+                          don't just bounce them to login — free trial and
+                          contact-us. Everything else (Upgrade/Downgrade/Buy
+                          Now/Current Plan/etc.) needs an account to mean
+                          anything, so hide it until they're logged in. */}
+                      {!isLoggedIn && buttonLabel !== "Start a free trial" && buttonLabel !== "Contact us" ? null : isDowngradeTarget ? (
+                        <Button
                           onClick={handleCancelDowngrade}
                           disabled={cancelDowngradeLoading}
-                          className="mt-5 w-full rounded-lg border border-amber-300 bg-amber-50 py-2.5 text-[14px] font-semibold text-amber-700 transition-all hover:bg-amber-100 sm:w-[200px] md:w-full"
+                          className="mt-5 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full"
                         >
                           {cancelDowngradeLoading ? (
                             <span className="flex items-center justify-center gap-2">
@@ -790,21 +846,14 @@ function PricingSectionContent({ plans = [], loading = true }) {
                           ) : (
                             "Cancel Downgrade"
                           )}
-                        </button>
-                      ) : (
-                        <button
+                        </Button>
+                      ) : buttonLabel === "Start a free trial" ? (
+                        <ShimmerButton
                           onClick={() => !isDisabled && handleSubscribe(plan)}
                           disabled={isDisabled || checkoutLoading === plan.id}
-                          className={`mt-5 w-full rounded-lg py-2.5 text-[14px] font-semibold transition-all sm:w-[200px] md:w-full ${
-                            isDisabled
-                              ? "cursor-not-allowed border border-blue-300 bg-blue-100 text-blue-500"
-                              : checkoutLoading === plan.id
-                                ? "cursor-wait border border-blue-200 bg-blue-50 text-blue-400"
-                                : isExpired
-                                  ? "bg-red-500 text-white shadow-sm hover:bg-red-600 hover:shadow-md"
-                                  : isGrowth
-                                    ? "bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:shadow-md"
-                                    : "border border-blue-200 bg-white text-blue-600 hover:border-blue-300 hover:bg-blue-50"
+                          background="var(--color-blue-600)"
+                          className={`mt-5 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full ${
+                            isDisabled || checkoutLoading === plan.id ? "cursor-not-allowed opacity-60" : ""
                           } ${highlightedPlan && plan.type.toLowerCase().includes(highlightedPlan) ? "animate-pulse ring-4 ring-blue-400 ring-offset-2" : ""}`}
                         >
                           {checkoutLoading === plan.id ? (
@@ -815,16 +864,61 @@ function PricingSectionContent({ plans = [], loading = true }) {
                           ) : (
                             buttonLabel
                           )}
-                        </button>
-                      )}
-                      {secondaryButtonLabel && (
-                        <button
-                          onClick={() => !isDisabled && handleSubscribe(plan, false, true)}
+                        </ShimmerButton>
+                      ) : buttonLabel === "Contact us" ? (
+                        <RainbowButton
+                          onClick={() => !isDisabled && handleSubscribe(plan)}
                           disabled={isDisabled || checkoutLoading === plan.id}
-                          className="mt-2 w-full rounded-lg border border-slate-200 bg-white py-2.5 text-[14px] font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50 sm:w-[200px] md:w-full"
+                          className={`mt-5 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full ${
+                            isDisabled || checkoutLoading === plan.id ? "cursor-not-allowed opacity-60" : ""
+                          } ${highlightedPlan && plan.type.toLowerCase().includes(highlightedPlan) ? "animate-pulse ring-4 ring-blue-400 ring-offset-2" : ""}`}
                         >
-                          {secondaryButtonLabel}
-                        </button>
+                          {checkoutLoading === plan.id ? (
+                            <span className="flex items-center justify-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Processing...
+                            </span>
+                          ) : (
+                            buttonLabel
+                          )}
+                        </RainbowButton>
+                      ) : (
+                        <Button
+                          onClick={() => !isDisabled && handleSubscribe(plan)}
+                          disabled={isDisabled || checkoutLoading === plan.id}
+                          className={`mt-5 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full ${
+                            isDisabled || checkoutLoading === plan.id ? "cursor-not-allowed opacity-60" : ""
+                          } ${highlightedPlan && plan.type.toLowerCase().includes(highlightedPlan) ? "animate-pulse ring-4 ring-blue-400 ring-offset-2" : ""}`}
+                        >
+                          {checkoutLoading === plan.id ? (
+                            <span className="flex items-center justify-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Processing...
+                            </span>
+                          ) : (
+                            buttonLabel
+                          )}
+                        </Button>
+                      )}
+                      {secondaryButtonLabel && (isLoggedIn || secondaryButtonLabel === "Contact us") && (
+                        secondaryButtonLabel === "Contact us" ? (
+                          <RainbowButton
+                            onClick={() => !isDisabled && handleSubscribe(plan, false, true)}
+                            disabled={isDisabled || checkoutLoading === plan.id}
+                            className="mt-2 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full"
+                          >
+                            {secondaryButtonLabel}
+                          </RainbowButton>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            onClick={() => !isDisabled && handleSubscribe(plan, false, true)}
+                            disabled={isDisabled || checkoutLoading === plan.id}
+                            className="mt-2 w-full py-2.5 text-[14px] font-semibold sm:w-[200px] md:w-full"
+                          >
+                            {secondaryButtonLabel}
+                          </Button>
+                        )
                       )}
                       {hasScheduledDowngrade && (
                         <button
@@ -952,6 +1046,16 @@ function PricingSectionContent({ plans = [], loading = true }) {
             console.log("onSuccess error", err);
           }
         }}
+      />
+
+      <ActiveSubToTrialModal
+        isOpen={activeSubTrialModal.open}
+        onClose={() => !activeSubTrialLoading && setActiveSubTrialModal({ open: false, plan: null })}
+        currentPlanName={currentSubscription ? getPlanName(currentSubscription.planType) : ""}
+        targetPlanName={activeSubTrialModal.plan ? getPlanName(activeSubTrialModal.plan.type) : ""}
+        currentPeriodEnd={currentSubscription?.currentPeriodEnd}
+        loading={activeSubTrialLoading}
+        onConfirm={handleConfirmActiveSubTrial}
       />
     </div>
   );

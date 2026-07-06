@@ -72,7 +72,7 @@ export default function PricingPage() {
                   )}
                 />
                 {/* Hero */}
-              <div className="p-[4rem] flex justify-center items-center flex-col gap-4 ">
+              <div className="pb-1 p-[4rem] flex justify-center items-center flex-col gap-4 ">
                 <p className="tracking-tight text-center text-md font-medium text-blue-600 ">Pricing Plans and Add-Ons</p>
                 <h1 className="tracking-tight text-center text-7xl font-medium max-w-4xl">Smart pricing for smart businesses</h1>
                 <p className="tracking-tight text-center text-xl pt-4 text-gray-500 font-medium">

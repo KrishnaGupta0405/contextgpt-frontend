@@ -245,14 +245,15 @@ export function CurrentSubscription() {
       const res = await api.get("/billing/portal");
       const url =
         res.data?.data?.managementUrls?.updatePaymentMethod ||
-        res.data?.data?.managementUrls;
+        res.data?.data?.managementUrls ||
+        res.data?.data?.customerPortalUrl;
       if (url && typeof url === "string") {
         window.open(url, "_blank");
       } else {
         toast.error("Management portal not available.");
       }
-    } catch {
-      toast.error("Failed to load management portal.");
+    } catch (error) {
+      toast.error(error?.response?.data?.error?.message || "Failed to load management portal.");
     }
   };
 
