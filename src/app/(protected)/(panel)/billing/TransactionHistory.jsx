@@ -295,7 +295,7 @@ export function TransactionHistory() {
                           </TableCell>
                           <TableCell className="pr-6 text-right">
                             <div className="text-muted-foreground flex justify-end items-center gap-2">
-                              {txn.paddleTransactionId && (
+                              {(txn.providerTransactionId || txn.paddleTransactionId) && (
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -309,7 +309,7 @@ export function TransactionHistory() {
                                   <span className="hidden sm:inline">Invoice</span>
                                 </Button>
                               )}
-                              {!txn.receiptUrl && !txn.paddleTransactionId && (
+                              {!txn.receiptUrl && !txn.providerTransactionId && !txn.paddleTransactionId && (
                                 <span className="px-2 py-1 text-xs italic">N/A</span>
                               )}
                               {sub && (

@@ -1,9 +1,68 @@
-import React from 'react'
+// import Image from "next/image";
+import Link from "next/link";
+import { getToolsByCategory } from "../_config/tools.config";
 
-const OtherTools = () => {
+export const metadata = {
+  title: "Other Free Tools — ContextGPT",
+  description:
+    "Free sitemap tools, ROI calculators, email signature generators, and chatbot conversation analysis tools.",
+  alternates: { canonical: "https://contextgpt.in/tools/other-tools" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "ContextGPT",
+    title: "Other Free Tools — ContextGPT",
+    description:
+      "Free sitemap tools, ROI calculators, email signature generators, and chatbot conversation analysis tools.",
+    url: "https://contextgpt.in/tools/other-tools",
+  },
+};
+
+export default function OtherToolsPage() {
+  const tools = getToolsByCategory("Other Tools");
+
   return (
-    <div>OtherTools</div>
-  )
-}
+    <div className="min-h-screen">
+      <div className="mt-[5%] border-blue-100 bg-white px-4 py-16 text-center">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-blue-600">
+          Free Tools
+        </p>
+        <h1 className="mb-4 text-6xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+          Other Tools
+        </h1>
+        <p className="text-muted-foreground mx-auto max-w-xl text-base leading-relaxed">
+          Sitemap tools, ROI calculators, email signatures, and more.
+        </p>
+      </div>
 
-export default OtherTools
+      <div className="mx-auto max-w-5xl px-4 py-16">
+        <div className="grid gap-6 sm:grid-cols-2">
+          {tools.map((tool) => (
+            <div
+              key={tool.slug}
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-linear-to-b from-blue-100 to-white p-6 py-20 shadow-sm transition-shadow hover:shadow-md"
+            >
+              <div className="relative mb-6 flex aspect-video items-center justify-center overflow-hidden rounded-2xl border-4 border-blue-400 bg-white p-2">
+                <img
+                  src={tool.image}
+                  alt={tool.title}
+                  className="absolute inset-0 h-full w-full rounded-lg object-contain"
+                />
+              </div>
+              <div className="-mx-6 -mb-6 flex flex-1 flex-col rounded-b-2xl bg-white p-6">
+                <h3 className="mb-1.5 text-base font-bold text-gray-900">{tool.title}</h3>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-gray-500">{tool.description}</p>
+                <Link
+                  href={`/tools/${tool.slug}`}
+                  className="inline-flex w-fit items-center rounded-md border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-600 transition-colors hover:bg-blue-50"
+                >
+                  Try tool
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -21,7 +21,7 @@ export default function AddonsSection({ isLoggedIn, currentSubscription, isYearl
   const [addOns, setAddOns] = useState([]);
   const [myAddOns, setMyAddOns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [infoModal, setInfoModal] = useState(null); // { transactionId, addonInfo, currentMessagesQuota }
+  const [infoModal, setInfoModal] = useState(null); // { transactionId, checkoutUrl, addonInfo, currentMessagesQuota }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,26 +60,28 @@ export default function AddonsSection({ isLoggedIn, currentSubscription, isYearl
     return myAddOns.filter((ua) => ua.addOn?.id === addonId || ua.addOnId === addonId).length;
   };
 
-  // After AddonCard creates a checkout, open Paddle overlay
-  const handleBuySuccess = ({ transactionId, addonInfo, currentMessagesQuota }) => {
-    // Show info modal for message add-ons before opening Paddle
+  // After AddonCard creates a checkout, open Paddle overlay or redirect to hosted checkout
+  const handleBuySuccess = ({ transactionId, checkoutUrl, addonInfo, currentMessagesQuota }) => {
+    // Show info modal for message add-ons before opening checkout
     if (addonInfo?.identifier === "extra_messages_5k") {
-      setInfoModal({ transactionId, addonInfo, currentMessagesQuota });
+      setInfoModal({ transactionId, checkoutUrl, addonInfo, currentMessagesQuota });
     } else {
-      openPaddleCheckout(transactionId);
+      openCheckout(transactionId, checkoutUrl);
     }
   };
 
-  const openPaddleCheckout = (transactionId) => {
-    if (typeof window !== "undefined" && window.Paddle) {
+  const openCheckout = (transactionId, checkoutUrl) => {
+    if (transactionId && typeof window !== "undefined" && window.Paddle) {
       window.Paddle.Checkout.open({
         transactionId,
         settings: {
           successUrl: `${window.location.origin}/billing?addon_purchased=1`,
         },
       });
+    } else if (checkoutUrl) {
+      window.location.href = checkoutUrl;
     } else {
-      toast.error("Paddle is not loaded yet. Please try again.");
+      toast.error("Unable to start checkout. Please try again.");
     }
   };
 
@@ -184,9 +186,9 @@ export default function AddonsSection({ isLoggedIn, currentSubscription, isYearl
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  const { transactionId } = infoModal;
+                  const { transactionId, checkoutUrl } = infoModal;
                   setInfoModal(null);
-                  openPaddleCheckout(transactionId);
+                  openCheckout(transactionId, checkoutUrl);
                 }}
                 className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
               >

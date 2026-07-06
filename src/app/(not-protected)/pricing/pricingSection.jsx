@@ -44,13 +44,22 @@ function PricingSectionContent({ plans = [], loading = true }) {
     }
   }, [searchParams]);
 
-  // Always load Paddle and promo — needed for guests and logged-in users alike
+  // Load promo code state — needed for guests and logged-in users alike
   useEffect(() => {
     const savedPromo = localStorage.getItem("pendingPromoCode");
     if (savedPromo) {
       setPromoCode(savedPromo);
       setShowPromo(true);
     }
+  }, []);
+
+  // Only load the Paddle SDK if the active processor is Paddle and at least one
+  // visible plan actually uses it — Creem/Polar checkouts are hosted redirects
+  // and need no client SDK.
+  useEffect(() => {
+    const isPaddleActive = process.env.NEXT_PUBLIC_PAYMENT_PROCESSOR === "paddle";
+    const needsPaddle = isPaddleActive && plans.some((p) => p.providerName === "paddle");
+    if (!needsPaddle || window.Paddle) return;
 
     const script = document.createElement("script");
     script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
@@ -67,7 +76,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
     return () => {
       if (document.body.contains(script)) document.body.removeChild(script);
     };
-  }, []);
+  }, [plans]);
 
   // Fetch subscription only once auth state is resolved and user is confirmed logged in
   useEffect(() => {
@@ -75,6 +84,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
     if (!user) {
       setIsLoggedIn(false);
       setCurrentSubscription(null);
+      console.log("Current Subscription", null);
       return;
     }
     const fetchCurrentSub = async () => {
@@ -84,9 +94,11 @@ function PricingSectionContent({ plans = [], loading = true }) {
           setCurrentSubscription(res.data.data);
           if (res.data.data) setIsLoggedIn(true);
         }
-      } catch {
+        console.log("Current Subscription", res?.data?.data);
+      } catch (err) {
         // Subscription fetch failed but user is authenticated
         setIsLoggedIn(true);
+        console.log("Current Subscription fetch failed", err);
       }
     };
     fetchCurrentSub();
@@ -103,7 +115,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
     if (pendingPlan) handleSubscribe(pendingPlan);
   }, [isLoggedIn, plans]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubscribe = async (plan, confirmed = false) => {
+  const handleSubscribe = async (plan, confirmed = false, skipTrial = false) => {
     const planName = getPlanName(plan.type);
     if (
       planName === "Enterprise" ||
@@ -122,6 +134,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
       if (
         currentSubscription?.isTrial &&
         !hasUsedTrial(plan) &&
+        !skipTrial &&
         !confirmed
       ) {
         setTrialSwitchModal({ open: true, plan });
@@ -130,12 +143,29 @@ function PricingSectionContent({ plans = [], loading = true }) {
       }
 
       // F2: If user already has a subscription, use upgrade/downgrade endpoint
-      // Exception: if user is trialing and hasn't tried this plan, offer a new trial checkout
+      // Exception: if this plan hasn't been trialed yet, offer a new trial checkout
       if (
         currentSubscription &&
         ["active", "trialing"].includes(currentSubscription.status) &&
-        !(currentSubscription.isTrial && !hasUsedTrial(plan))
+        !(!hasUsedTrial(plan) && !skipTrial)
       ) {
+        // Activating the SAME plan currently being trialed: the provider's
+        // upgrade endpoint only swaps products with proration and has no
+        // trial-ending parameter, so calling it here just re-anchors the
+        // trial on the same product instead of starting paid billing. End
+        // the trial and start a fresh (non-trial) checkout instead.
+        if (currentSubscription.isTrial && isCurrentPlan(plan)) {
+          const activateRes = await api.post("/billing/subscription/activate-trial");
+          const { checkoutUrl } = activateRes.data.data;
+          if (checkoutUrl) {
+            window.location.href = checkoutUrl;
+          } else {
+            toast.error("Unable to start checkout");
+            setCheckoutLoading(null);
+          }
+          return;
+        }
+
         const currentPrice = parseFloat(currentSubscription.planPrice || 0);
         const targetPrice = parseFloat(plan.price || 0);
         const isDowngrade = targetPrice < currentPrice && !currentSubscription.isTrial;
@@ -167,17 +197,16 @@ function PricingSectionContent({ plans = [], loading = true }) {
           try {
             const subRes = await api.get("/billing/subscription/current");
             if (subRes?.data?.success) setCurrentSubscription(subRes.data.data);
-          } catch {}
+            console.log("Current Subscription", subRes?.data?.data);
+          } catch (err) {
+            console.log("Current Subscription fetch failed", err);
+          }
           setCheckoutLoading(null);
           return;
         }
       }
 
       // New subscription checkout flow
-      window.Paddle?.Setup({
-        token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN,
-      });
-
       const successUrl = `${window.location.origin}/billing/success?plan=${encodeURIComponent(planName)}&interval=${encodeURIComponent(plan.billingInterval || "")}`;
 
       if (isLoggedIn) {
@@ -185,16 +214,28 @@ function PricingSectionContent({ plans = [], loading = true }) {
         if (promoCode.trim()) {
           body.promoCode = promoCode.trim();
         }
-        if (currentSubscription?.usedTrialPlanIds?.includes(plan.id)) {
+        if (currentSubscription?.usedTrialPlanIds?.includes(plan.id) || skipTrial) {
           body.directPurchase = true;
         }
         const response = await api.post("/billing/checkout/create", body);
         localStorage.removeItem("pendingPromoCode");
-        const { transactionId } = response.data.data;
-        window.Paddle?.Checkout.open({
-          transactionId,
-          settings: { successUrl },
-        });
+        const { transactionId, checkoutUrl } = response.data.data;
+
+        if (transactionId) {
+          // Paddle: open inline overlay checkout
+          window.Paddle?.Setup({
+            token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN,
+          });
+          window.Paddle?.Checkout.open({
+            transactionId,
+            settings: { successUrl },
+          });
+        } else if (checkoutUrl) {
+          // Creem (or any hosted-checkout processor): redirect to hosted checkout
+          window.location.href = checkoutUrl;
+        } else {
+          toast.error("Unable to start checkout");
+        }
       } else {
         // Not logged in — save intent and redirect to login, then return to pricing
         sessionStorage.setItem("pendingPlanId", plan.id);
@@ -219,6 +260,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
       toast.success("Scheduled downgrade cancelled — staying on your current plan!", { duration: 6000 });
       const subRes = await api.get("/billing/subscription/current");
       if (subRes?.data?.success) setCurrentSubscription(subRes.data.data);
+      console.log("Current Subscription", subRes?.data?.data);
     } catch (error) {
       const msg = error?.response?.data?.error?.message || "Failed to cancel downgrade";
       toast.error(msg, { duration: 6000 });
@@ -316,8 +358,8 @@ function PricingSectionContent({ plans = [], loading = true }) {
       currentSubscription &&
       ["active", "trialing"].includes(currentSubscription.status)
     ) {
-      // If user is trialing and hasn't tried this other plan yet, offer free trial
-      if (currentSubscription.isTrial && !hasUsedTrial(plan)) {
+      // If the user hasn't used a trial for this specific plan yet, offer one
+      if (!hasUsedTrial(plan)) {
         return "Start a free trial";
       }
       const currentPrice = parseFloat(currentSubscription.planPrice || 0);
@@ -328,6 +370,23 @@ function PricingSectionContent({ plans = [], loading = true }) {
     if (hasPreviouslySubscribed(plan)) return "Buy Now";
 
     return "Start a free trial";
+  };
+
+  // When the primary button offers a free trial, also show a secondary
+  // button so the user can skip the trial and go straight to upgrade/buy.
+  const getSecondaryButtonLabel = (plan) => {
+    if (getButtonLabel(plan) !== "Start a free trial") return null;
+
+    if (
+      currentSubscription &&
+      ["active", "trialing"].includes(currentSubscription.status)
+    ) {
+      const currentPrice = parseFloat(currentSubscription.planPrice || 0);
+      const targetPrice = parseFloat(plan.price || 0);
+      return targetPrice > currentPrice ? "Upgrade" : "Downgrade";
+    }
+
+    return "Buy Now";
   };
 
   const currentInterval = isYearly ? "yearly" : "monthly";
@@ -464,6 +523,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
               const hasScheduledDowngrade = isCurrent && currentSubscription?.scheduledChange?.action === "downgrade";
               const isDisabled = (isCurrent && !isTrialing && !hasScheduledDowngrade) || isDowngradeTarget;
               const buttonLabel = getButtonLabel(plan);
+              const secondaryButtonLabel = getSecondaryButtonLabel(plan);
 
               let featuresList = [];
 
@@ -757,6 +817,15 @@ function PricingSectionContent({ plans = [], loading = true }) {
                           )}
                         </button>
                       )}
+                      {secondaryButtonLabel && (
+                        <button
+                          onClick={() => !isDisabled && handleSubscribe(plan, false, true)}
+                          disabled={isDisabled || checkoutLoading === plan.id}
+                          className="mt-2 w-full rounded-lg border border-slate-200 bg-white py-2.5 text-[14px] font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50 sm:w-[200px] md:w-full"
+                        >
+                          {secondaryButtonLabel}
+                        </button>
+                      )}
                       {hasScheduledDowngrade && (
                         <button
                           onClick={handleCancelDowngrade}
@@ -874,10 +943,14 @@ function PricingSectionContent({ plans = [], loading = true }) {
         targetPlan={downgradeModal.plan}
         currentSubscription={currentSubscription}
         onSuccess={async () => {
+          console.log("onSuccess fired");
           try {
             const subRes = await api.get("/billing/subscription/current");
+            console.log("subRes", subRes?.data);
             if (subRes?.data?.success) setCurrentSubscription(subRes.data.data);
-          } catch {}
+          } catch (err) {
+            console.log("onSuccess error", err);
+          }
         }}
       />
     </div>

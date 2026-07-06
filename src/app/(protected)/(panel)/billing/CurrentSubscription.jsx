@@ -36,6 +36,7 @@ import {
   AlertTriangle,
   Clock,
   RotateCcw,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -43,7 +44,7 @@ export function CurrentSubscription() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
-  const [actionLoading, setActionLoading] = useState(null); // "cancel" | "pause" | "resume" | "payNow" | "reactivate"
+  const [actionLoading, setActionLoading] = useState(null); // "cancel" | "pause" | "resume" | "payNow" | "reactivate" | "migrate"
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   // const [pauseDialogOpen, setPauseDialogOpen] = useState(false);
 
@@ -200,14 +201,40 @@ export function CurrentSubscription() {
     setActionLoading("payNow");
     try {
       const res = await api.post("/billing/subscription/pay-now");
-      const { transactionId } = res.data.data;
-      if (window.Paddle) {
+      const { transactionId, checkoutUrl } = res.data.data;
+      if (transactionId && window.Paddle) {
         window.Paddle.Checkout.open({ transactionId });
+      } else if (checkoutUrl) {
+        window.location.href = checkoutUrl;
       } else {
         toast.error("Payment system not loaded. Please refresh and try again.");
       }
     } catch (error) {
       toast.error(error?.response?.data?.error?.message || "Failed to initiate payment");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleUpdateBilling = async () => {
+    setActionLoading("migrate");
+    try {
+      const res = await api.post("/billing/migration/checkout");
+      const { transactionId, checkoutUrl } = res.data.data;
+      if (transactionId && window.Paddle) {
+        window.Paddle.Checkout.open({
+          transactionId,
+          settings: {
+            successUrl: `${window.location.origin}/billing/success?plan=${encodeURIComponent(getPlanName(subscription?.planType))}&interval=${subscription?.billingInterval || ""}`,
+          },
+        });
+      } else if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        toast.error("Payment system not loaded. Please refresh and try again.");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error?.message || "Failed to start billing update. Please try again.");
     } finally {
       setActionLoading(null);
     }
@@ -234,6 +261,11 @@ export function CurrentSubscription() {
   const trialDaysLeft =
     subscription?.isTrial && subscription?.trialEndsAt
       ? Math.max(0, differenceInDays(new Date(subscription.trialEndsAt), new Date()))
+      : null;
+
+  const migrationDaysLeft =
+    subscription?.migrationStatus === "pending" && subscription?.migrationDeadline
+      ? Math.max(0, differenceInDays(new Date(subscription.migrationDeadline), new Date()))
       : null;
 
   const getProgressColor = (used, limit) => {
@@ -342,6 +374,51 @@ export function CurrentSubscription() {
             </div>
           ) : (
             <div className="space-y-6">
+              {/* Processor migration banner — shown when ops has flagged this
+                  account to move to a new payment processor. Distinct from
+                  the trial/past-due banners: no charge happens here, this is
+                  purely re-confirming a payment method on the new processor. */}
+              {subscription.migrationStatus === "pending" && (
+                <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+                  <RefreshCw className="h-5 w-5 flex-shrink-0 text-amber-600" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                      We&apos;ve upgraded our billing system. Please confirm your payment method
+                      {migrationDaysLeft !== null && (
+                        <>
+                          {" "}
+                          before{" "}
+                          {subscription.migrationDeadline
+                            ? formatDate(subscription.migrationDeadline)
+                            : "the deadline"}{" "}
+                          ({migrationDaysLeft === 0
+                            ? "today"
+                            : `${migrationDaysLeft} day${migrationDaysLeft !== 1 ? "s" : ""} left`}
+                          )
+                        </>
+                      )}{" "}
+                      to avoid any interruption to your service.
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handleUpdateBilling}
+                    disabled={actionLoading === "migrate"}
+                  >
+                    {actionLoading === "migrate" ? "Loading..." : "Update Billing"}
+                  </Button>
+                </div>
+              )}
+
+              {subscription.migrationStatus === "in_progress" && (
+                <div className="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+                  <Clock className="h-5 w-5 flex-shrink-0 text-blue-600" />
+                  <p className="flex-1 text-sm font-medium text-blue-800 dark:text-blue-300">
+                    We&apos;re finishing setting up your updated billing. This can take a minute — refresh this page shortly.
+                  </p>
+                </div>
+              )}
+
               {/* F4: Payment failure banner */}
               {subscription.status === "past_due" && (
                 <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
@@ -556,7 +633,7 @@ export function CurrentSubscription() {
               )}
 
               {/* Manage (portal) button */}
-              {subscription.paddleSubscriptionId && (
+              {(subscription.providerSubscriptionId || subscription.paddleSubscriptionId) && (
                 <Button variant="outline" size="sm" onClick={handleManagePlan}>
                   Manage <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
                 </Button>

@@ -9,16 +9,17 @@ User-agent: *
 Allow: /
 Allow: /aboutus
 Allow: /blog
+Allow: /book-a-demo
 Allow: /contact
+Allow: /demo
 Allow: /features
 Allow: /integration
 Allow: /landing
 Allow: /lead-generation
+Allow: /legal
 Allow: /partners
 Allow: /pricing
-Allow: /privacy
-Allow: /refund
-Allow: /terms
+Allow: /security
 Allow: /tools
 
 # Block all protected / authenticated app routes
@@ -44,7 +45,11 @@ Disallow: /website-files
 Disallow: /website-links
 
 # Block auth and internal API routes
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 
 # Block Next.js internals
@@ -77,7 +82,11 @@ Disallow: /text-snippets
 Disallow: /usage
 Disallow: /website-files
 Disallow: /website-links
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -87,7 +96,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -97,7 +110,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -107,7 +124,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -118,7 +139,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -129,7 +154,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -140,7 +169,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 
@@ -151,7 +184,11 @@ Allow: /blog
 Allow: /tools
 Disallow: /dashboard
 Disallow: /account
-Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
 Disallow: /api/
 Disallow: /_next/
 

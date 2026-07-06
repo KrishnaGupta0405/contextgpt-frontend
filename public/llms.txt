@@ -31,11 +31,11 @@ ContextGPT is an AI chatbot platform that lets any business build and deploy a c
 
 ContextGPT offers a suite of free AI and web tools at [https://contextgpt.in/tools](https://contextgpt.in/tools) — no sign-up required.
 
-### AI Tools
+### AI Generators
 
-- [AI Prompt Optimizer](https://contextgpt.in/tools/ai-tools/ai-prompt-optimizer)
-- [AI Reply Generator](https://contextgpt.in/tools/ai-tools/ai-reply-generator)
-- [AI SaaS Brand Name Generator](https://contextgpt.in/tools/ai-tools/ai-saas-brand-name-generator)
+- [AI Prompt Optimizer](https://contextgpt.in/tools/ai-generators/ai-prompt-optimizer)
+- [AI Reply Generator](https://contextgpt.in/tools/ai-generators/ai-reply-generator)
+- [AI SaaS Brand Name Generator](https://contextgpt.in/tools/ai-generators/ai-saas-brand-name-generator)
 
 ### Convert to Markdown
 

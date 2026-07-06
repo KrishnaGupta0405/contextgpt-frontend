@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { ALL_TOOLS, TOOL_CATEGORIES, getToolsByCategory } from "./_config/tools.config";
 
@@ -58,11 +58,10 @@ export default function ToolsPage() {
                     <div
                       className="relative mb-6 flex aspect-video items-center justify-center overflow-hidden rounded-2xl border-4 border-blue-400 bg-white p-2"
                     >
-                      <Image
+                      <img
                         src={tool.image}
                         alt={tool.title}
-                        fill
-                        className="rounded-lg object-contain"
+                        className="absolute inset-0 h-full w-full rounded-lg object-contain"
                       />
                     </div>
                     {/* Title */}

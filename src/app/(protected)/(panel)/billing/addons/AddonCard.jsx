@@ -34,7 +34,7 @@ const ADDON_ICONS = {
  *   addon         - The add-on object from GET /billing/addons
  *   purchaseCount - Number of times user has already purchased this addon
  *   isLoggedIn    - Whether user is authenticated
- *   onBuySuccess  - Callback after successful checkout creation (receives { transactionId, addonInfo, currentMessagesQuota })
+ *   onBuySuccess  - Callback after successful checkout creation (receives { transactionId, checkoutUrl, addonInfo, currentMessagesQuota })
  */
 export default function AddonCard({ addon, purchaseCount = 0, isLoggedIn, onBuySuccess }) {
   const [loading, setLoading] = useState(false);
@@ -74,10 +74,11 @@ export default function AddonCard({ addon, purchaseCount = 0, isLoggedIn, onBuyS
         return;
       }
 
-      // Success — return to parent for Paddle overlay
-      if (data?.transactionId) {
+      // Success — return to parent for Paddle overlay or hosted checkout redirect
+      if (data?.transactionId || data?.checkoutUrl) {
         onBuySuccess?.({
           transactionId: data.transactionId,
+          checkoutUrl: data.checkoutUrl,
           addonInfo: data.addonInfo,
           currentMessagesQuota: data.currentMessagesQuota,
         });

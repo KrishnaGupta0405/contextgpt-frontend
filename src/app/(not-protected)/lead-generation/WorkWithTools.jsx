@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+// import Image from 'next/image'
 
 const TOOLS = [
   { src: '/icons/dropbox.svg', alt: 'Dropbox' },
@@ -23,7 +23,7 @@ export default function WorkWithTools() {
             key={tool.alt}
             className=""
           >
-            <Image
+            <img
               src={tool.src}
               alt={tool.alt}
               width={30}

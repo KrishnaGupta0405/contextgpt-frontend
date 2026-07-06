@@ -25,10 +25,10 @@ A robust set of free tools to drive organic traffic:
 **General Tools Section**
 - `/tools` - Main tools hub.
 
-**AI Tools**
-- `/tools/ai-tools/ai-prompt-optimizer`
-- `/tools/ai-tools/ai-reply-generator`
-- `/tools/ai-tools/ai-saas-brand-name-generator`
+**AI Generators**
+- `/tools/ai-generators/ai-prompt-optimizer`
+- `/tools/ai-generators/ai-reply-generator`
+- `/tools/ai-generators/ai-saas-brand-name-generator`
 
 **Convert to Markdown**
 - `/tools/convert-to-markdown` - Main markdown tools index.

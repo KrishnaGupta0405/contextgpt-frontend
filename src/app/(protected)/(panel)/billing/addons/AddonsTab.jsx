@@ -206,9 +206,9 @@ function AddonDetailCard({ ua }) {
           </div>
 
           {/* Transaction ID */}
-          {ua.paddleTransactionId && (
+          {(ua.providerTransactionId || ua.paddleTransactionId) && (
             <p className="text-[11px] text-slate-400">
-              Transaction ID: {ua.paddleTransactionId}
+              Transaction ID: {ua.providerTransactionId || ua.paddleTransactionId}
             </p>
           )}
         </div>

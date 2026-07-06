@@ -3,23 +3,23 @@ import Link from "next/link";
 import { getToolsByCategory } from "../_config/tools.config";
 
 export const metadata = {
-  title: "Convert to Markdown Tools — ContextGPT",
+  title: "AI Chat Tools — ContextGPT",
   description:
-    "Free tools to convert PDF, DOCX, HTML, CSV, JSON, XML, Notion, Google Docs, and more to clean Markdown instantly. No sign up required.",
-  alternates: { canonical: "https://contextgpt.in/tools/convert-to-markdown" },
+    "Upload or paste your text, website, document, PDF, or Word data and chat with AI to get instant answers. Free to use.",
+  alternates: { canonical: "https://contextgpt.in/tools/ai-chat-tools" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
-    title: "Convert to Markdown Tools — ContextGPT",
+    title: "AI Chat Tools — ContextGPT",
     description:
-      "Free tools to convert PDF, DOCX, HTML, CSV, JSON, XML, Notion, Google Docs, and more to clean Markdown instantly.",
-    url: "https://contextgpt.in/tools/convert-to-markdown",
+      "Upload or paste your text, website, document, PDF, or Word data and chat with AI to get instant answers.",
+    url: "https://contextgpt.in/tools/ai-chat-tools",
   },
 };
 
-export default function ConvertToMarkdownPage() {
-  const tools = getToolsByCategory("Convert to Markdown");
+export default function AiChatToolsPage() {
+  const tools = getToolsByCategory("AI Chat Tools");
 
   return (
     <div className="min-h-screen">
@@ -28,10 +28,10 @@ export default function ConvertToMarkdownPage() {
           Free Tools
         </p>
         <h1 className="mb-4 text-6xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
-          Convert to Markdown
+          AI Chat Tools
         </h1>
         <p className="text-muted-foreground mx-auto max-w-xl text-base leading-relaxed">
-          Convert any document, file, or URL to clean Markdown instantly. No sign up required.
+          Upload or paste your data and chat with AI to get instant answers.
         </p>
       </div>
 
