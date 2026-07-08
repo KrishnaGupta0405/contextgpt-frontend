@@ -110,7 +110,7 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
         )
       ) : item.hasCustomImages ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-          <h1 className={item.titleClassName}>
+          <h2 className={item.titleClassName}>
             <span className="tracking-tight" style={{ fontFamily: "'Josefin Sans' , 'Century Gothic', 'Trebuchet MS', sans-serif", fontWeight: 300 }}>
               Reflects your
             </span>
@@ -126,7 +126,7 @@ const BentoGridItem = ({ item, globeConfig, isMobile }) => {
             <span className="tracking-tight" style={{ fontFamily: "'Century Gothic', 'Trebuchet MS', sans-serif", fontWeight: 300 }}>
               identity
             </span>
-          </h1>
+          </h2>
           <p
             className={item.descriptionClassName}
             dangerouslySetInnerHTML={{ __html: item.description }}

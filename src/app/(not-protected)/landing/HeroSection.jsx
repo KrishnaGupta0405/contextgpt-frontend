@@ -59,6 +59,19 @@ export default function HeroSection() {
           <div className="grid grid-cols-1 items-center gap-12 text-left lg:grid-cols-2">
             {/* Left Side Content */}
             <div>
+              <a
+                href="https://www.producthunt.com/products/contextgpt?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-contextgpt-2"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-block"
+              >
+                <img
+                  alt="ContextGPT - Instantly answer you visitor question, Ai using you own data | Product Hunt"
+                  width="250"
+                  height="54"
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1190796&theme=light&t=1783489438696"
+                />
+              </a>
               <h1 className="text-5xl leading-[0.95] font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-6xl">
                 Make <span className="text-blue-500">AI</span> agent your expert
                 customer service, works{" "}

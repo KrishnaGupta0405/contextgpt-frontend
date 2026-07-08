@@ -193,17 +193,18 @@ export default function Footer() {
               <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> krishna@contextgpt.in</p>
 
               {/* Product Hunt badge */}
-              {/* <div className="inline-flex w-fit items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5">
-              <span className="text-base">🏆</span>
-              <div>
-                <p className="text-[10px] font-semibold tracking-wide text-orange-500 uppercase">
-                  Product Hunt
-                </p>
-                <p className="text-xs font-bold text-orange-700">
-                  #1 Product of the Day
-                </p>
-              </div>
-            </div> */}
+              <a
+                href="https://www.producthunt.com/products/contextgpt?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-contextgpt-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  alt="ContextGPT - Instantly answer you visitor question, Ai using you own data | Product Hunt"
+                  width="250"
+                  height="54"
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1190796&theme=light&t=1783489438696"
+                />
+              </a>
 
               {/* Email */}
               {/* <a
