@@ -533,10 +533,10 @@ export default function Privacy() {
               </td>
             </tr> */}
             <tr>
-              <td className="border border-gray-300 p-2">Paddle</td>
+              <td className="border border-gray-300 p-2">Polar</td>
               <td className="border border-gray-300 p-2">
-                <Link href="https://www.paddle.com/legal/privacy" className="text-black underline">
-                  https://www.paddle.com/legal/privacy
+                <Link href="https://polar.sh/legal/privacy-policy" className="text-black underline">
+                  https://polar.sh/legal/privacy-policy
                 </Link>
               </td>
             </tr>
@@ -681,10 +681,10 @@ export default function Privacy() {
         <p>
           The payment processors we work with are:
         </p>
-        <h2>Paddle</h2>
+        <h2>Polar</h2>
           <p>
-            Paddle is our merchant of record. Their privacy policy can be viewed at{" "}
-            <Link href="https://paddle.com/legal-privacy-policy" className="text-black">https://www.paddle.com/legal/privacy</Link>
+            Polar is our merchant of record. Their privacy policy can be viewed at{" "}
+            <Link href="https://polar.sh/legal/privacy-policy" className="text-black">https://polar.sh/legal/privacy-policy</Link>
           </p>
         <h2>Links to Other Sites</h2>
         <p>

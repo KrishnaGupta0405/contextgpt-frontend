@@ -50,6 +50,9 @@ export const metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  verification: {
+    yandex: "5ef1a93a7ba11a78",
+  },
 };
 
 import { AuthProvider } from "@/context/AuthContext";

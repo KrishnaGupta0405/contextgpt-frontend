@@ -225,9 +225,9 @@ export default function Subprocesses() {
           </thead>
           <tbody>
             <tr>
-              <td className="text-blue-600">Paddle</td>
+              <td className="text-blue-600">Polar</td>
               <td>Payment processing (Merchant of Record)</td>
-              <td className="text-blue-600">United Kingdom</td>
+              <td className="text-blue-600">Sweden</td>
             </tr>
           </tbody>
         </table>
