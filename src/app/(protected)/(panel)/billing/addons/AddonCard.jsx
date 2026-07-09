@@ -84,7 +84,10 @@ export default function AddonCard({ addon, purchaseCount = 0, isLoggedIn, onBuyS
         });
       }
     } catch (err) {
-      const msg = err?.response?.data?.message || "Failed to start checkout.";
+      const msg =
+        err?.response?.data?.error?.message ||
+        err?.response?.data?.message ||
+        "Failed to start checkout.";
       toast.error(msg);
     } finally {
       setLoading(false);

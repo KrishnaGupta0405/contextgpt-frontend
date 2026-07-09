@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/axios";
 import { Check, Zap, Box, Loader2, Rocket } from "lucide-react";
 import { toast } from "sonner";
+import posthog from "posthog-js";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Button } from "@/components/ui/button";
@@ -233,6 +234,17 @@ function PricingSectionContent({ plans = [], loading = true }) {
 
       // New subscription checkout flow
       const successUrl = `${window.location.origin}/billing/success?plan=${encodeURIComponent(planName)}&interval=${encodeURIComponent(plan.billingInterval || "")}`;
+
+      try {
+        posthog.capture("checkout_initiated", {
+          plan_name: planName,
+          plan_type: plan.type,
+          price: plan.price,
+          billing_interval: plan.billingInterval,
+        });
+      } catch (e) {
+        console.error("PostHog capture failed:", e);
+      }
 
       if (isLoggedIn) {
         const body = { subscriptionId: plan.id };
@@ -482,6 +494,13 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   const newIsYearly = !isYearly;
                   setIsYearly(newIsYearly);
                   const interval = newIsYearly ? "year" : "month";
+                  try {
+                    posthog.capture("billing_interval_toggled", {
+                      selected_interval: newIsYearly ? "yearly" : "monthly",
+                    });
+                  } catch (e) {
+                    console.error("PostHog capture failed:", e);
+                  }
                   router.push(`/pricing?interval=${interval}`);
                 }}
                 className="relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-emerald-500 transition-colors duration-200 ease-in-out focus:outline-none"

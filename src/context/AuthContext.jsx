@@ -51,8 +51,7 @@ import React, {
 import { useRouter } from "next/navigation";
 import api, { registerLogoutCallback } from "@/lib/axios";
 import { getSocket } from "@/lib/socket";
-// [TEMPORARILY DISABLED] PostHog analytics
-// import posthog from "posthog-js";
+import posthog from "posthog-js";
 
 const AuthContext = createContext();
 
@@ -84,7 +83,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("account");
         localStorage.removeItem("subscription");
         localStorage.removeItem("selectedChatbot");
-        // posthog.reset();
+        posthog.reset();
         isLoggingOut.current = false;
         router.push("/login");
       });
@@ -121,17 +120,17 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem("user", JSON.stringify(freshUser));
           const storedAcct = localStorage.getItem("account");
           const acct = storedAcct ? JSON.parse(storedAcct) : null;
-          // try {
-          //   posthog.identify(freshUser.id, {
-          //     email: freshUser.email,
-          //     name: freshUser.name,
-          //     account_id: acct?.id,
-          //     account_name: acct?.name,
-          //     account_role: acct?.role,
-          //   });
-          // } catch (e) {
-          //   console.error("PostHog identify failed:", e);
-          // }
+          try {
+            posthog.identify(freshUser.id, {
+              email: freshUser.email,
+              name: freshUser.name,
+              account_id: acct?.id,
+              account_name: acct?.name,
+              account_role: acct?.role,
+            });
+          } catch (e) {
+            console.error("PostHog identify failed:", e);
+          }
         }
       })
       .catch((err) => {
@@ -188,17 +187,17 @@ export const AuthProvider = ({ children }) => {
     if (subscriptionData) {
       localStorage.setItem("subscription", JSON.stringify(subscriptionData));
     }
-    // try {
-    //   posthog.identify(userData.id, {
-    //     email: userData.email,
-    //     name: userData.name,
-    //     account_id: accountData?.id,
-    //     account_name: accountData?.name,
-    //     account_role: accountData?.role,
-    //   });
-    // } catch (e) {
-    //   console.error("PostHog identify failed:", e);
-    // }
+    try {
+      posthog.identify(userData.id, {
+        email: userData.email,
+        name: userData.name,
+        account_id: accountData?.id,
+        account_name: accountData?.name,
+        account_role: accountData?.role,
+      });
+    } catch (e) {
+      console.error("PostHog identify failed:", e);
+    }
   };
 
   return (
