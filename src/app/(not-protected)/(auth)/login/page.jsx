@@ -202,6 +202,9 @@ function LoginForm() {
                 variant="outline"
                 type="button"
                 className="bg-background hover:bg-muted h-11 w-full font-medium transition-colors"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/google`;
+                }}
               >
                 <Chrome className="mr-2 h-5 w-5" />
                 Continue with Google
