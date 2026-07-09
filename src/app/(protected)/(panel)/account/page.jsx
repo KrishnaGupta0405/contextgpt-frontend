@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import api from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { format } from "date-fns";
@@ -28,6 +29,9 @@ import {
   ShieldAlert,
   Wifi,
   Trash2,
+  Chrome,
+  CheckCircle2,
+  KeyRound,
 } from "lucide-react";
 import {
   Dialog,
@@ -40,12 +44,23 @@ import {
 import { ProfileAvatar } from "./ProfileAvatar";
 import { NotificationPreferences } from "./NotificationPreferences";
 
-const Account = () => {
+const AccountContent = () => {
   const { user, account, login, logout } = useAuth();
+  const searchParams = useSearchParams();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [savingDetails, setSavingDetails] = useState(false);
   const [savingLinks, setSavingLinks] = useState(false);
+
+  // Sign-in methods state
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
+  const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
+  const [isDisconnectingGoogle, setIsDisconnectingGoogle] = useState(false);
   // Delete account state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteStep, setDeleteStep] = useState(1);
@@ -114,6 +129,92 @@ const Account = () => {
     };
     fetchSessions();
   }, []);
+
+  useEffect(() => {
+    const connected = searchParams.get("connected");
+    const connectError = searchParams.get("connect_error");
+
+    if (connected === "google") {
+      toast.success("Google account connected!");
+      api
+        .get("/users/current-user")
+        .then((res) => setProfileData(res.data.data))
+        .catch(() => {});
+    } else if (connectError) {
+      toast.error(
+        connectError === "already_linked"
+          ? "This Google account is already linked to another account."
+          : "Failed to connect Google account. Please try again."
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const handleGoogleConnect = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/google/connect`;
+  };
+
+  const handleGoogleDisconnect = async () => {
+    try {
+      setIsDisconnectingGoogle(true);
+      const response = await api.post("/auth/google/disconnect");
+      toast.success("Google account disconnected.");
+      setProfileData(response.data.data);
+      setDisconnectDialogOpen(false);
+    } catch (error) {
+      console.error("Error disconnecting Google:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to disconnect Google account."
+      );
+    } finally {
+      setIsDisconnectingGoogle(false);
+    }
+  };
+
+  const handlePasswordFormChange = (e) => {
+    const { id, value } = e.target;
+    setPasswordForm((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handlePasswordSubmit = async () => {
+    const { oldPassword, newPassword, confirmPassword } = passwordForm;
+
+    if (!newPassword || newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters long.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New password and confirm password do not match.");
+      return;
+    }
+
+    try {
+      setIsPasswordSubmitting(true);
+      const payload = profileData?.hasPassword
+        ? { oldPassword, newPassword }
+        : { newPassword };
+
+      await api.post("/auth/change-password", payload);
+
+      if (profileData?.hasPassword) {
+        toast.success("Password updated successfully.");
+        setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      } else {
+        toast.success("Password set successfully.");
+        setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+        const response = await api.get("/users/current-user");
+        setProfileData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to update password."
+      );
+    } finally {
+      setIsPasswordSubmitting(false);
+    }
+  };
 
   const handleRevokeSession = async (sessionId) => {
     try {
@@ -365,6 +466,125 @@ const Account = () => {
                 )}
               </Button>
             </CardFooter>
+          </Card>
+
+          {/* Sign-in Methods Card */}
+          <Card className="border shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <KeyRound className="h-5 w-5 text-slate-500" />
+                Sign-in Methods
+              </CardTitle>
+              <CardDescription>
+                Manage how you sign in to your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Google row */}
+              <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <Chrome className="h-5 w-5 text-slate-500" />
+                  <div>
+                    <p className="text-sm font-medium text-slate-800">Google</p>
+                    {loading ? (
+                      <Skeleton className="mt-1 h-3 w-32" />
+                    ) : profileData?.googleLinked ? (
+                      <p className="flex items-center gap-1 text-xs text-green-600">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Connected as {profileData?.email}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-slate-400">Not connected</p>
+                    )}
+                  </div>
+                </div>
+                {!loading && !profileData?.googleLinked && (
+                  <Button variant="outline" size="sm" onClick={handleGoogleConnect}>
+                    Connect Google
+                  </Button>
+                )}
+                {!loading && profileData?.googleLinked && profileData?.hasPassword && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setDisconnectDialogOpen(true)}
+                  >
+                    Disconnect
+                  </Button>
+                )}
+              </div>
+
+              {/* Password row */}
+              <div className="space-y-3 rounded-lg border border-slate-100 bg-slate-50 px-4 py-3">
+                <p className="text-sm font-medium text-slate-800">
+                  {loading
+                    ? ""
+                    : profileData?.hasPassword
+                      ? "Change Password"
+                      : "Set Password"}
+                </p>
+
+                {loading ? (
+                  <Skeleton className="h-10 w-full" />
+                ) : (
+                  <>
+                    {profileData?.hasPassword && (
+                      <div className="space-y-2">
+                        <Label htmlFor="oldPassword">Current Password</Label>
+                        <Input
+                          id="oldPassword"
+                          type="password"
+                          value={passwordForm.oldPassword}
+                          onChange={handlePasswordFormChange}
+                          placeholder="Enter current password"
+                        />
+                      </div>
+                    )}
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <Input
+                          id="newPassword"
+                          type="password"
+                          value={passwordForm.newPassword}
+                          onChange={handlePasswordFormChange}
+                          placeholder="New password"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={passwordForm.confirmPassword}
+                          onChange={handlePasswordFormChange}
+                          placeholder="Confirm new password"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        size="sm"
+                        onClick={handlePasswordSubmit}
+                        disabled={isPasswordSubmitting}
+                      >
+                        {isPasswordSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : profileData?.hasPassword ? (
+                          "Save Password"
+                        ) : (
+                          "Set Password"
+                        )}
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </CardContent>
           </Card>
 
           {/* Active Sessions Card */}
@@ -825,8 +1045,56 @@ const Account = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Disconnect Google Confirmation Dialog */}
+      <Dialog
+        open={disconnectDialogOpen}
+        onOpenChange={(open) => {
+          if (!isDisconnectingGoogle) setDisconnectDialogOpen(open);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Disconnect Google Account</DialogTitle>
+            <DialogDescription>
+              You'll no longer be able to sign in with Google. You can reconnect it
+              anytime from this page. You'll still be able to sign in with your
+              password.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDisconnectDialogOpen(false)}
+              disabled={isDisconnectingGoogle}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleGoogleDisconnect}
+              disabled={isDisconnectingGoogle}
+            >
+              {isDisconnectingGoogle ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Disconnecting...
+                </>
+              ) : (
+                "Disconnect"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+const Account = () => (
+  <React.Suspense>
+    <AccountContent />
+  </React.Suspense>
+);
 
 export default Account;
