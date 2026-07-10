@@ -59,6 +59,14 @@ const AccountContent = () => {
     confirmPassword: "",
   });
   const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
+  // Forgot current password (OTP) state
+  const [forgotPwdDialogOpen, setForgotPwdDialogOpen] = useState(false);
+  const [forgotPwdStep, setForgotPwdStep] = useState(1);
+  const [forgotPwdOtp, setForgotPwdOtp] = useState("");
+  const [forgotPwdNewPassword, setForgotPwdNewPassword] = useState("");
+  const [forgotPwdConfirmPassword, setForgotPwdConfirmPassword] = useState("");
+  const [sendingForgotPwdOtp, setSendingForgotPwdOtp] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
   const [isDisconnectingGoogle, setIsDisconnectingGoogle] = useState(false);
   // Delete account state
@@ -213,6 +221,60 @@ const AccountContent = () => {
       );
     } finally {
       setIsPasswordSubmitting(false);
+    }
+  };
+
+  const openForgotPwdDialog = () => {
+    setForgotPwdStep(1);
+    setForgotPwdOtp("");
+    setForgotPwdNewPassword("");
+    setForgotPwdConfirmPassword("");
+    setForgotPwdDialogOpen(true);
+  };
+
+  const handleSendForgotPwdOtp = async () => {
+    try {
+      setSendingForgotPwdOtp(true);
+      const response = await api.post("/auth/current-password/send-otp");
+      if (response.data.success) {
+        toast.success("OTP sent to your email address.");
+        setForgotPwdStep(2);
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to send OTP. Try again."
+      );
+    } finally {
+      setSendingForgotPwdOtp(false);
+    }
+  };
+
+  const handleResetPasswordWithOtp = async () => {
+    if (!forgotPwdNewPassword || forgotPwdNewPassword.length < 6) {
+      toast.error("New password must be at least 6 characters long.");
+      return;
+    }
+
+    if (forgotPwdNewPassword !== forgotPwdConfirmPassword) {
+      toast.error("New password and confirm password do not match.");
+      return;
+    }
+
+    try {
+      setResettingPassword(true);
+      await api.post("/auth/current-password/reset-with-otp", {
+        otp: forgotPwdOtp,
+        newPassword: forgotPwdNewPassword,
+      });
+      toast.success("Password reset successfully.");
+      setForgotPwdDialogOpen(false);
+      setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to reset password."
+      );
+    } finally {
+      setResettingPassword(false);
     }
   };
 
@@ -531,7 +593,18 @@ const AccountContent = () => {
                   <>
                     {profileData?.hasPassword && (
                       <div className="space-y-2">
-                        <Label htmlFor="oldPassword">Current Password</Label>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="oldPassword">Current Password</Label>
+                          {profileData?.isSuperAdmin && (
+                            <button
+                              type="button"
+                              className="text-xs text-slate-500 underline hover:text-slate-700"
+                              onClick={openForgotPwdDialog}
+                            >
+                              Forgot current password?
+                            </button>
+                          )}
+                        </div>
                         <Input
                           id="oldPassword"
                           type="password"
@@ -1038,6 +1111,137 @@ const AccountContent = () => {
                       <Trash2 className="mr-2 h-4 w-4" />
                       Permanently Delete
                     </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Forgot Current Password Dialog — 2-step OTP flow */}
+      <Dialog
+        open={forgotPwdDialogOpen}
+        onOpenChange={(open) => {
+          if (!sendingForgotPwdOtp && !resettingPassword) setForgotPwdDialogOpen(open);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <KeyRound className="h-5 w-5 text-slate-500" />
+              Reset Password via Email
+            </DialogTitle>
+            <DialogDescription>
+              This option is only available to super admins.
+            </DialogDescription>
+          </DialogHeader>
+
+          {forgotPwdStep === 1 ? (
+            <>
+              <div className="space-y-3 py-1">
+                <p className="text-sm text-slate-600">
+                  We'll send a one-time code to{" "}
+                  <span className="font-medium text-slate-800">
+                    {profileData?.email}
+                  </span>
+                  . The code is valid for 30 minutes.
+                </p>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setForgotPwdDialogOpen(false)}
+                  disabled={sendingForgotPwdOtp}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleSendForgotPwdOtp} disabled={sendingForgotPwdOtp}>
+                  {sendingForgotPwdOtp ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending OTP...
+                    </>
+                  ) : (
+                    "Send OTP & Continue"
+                  )}
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-3 py-1">
+                <p className="text-sm text-slate-600">
+                  Enter the 6-digit OTP sent to your email address, along with your
+                  new password.
+                </p>
+                <div className="space-y-2">
+                  <Label htmlFor="forgotPwdOtp">One-Time Password</Label>
+                  <Input
+                    id="forgotPwdOtp"
+                    value={forgotPwdOtp}
+                    onChange={(e) => setForgotPwdOtp(e.target.value)}
+                    placeholder="Enter 6-digit OTP"
+                    maxLength={6}
+                    disabled={resettingPassword}
+                  />
+                  <p className="text-xs text-slate-400">
+                    Didn't receive it?{" "}
+                    <button
+                      className="text-slate-500 underline hover:text-slate-700 disabled:opacity-50"
+                      onClick={handleSendForgotPwdOtp}
+                      disabled={sendingForgotPwdOtp}
+                    >
+                      {sendingForgotPwdOtp ? "Sending..." : "Resend OTP"}
+                    </button>
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="forgotPwdNewPassword">New Password</Label>
+                    <Input
+                      id="forgotPwdNewPassword"
+                      type="password"
+                      value={forgotPwdNewPassword}
+                      onChange={(e) => setForgotPwdNewPassword(e.target.value)}
+                      placeholder="New password"
+                      disabled={resettingPassword}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="forgotPwdConfirmPassword">Confirm Password</Label>
+                    <Input
+                      id="forgotPwdConfirmPassword"
+                      type="password"
+                      value={forgotPwdConfirmPassword}
+                      onChange={(e) => setForgotPwdConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      disabled={resettingPassword}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setForgotPwdStep(1)}
+                  disabled={resettingPassword}
+                >
+                  Back
+                </Button>
+                <Button
+                  onClick={handleResetPasswordWithOtp}
+                  disabled={resettingPassword || forgotPwdOtp.length !== 6}
+                >
+                  {resettingPassword ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Resetting...
+                    </>
+                  ) : (
+                    "Reset Password"
                   )}
                 </Button>
               </DialogFooter>

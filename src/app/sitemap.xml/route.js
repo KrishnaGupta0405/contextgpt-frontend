@@ -10,6 +10,9 @@ export async function GET() {
   <sitemap>
     <loc>${baseUrl}/sitemap-tools.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>https://docs.contextgpt.in/sitemap.xml</loc>
+  </sitemap>
 </sitemapindex>`;
 
   return new Response(sitemapIndex, {

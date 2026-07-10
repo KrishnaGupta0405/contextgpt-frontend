@@ -1,0 +1,33 @@
+---
+title: "Chatbot Security: Best Practices for Protecting Customer Data"
+description: "SOC 2, GDPR, HIPAA — what compliance really means for AI chatbots and how to ensure your data stays safe."
+author: { name: "ContextGPT Team" }
+publishedAt: "2026-02-08"
+tags: ["Customer Support"]
+coverImage: "/icons/Contextgpt_icon.svg"
+---
+
+Any tool that talks to your customers touches sensitive data. Here's what actually matters when evaluating a chatbot vendor's security posture.
+
+## Data in transit and at rest
+
+Confirm the vendor encrypts data both in transit (TLS) and at rest. This should be table stakes for any vendor handling customer conversations.
+
+## Compliance frameworks
+
+- **SOC 2** signals the vendor has independently audited security controls.
+- **GDPR** compliance matters if you serve EU customers — check for data processing agreements and data residency options.
+- **HIPAA** only applies if you're in healthcare and the chatbot might touch PHI — most general-purpose chatbots explicitly exclude this use case.
+
+> [!WARNING]
+> Never paste real customer PII into a chatbot's training data or test environment unless you've confirmed the vendor's compliance posture supports it.
+
+## Access controls
+
+Make sure conversation logs and admin access are scoped by role — not every teammate needs access to raw customer transcripts.
+
+## Data retention
+
+Ask how long conversation data is retained and whether you can configure shorter retention windows or request deletion on demand.
+
+Security isn't a one-time checkbox — revisit your vendor's compliance documentation annually as your own regulatory requirements evolve.

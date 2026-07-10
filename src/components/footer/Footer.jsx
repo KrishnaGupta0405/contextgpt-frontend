@@ -192,6 +192,24 @@ export default function Footer() {
               </p>
               <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> krishna@contextgpt.in</p>
 
+              <iframe
+                src="https://status.contextgpt.in/badge?theme=light"
+                width="250"
+                height="30"
+                frameBorder="0"
+                scrolling="no"
+                style={{ colorScheme: "normal" }}
+              ></iframe>
+
+              <a
+                href="https://contextgpt.featurebase.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Feedback & Feature Requests
+              </a>
+
               {/* Product Hunt badge */}
               <a
                 href="https://www.producthunt.com/products/contextgpt?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-contextgpt-2"
