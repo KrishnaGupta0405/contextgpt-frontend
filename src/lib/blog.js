@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
+import { blogFrontmatterSchema } from './blogSchema';
+import { getAuthorBySlug, getAllAuthorEntries } from './authors';
 
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
 
@@ -9,23 +11,26 @@ function readPostFile(filename) {
   const slug = filename.replace(/\.mdx$/, '');
   const raw = fs.readFileSync(path.join(BLOG_DIR, filename), 'utf8');
   const { data, content } = matter(raw);
+
+  let frontmatter;
+  try {
+    frontmatter = blogFrontmatterSchema.parse(data);
+  } catch (err) {
+    throw new Error(`Invalid frontmatter in content/blog/${filename}: ${err.message}`);
+  }
+
   const stats = readingTime(content);
 
   return {
     slug,
     content,
-    title: data.title,
-    description: data.description,
-    author: data.author ?? { name: 'ContextGPT Team' },
-    publishedAt: data.publishedAt,
-    updatedAt: data.updatedAt ?? null,
-    tags: data.tags ?? [],
-    coverImage: data.coverImage ?? null,
+    ...frontmatter,
+    author: getAuthorBySlug(frontmatter.author),
     readingTime: stats.text,
   };
 }
 
-export function getAllPosts() {
+function readAllPostFiles() {
   if (!fs.existsSync(BLOG_DIR)) return [];
 
   return fs
@@ -33,6 +38,12 @@ export function getAllPosts() {
     .filter((f) => f.endsWith('.mdx'))
     .map(readPostFile)
     .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+}
+
+export function getAllPosts() {
+  const posts = readAllPostFiles();
+  const isProduction = process.env.NODE_ENV === 'production';
+  return isProduction ? posts.filter((p) => !p.draft) : posts;
 }
 
 export function getPostBySlug(slug) {
@@ -71,4 +82,48 @@ export function getRelatedPosts(post, limit = 3) {
   }
 
   return related.slice(0, limit);
+}
+
+export function getFeaturedPosts() {
+  return getAllPosts().filter((p) => p.featured);
+}
+
+export function getAllCategories() {
+  const categories = new Set();
+  getAllPosts().forEach((p) => {
+    if (p.category) categories.add(p.category);
+  });
+  return Array.from(categories);
+}
+
+export function getPostsByCategory(category) {
+  return getAllPosts().filter((p) => p.category === category);
+}
+
+export function getSeriesPosts(seriesName) {
+  return getAllPosts()
+    .filter((p) => p.series?.name === seriesName)
+    .sort((a, b) => a.series.part - b.series.part);
+}
+
+export function getAllAuthors() {
+  const posts = getAllPosts();
+  return getAllAuthorEntries().map((author) => ({
+    ...author,
+    postCount: posts.filter((p) => p.author.slug === author.slug).length,
+  }));
+}
+
+export function getPostsByAuthor(authorSlug) {
+  return getAllPosts().filter((p) => p.author.slug === authorSlug);
+}
+
+export function getSearchIndex() {
+  return getAllPosts().map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    tags: p.tags,
+    category: p.category,
+  }));
 }

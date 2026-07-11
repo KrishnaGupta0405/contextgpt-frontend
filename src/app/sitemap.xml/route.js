@@ -11,6 +11,9 @@ export async function GET() {
     <loc>${baseUrl}/sitemap-tools.xml</loc>
   </sitemap>
   <sitemap>
+    <loc>${baseUrl}/sitemap-blog.xml</loc>
+  </sitemap>
+  <sitemap>
     <loc>https://docs.contextgpt.in/sitemap.xml</loc>
   </sitemap>
 </sitemapindex>`;

@@ -2,6 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { AlertTriangle, Info, Lightbulb } from "lucide-react";
 import CodeBlock from "./CodeBlock";
+import { Tabs, Tab } from "./Tabs";
+import { Accordion, AccordionItem } from "./Accordion";
+import { CodeGroup, CodeGroupItem } from "./CodeGroup";
+import { FileTree, FileTreeItem } from "./FileTree";
+import { YouTube } from "./YouTube";
 
 const CALLOUT_STYLES = {
   NOTE: {
@@ -84,15 +89,29 @@ export const mdxComponents = {
       </a>
     );
   },
-  img: ({ src, alt }) => (
-    <span className="my-6 block overflow-hidden rounded-xl border border-slate-200">
-      <Image
-        src={src}
-        alt={alt ?? ""}
-        width={1200}
-        height={630}
-        className="h-auto w-full"
-      />
-    </span>
-  ),
+  img: ({ src, alt }) => {
+    if (process.env.NODE_ENV !== "production" && !alt) {
+      console.warn(`[blog] Image is missing alt text: ${src}`);
+    }
+    return (
+      <span className="my-6 block overflow-hidden rounded-xl border border-slate-200">
+        <Image
+          src={src}
+          alt={alt ?? ""}
+          width={1200}
+          height={630}
+          className="h-auto w-full"
+        />
+      </span>
+    );
+  },
+  Tabs,
+  Tab,
+  Accordion,
+  AccordionItem,
+  CodeGroup,
+  CodeGroupItem,
+  FileTree,
+  FileTreeItem,
+  YouTube,
 };

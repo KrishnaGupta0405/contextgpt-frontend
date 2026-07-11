@@ -541,10 +541,10 @@ export default function Privacy() {
               </td>
             </tr>
             <tr>
-              <td className="border border-gray-300 p-2">Amazon Web Services - SES</td>
+              <td className="border border-gray-300 p-2">Resend</td>
               <td className="border border-gray-300 p-2">
-                <Link href="https://aws.amazon.com/privacy/" className="text-black underline">
-                  https://aws.amazon.com/privacy/
+                <Link href="https://resend.com/legal/privacy-policy" className="text-black underline">
+                  https://resend.com/legal/privacy-policy
                 </Link>
               </td>
             </tr>

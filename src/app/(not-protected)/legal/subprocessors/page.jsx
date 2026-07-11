@@ -204,7 +204,7 @@ export default function Subprocesses() {
           </thead>
           <tbody>
             <tr>
-              <td className="text-blue-600">Amazon Web Services (AWS) - SES</td>
+              <td className="text-blue-600">Resend</td>
               <td>Email marketing and communications</td>
               <td className="text-blue-600">United States</td>
             </tr>

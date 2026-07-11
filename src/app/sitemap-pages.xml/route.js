@@ -1,16 +1,5 @@
-import { getAllPosts } from "@/lib/blog";
-
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-  const blogUrls = getAllPosts()
-    .map(
-      (post) =>
-        `  <url><loc>${baseUrl}/blog/${post.slug}</loc><lastmod>${
-          post.updatedAt ?? post.publishedAt
-        }</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>`
-    )
-    .join("\n");
 
   const pagesSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
@@ -18,7 +7,6 @@ export async function GET() {
   <!-- Core Public Pages -->
   <url><loc>${baseUrl}/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/blog</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-${blogUrls}
   <url><loc>${baseUrl}/login</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/pricing</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/pricing?interval=year</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
@@ -27,7 +15,7 @@ ${blogUrls}
   <url><loc>${baseUrl}/demo</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/features</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/integration</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>${baseUrl}/security</loc><priority>0.8</priority><changefreq>monthly</changefreq></url> 
+  <url><loc>${baseUrl}/security</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/tools</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/book-a-demo</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>

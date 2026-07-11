@@ -1,8 +1,13 @@
+import "katex/dist/katex.min.css";
+
 export const metadata = {
   title: "ContextGPT | Blog",
   description: "Tips, guides, and insights on AI chatbots, customer support automation, and lead generation.",
   keywords: ["AI chatbot blog", "customer support tips", "chatbot guides", "lead generation tips"],
-  alternates: { canonical: "https://contextgpt.in/blog" },
+  alternates: {
+    canonical: "https://contextgpt.in/blog",
+    types: { "application/rss+xml": "https://contextgpt.in/blog/rss.xml" },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
