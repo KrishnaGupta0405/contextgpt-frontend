@@ -1,24 +1,22 @@
-"""Convert all images in this script's directory to OG images (1200x630, 1.91:1) saved as .avif into converted-to-og-avif/."""
+"""Convert all images in this script's directory to OG images (1200x630, 1.91:1) saved as .png into converted-to-og-png/."""
 import os
 import subprocess
 import sys
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff", ".gif"}
 MAX_SIZE_BYTES = 150 * 1024
-START_QUALITY = 80
-MIN_QUALITY = 20
-QUALITY_STEP = 5
 OG_WIDTH = 1200
 OG_HEIGHT = 630
+MIN_SCALE = 0.3
+SCALE_STEP = 0.9
 
 
 def ensure_dependencies():
     try:
         import PIL  # noqa: F401
-        import pillow_avif  # noqa: F401
     except ImportError:
-        print("Installing required packages (Pillow, pillow-avif-plugin)...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "Pillow", "pillow-avif-plugin"])
+        print("Installing required packages (Pillow)...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "Pillow"])
 
 
 def fit_to_og(img, Image):
@@ -39,13 +37,30 @@ def fit_to_og(img, Image):
     return img.resize((OG_WIDTH, OG_HEIGHT), Image.LANCZOS)
 
 
+def save_png_under_limit(img, dest_path):
+    """Save img as PNG at max compression; if still over the size limit,
+    progressively reduce the palette (colors) while keeping the same dimensions."""
+    img.save(dest_path, format="PNG", optimize=True, compress_level=9)
+    size = os.path.getsize(dest_path)
+    if size <= MAX_SIZE_BYTES:
+        return size
+
+    for colors in (256, 128, 64, 32, 16):
+        quantized = img.convert("RGB").quantize(colors=colors, method=2)
+        quantized.save(dest_path, format="PNG", optimize=True, compress_level=9)
+        size = os.path.getsize(dest_path)
+        if size <= MAX_SIZE_BYTES:
+            break
+
+    return size
+
+
 def main():
     ensure_dependencies()
     from PIL import Image
-    import pillow_avif  # noqa: F401
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(script_dir, "converted-to-og-avif")
+    output_dir = os.path.join(script_dir, "converted-to-og-png")
     os.makedirs(output_dir, exist_ok=True)
 
     images = [
@@ -61,7 +76,7 @@ def main():
     for filename in images:
         src_path = os.path.join(script_dir, filename)
         name_no_ext = os.path.splitext(filename)[0]
-        dest_path = os.path.join(output_dir, name_no_ext + "-og.avif")
+        dest_path = os.path.join(output_dir, name_no_ext + "-og.png")
         try:
             with Image.open(src_path) as img:
                 if img.mode in ("P", "RGBA"):
@@ -70,17 +85,10 @@ def main():
                     img = img.convert("RGB")
 
                 img = fit_to_og(img, Image)
-
-                quality = START_QUALITY
-                while True:
-                    img.save(dest_path, format="AVIF", quality=quality)
-                    size = os.path.getsize(dest_path)
-                    if size <= MAX_SIZE_BYTES or quality <= MIN_QUALITY:
-                        break
-                    quality -= QUALITY_STEP
+                size = save_png_under_limit(img, dest_path)
 
             print(f"Converted: {filename} -> {os.path.basename(dest_path)} "
-                  f"(1200x630, {size / 1024:.1f} KB, quality={quality})")
+                  f"(1200x630, {size / 1024:.1f} KB)")
         except Exception as e:
             print(f"Failed to convert {filename}: {e}")
 
