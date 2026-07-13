@@ -4,7 +4,8 @@ import { getPostUrl, getPostImageUrl } from "@/lib/seo";
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const blogUrls = getAllPosts()
+  const posts = await getAllPosts();
+  const blogUrls = posts
     .filter((post) => !post.noindex)
     .map((post) => {
       const loc = getPostUrl(post, baseUrl);

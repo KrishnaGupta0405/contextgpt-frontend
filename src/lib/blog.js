@@ -6,12 +6,12 @@ import { blogFrontmatterSchema } from './blogSchema';
 import { getAuthorBySlug, getAllAuthorEntries } from './authors';
 
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8000/api/v1';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8000/api/v1';
 
-// Local .mdx files are a dev-only authoring convenience: drop a file in
-// content/blog/ to preview instantly without touching the DB. In production
-// only DB-backed (API) posts are ever served.
-const LOCAL_FILES_ENABLED = process.env.NODE_ENV !== 'production';
+// Blog content is now sourced entirely from local .mdx files in content/blog/,
+// built statically via `npm run build`. Backend API fetching is disabled below
+// (commented out, not removed) in case it needs to be re-enabled later.
+const LOCAL_FILES_ENABLED = true;
 
 function readLocalPostFile(filename) {
   const slug = filename.replace(/\.mdx$/, '');
@@ -75,72 +75,70 @@ function normalizePost(raw) {
   };
 }
 
-function mapApiPostToRaw(post) {
-  return {
-    slug: post.slug,
-    content: post.content,
-    title: post.title,
-    description: post.description,
-    publishedAt: post.publishedAt,
-    updatedAt: post.updatedAt,
-    canonicalUrl: post.canonicalUrl,
-    coverImage: post.coverImage,
-    ogImage: post.ogImage,
-    tags: post.tags ?? [],
-    category: post.category,
-    keywords: post.keywords ?? [],
-    draft: post.status !== 'PUBLISHED',
-    featured: post.featured ?? false,
-    noindex: post.noindex ?? false,
-    series: post.seriesName ? { name: post.seriesName, part: post.seriesPart } : null,
-    authorSlugs: post.authorSlugs ?? [],
-    source: 'api',
-  };
-}
+// Unused while backend API fetching is disabled (see fetchAllApiPosts/fetchApiPostBySlug below).
+// function mapApiPostToRaw(post) {
+//   return {
+//     slug: post.slug,
+//     content: post.content,
+//     title: post.title,
+//     description: post.description,
+//     publishedAt: post.publishedAt,
+//     updatedAt: post.updatedAt,
+//     canonicalUrl: post.canonicalUrl,
+//     coverImage: post.coverImage,
+//     ogImage: post.ogImage,
+//     tags: post.tags ?? [],
+//     category: post.category,
+//     keywords: post.keywords ?? [],
+//     draft: post.status !== 'PUBLISHED',
+//     featured: post.featured ?? false,
+//     noindex: post.noindex ?? false,
+//     series: post.seriesName ? { name: post.seriesName, part: post.seriesPart } : null,
+//     authorSlugs: post.authorSlugs ?? [],
+//     source: 'api',
+//   };
+// }
  
-async function fetchAllApiPosts() {
-  try {
-    // ISR paused: Edge Function invocations on every cache-hit/revalidate across /blog, /blog/[slug],
-    // /blog/author/[name] and /api/revalidate were draining the Vercel quota too fast. Content is now
-    // served the old build-time static way, so the `next.revalidate` tag option is commented out.
-    const res = await fetch(`${API_BASE_URL}/website/blog/posts`, {
-      // next: { revalidate: false, tags: ['blog-posts'] },
-    });
-    if (!res.ok) return [];
-    const json = await res.json();
-    const posts = json?.data?.posts ?? [];
-    // console.log("fetched from backend->", posts)
-    return posts.map((p) => normalizePost(mapApiPostToRaw(p)));
-  } catch (err) {
-    console.error('[blog] Failed to fetch posts from API:', err.message);
-    return [];
-  }
-}
+// Backend API fetching is disabled — blog content is local-only (see LOCAL_FILES_ENABLED above).
+// Left commented in case DB-backed posts need to be re-enabled later.
+// async function fetchAllApiPosts() {
+//   try {
+//     // ISR paused: Edge Function invocations on every cache-hit/revalidate across /blog, /blog/[slug],
+//     // /blog/author/[name] and /api/revalidate were draining the Vercel quota too fast. Content is now
+//     // served the old build-time static way, so the `next.revalidate` tag option is commented out.
+//     const res = await fetch(`${API_BASE_URL}/website/blog/posts`, {
+//       // next: { revalidate: false, tags: ['blog-posts'] },
+//     });
+//     if (!res.ok) return [];
+//     const json = await res.json();
+//     const posts = json?.data?.posts ?? [];
+//     // console.log("fetched from backend->", posts)
+//     return posts.map((p) => normalizePost(mapApiPostToRaw(p)));
+//   } catch (err) {
+//     console.error('[blog] Failed to fetch posts from API:', err.message);
+//     return [];
+//   }
+// }
 
-async function fetchApiPostBySlug(slug) {
-  try {
-    // ISR paused: see fetchAllApiPosts() above for the reason.
-    const res = await fetch(`${API_BASE_URL}/website/blog/posts/${encodeURIComponent(slug)}`, {
-      // next: { revalidate: false, tags: ['blog-posts', `blog-post-${slug}`] },
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    const post = json?.data?.post;
-    return post ? normalizePost(mapApiPostToRaw(post)) : null;
-  } catch (err) {
-    console.error(`[blog] Failed to fetch post "${slug}" from API:`, err.message);
-    return null;
-  }
-}
+// async function fetchApiPostBySlug(slug) {
+//   try {
+//     // ISR paused: see fetchAllApiPosts() above for the reason.
+//     const res = await fetch(`${API_BASE_URL}/website/blog/posts/${encodeURIComponent(slug)}`, {
+//       // next: { revalidate: false, tags: ['blog-posts', `blog-post-${slug}`] },
+//     });
+//     if (!res.ok) return null;
+//     const json = await res.json();
+//     const post = json?.data?.post;
+//     return post ? normalizePost(mapApiPostToRaw(post)) : null;
+//   } catch (err) {
+//     console.error(`[blog] Failed to fetch post "${slug}" from API:`, err.message);
+//     return null;
+//   }
+// }
 
 async function readAllPosts() {
   const localPosts = readAllLocalPostFiles();
-  const apiPosts = await fetchAllApiPosts();
-
-  const localSlugs = new Set(localPosts.map((p) => p.slug));
-  const merged = [...localPosts, ...apiPosts.filter((p) => !localSlugs.has(p.slug))];
-
-  return merged.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+  return localPosts.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 }
 
 export async function getAllPosts() {
@@ -150,13 +148,11 @@ export async function getAllPosts() {
 }
 
 export async function getPostBySlug(slug) {
-  if (LOCAL_FILES_ENABLED) {
-    const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
-    if (fs.existsSync(filePath)) {
-      return readLocalPostFile(`${slug}.mdx`);
-    }
+  const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
+  if (fs.existsSync(filePath)) {
+    return readLocalPostFile(`${slug}.mdx`);
   }
-  return fetchApiPostBySlug(slug);
+  return null;
 }
 
 export async function getAdjacentPosts(slug) {

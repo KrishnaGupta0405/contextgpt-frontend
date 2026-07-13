@@ -20,18 +20,20 @@ export async function GET() {
     feedLinks: { rss: `${baseUrl}/blog/rss.xml` },
   });
 
-  posts.forEach((post) => {
-    feed.addItem({
-      title: post.title,
-      id: `${baseUrl}/blog/${post.slug}`,
-      link: `${baseUrl}/blog/${post.slug}`,
-      description: post.description,
-      author: (post.authors ?? [post.author]).map((author) => ({ name: author.name })),
-      date: new Date(post.updatedAt ?? post.publishedAt),
-      image: getPostImageUrl(post, baseUrl),
-      category: post.tags.map((tag) => ({ name: tag })),
+  posts
+    .filter((post) => !post.noindex)
+    .forEach((post) => {
+      feed.addItem({
+        title: post.title,
+        id: `${baseUrl}/blog/${post.slug}`,
+        link: `${baseUrl}/blog/${post.slug}`,
+        description: post.description,
+        author: (post.authors ?? [post.author]).map((author) => ({ name: author.name })),
+        date: new Date(post.updatedAt ?? post.publishedAt),
+        image: getPostImageUrl(post, baseUrl),
+        category: post.tags.map((tag) => ({ name: tag })),
+      });
     });
-  });
 
   return new Response(feed.rss2(), {
     headers: { "Content-Type": "application/xml" },

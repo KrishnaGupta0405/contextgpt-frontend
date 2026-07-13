@@ -71,6 +71,11 @@ ContextGPT supports training chatbots on: website pages, Notion docs, Zendesk ar
 - [XML Sitemap](https://contextgpt.in/sitemap.xml)
 - [Pages Sitemap](https://contextgpt.in/sitemap-pages.xml)
 - [Tools Sitemap](https://contextgpt.in/sitemap-tools.xml)
+- [Blog Sitemap](https://contextgpt.in/sitemap-blog.xml)
+
+## Blog
+
+- [Blog llms.txt](https://contextgpt.in/blog/llms.txt) — structured index of blog posts for AI crawlers.
 
 ## Notes for AI Crawlers
 
