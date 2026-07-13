@@ -43,60 +43,71 @@ function WebsiteIcon(props) {
   );
 }
 
-export default function AuthorCard({ post, url }) {
-  const author = post.author;
+function AuthorBlock({ author }) {
   const { twitter, linkedin, facebook, instagram, website } = author.socials ?? {};
+
+  return (
+    <div className="flex items-center gap-4">
+      <Link href={`/blog/author/${author.slug}`} className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-slate-200">
+        {author.avatar ? (
+          <Image src={author.avatar} alt={author.name} fill className="object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-slate-500">
+            {author.name?.[0] ?? "C"}
+          </div>
+        )}
+      </Link>
+
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Written by</p>
+        <Link href={`/blog/author/${author.slug}`} className="font-bold text-slate-900 hover:text-blue-700">
+          {author.name}
+        </Link>
+        {author.title && <p className="text-sm text-slate-500">{author.title}</p>}
+        {(twitter || linkedin || facebook || instagram || website) && (
+          <div className="mt-1.5 flex items-center gap-3 text-slate-500">
+            {twitter && (
+              <a href={twitter} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on X`} className="hover:text-slate-900">
+                <XIcon className="h-4 w-4" />
+              </a>
+            )}
+            {linkedin && (
+              <a href={linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on LinkedIn`} className="hover:text-slate-900">
+                <LinkedInIcon className="h-4 w-4" />
+              </a>
+            )}
+            {facebook && (
+              <a href={facebook} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on Facebook`} className="hover:text-slate-900">
+                <FacebookIcon className="h-4 w-4" />
+              </a>
+            )}
+            {instagram && (
+              <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on Instagram`} className="hover:text-slate-900">
+                <InstagramIcon className="h-4 w-4" />
+              </a>
+            )}
+            {website && (
+              <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} website`} className="hover:text-slate-900">
+                <WebsiteIcon className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function AuthorCard({ post, url }) {
+  const authors = post.authors ?? [post.author];
 
   return (
     <div className="mt-12 border-t border-slate-200 p-6 sm:p-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <Link href={`/blog/author/${author.slug}`} className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-slate-200">
-            {author.avatar ? (
-              <Image src={author.avatar} alt={author.name} fill className="object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-slate-500">
-                {author.name?.[0] ?? "C"}
-              </div>
-            )}
-          </Link>
-
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Written by</p>
-            <Link href={`/blog/author/${author.slug}`} className="font-bold text-slate-900 hover:text-blue-700">
-              {author.name}
-            </Link>
-            {author.title && <p className="text-sm text-slate-500">{author.title}</p>}
-            {(twitter || linkedin || facebook || instagram || website) && (
-              <div className="mt-1.5 flex items-center gap-3 text-slate-500">
-                {twitter && (
-                  <a href={twitter} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on X`} className="hover:text-slate-900">
-                    <XIcon className="h-4 w-4" />
-                  </a>
-                )}
-                {linkedin && (
-                  <a href={linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on LinkedIn`} className="hover:text-slate-900">
-                    <LinkedInIcon className="h-4 w-4" />
-                  </a>
-                )}
-                {facebook && (
-                  <a href={facebook} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on Facebook`} className="hover:text-slate-900">
-                    <FacebookIcon className="h-4 w-4" />
-                  </a>
-                )}
-                {instagram && (
-                  <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} on Instagram`} className="hover:text-slate-900">
-                    <InstagramIcon className="h-4 w-4" />
-                  </a>
-                )}
-                {website && (
-                  <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`${author.name} website`} className="hover:text-slate-900">
-                    <WebsiteIcon className="h-4 w-4" />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
+        <div className="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:items-center">
+          {authors.map((author) => (
+            <AuthorBlock key={author.slug} author={author} />
+          ))}
         </div>
 
         {url && (

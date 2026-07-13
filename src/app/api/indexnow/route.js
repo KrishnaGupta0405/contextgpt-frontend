@@ -9,13 +9,23 @@ export async function POST(request) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://contextgpt.in";
+  const rootDomain = new URL(baseUrl).hostname.replace(/^www\./, "");
 
   const extractLocs = (xml) =>
     [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 
+  const isOwnDomain = (u) => {
+    try {
+      const host = new URL(u).hostname;
+      return host === rootDomain || host.endsWith(`.${rootDomain}`);
+    } catch {
+      return false;
+    }
+  };
+
   const indexRes = await fetch(`${baseUrl}/sitemap.xml`);
-  const childSitemapUrls = extractLocs(await indexRes.text()).filter((u) =>
-    u.startsWith(baseUrl)
+  const childSitemapUrls = extractLocs(await indexRes.text()).filter(
+    isOwnDomain
   );
 
   const pageUrlLists = await Promise.all(
@@ -25,9 +35,7 @@ export async function POST(request) {
     })
   );
 
-  const urls = [...new Set(pageUrlLists.flat())].filter((u) =>
-    u.startsWith(baseUrl)
-  );
+  const urls = [...new Set(pageUrlLists.flat())].filter(isOwnDomain);
 
   const result = await submitToIndexNow(urls);
 

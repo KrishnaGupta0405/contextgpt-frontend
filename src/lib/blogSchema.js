@@ -8,7 +8,11 @@ export const blogFrontmatterSchema = z.object({
   updatedAt: z.string().nullable().optional().default(null),
   canonicalUrl: z.string().nullable().optional().default(null),
   coverImage: z.string().nullable().optional().default(null),
-  author: z.string().min(1).optional().default(DEFAULT_AUTHOR_SLUG),
+  author: z
+    .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+    .optional()
+    .default(DEFAULT_AUTHOR_SLUG)
+    .transform((value) => (Array.isArray(value) ? value : [value])),
   tags: z.array(z.string()).optional().default([]),
   category: z.string().nullable().optional().default(null),
   keywords: z.array(z.string()).optional().default([]),

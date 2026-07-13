@@ -28,8 +28,16 @@ export function buildArticleJsonLd(post, siteUrl) {
   const url = getPostUrl(post, siteUrl);
   const image = getPostImageUrl(post, siteUrl);
   const { publishedAt, dateModified } = getPostDates(post);
-  const authorUrl = `${siteUrl}/blog/author/${post.author.slug}`;
-  const sameAs = Object.values(post.author.socials ?? {}).filter(Boolean);
+  const authors = post.authors ?? [post.author];
+  const authorJsonLd = authors.map((author) => {
+    const sameAs = Object.values(author.socials ?? {}).filter(Boolean);
+    return {
+      "@type": "Person",
+      name: author.name,
+      url: `${siteUrl}/blog/author/${author.slug}`,
+      ...(sameAs.length ? { sameAs } : {}),
+    };
+  });
 
   return {
     "@context": "https://schema.org",
@@ -37,12 +45,7 @@ export function buildArticleJsonLd(post, siteUrl) {
     headline: post.title,
     description: post.description,
     image,
-    author: {
-      "@type": "Person",
-      name: post.author.name,
-      url: authorUrl,
-      ...(sameAs.length ? { sameAs } : {}),
-    },
+    author: authorJsonLd.length === 1 ? authorJsonLd[0] : authorJsonLd,
     publisher: {
       "@type": "Organization",
       name: "ContextGPT",

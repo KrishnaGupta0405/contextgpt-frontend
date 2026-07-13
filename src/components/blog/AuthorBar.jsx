@@ -50,8 +50,7 @@ export function formatDate(dateString) {
   });
 }
 
-export default function AuthorBar({ post }) {
-  const author = post.author;
+function AuthorBlock({ author }) {
   const { twitter, linkedin, facebook, instagram, website } = author.socials ?? {};
 
   return (
@@ -105,6 +104,18 @@ export default function AuthorBar({ post }) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+export default function AuthorBar({ post }) {
+  const authors = post.authors ?? [post.author];
+
+  return (
+    <div className="flex flex-col items-center gap-10 text-center">
+      {authors.map((author) => (
+        <AuthorBlock key={author.slug} author={author} />
+      ))}
     </div>
   );
 }

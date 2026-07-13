@@ -41,7 +41,7 @@ const integrations = [
     ),
   },
   {
-    name: "Zendesk",
+    name: "Zendesk Chat",
     bg: "bg-[#03363d]",
     iconContent: (
       <svg
@@ -203,7 +203,7 @@ const integrations = [
     ),
   },
   {
-    name: "Zoho Sales IQ",
+    name: "Zoho SalesIQ",
     bg: "bg-[#e42527]",
     iconContent: (
       <svg
@@ -269,7 +269,7 @@ const integrations = [
     ),
   },
   {
-    name: "Freshdesk",
+    name: "Freshchat",
     bg: "bg-[#25c16f]",
     iconContent: (
       <svg
@@ -376,13 +376,89 @@ const integrations = [
       </svg>
     ),
   },
+  {
+    name: "Google Drive",
+    bg: "bg-white",
+    iconContent: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-full w-full p-0.5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M7.71 3.5L1.15 15l3.28 5.5h6.57L4.42 9l3.29-5.5z" fill="#0066DA" />
+        <path d="M16.29 3.5H7.71l3.29 5.5h8.57L16.29 3.5z" fill="#00AC47" />
+        <path d="M22.85 15L16.29 3.5l-3.28 5.5L19.57 20.5l3.28-5.5z" fill="#FFBA00" />
+        <path d="M4.43 20.5h15.14l3.28-5.5H7.71l-3.28 5.5z" fill="#2684FC" />
+      </svg>
+    ),
+  },
+  {
+    name: "GitHub",
+    bg: "bg-[#181717]",
+    iconContent: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-full w-full p-1"
+        fill="white"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.754-1.333-1.754-1.089-.744.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.809 1.304 3.495.997.108-.775.418-1.305.762-1.605-2.665-.303-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.007-.322 3.3 1.23a11.5 11.5 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.241 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.372.814 1.102.814 2.222 0 1.606-.014 2.898-.014 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+      </svg>
+    ),
+  },
+  {
+    name: "YouTube",
+    bg: "bg-white",
+    iconContent: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-full w-full p-0.5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M23.5 6.2a3 3 0 0 0-2.12-2.12C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.58A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.12C4.5 20.5 12 20.5 12 20.5s7.5 0 9.38-.58a3 3 0 0 0 2.12-2.12A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8z"
+          fill="#FF0000"
+        />
+        <path d="M9.6 15.6V8.4l6.4 3.6z" fill="white" />
+      </svg>
+    ),
+  },
+  {
+    name: "WhatsApp",
+    bg: "bg-[#25D366]",
+    iconContent: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-full w-full p-1"
+        fill="white"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.14.82.84-3.06-.19-.31a8.19 8.19 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.24c0 4.55-3.7 8.23-8.25 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.24-.64.8-.78.97-.14.17-.29.19-.53.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.24.25-.4.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.16 0-.43.06-.66.31s-.87.85-.87 2.07.89 2.4 1.01 2.57c.12.17 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.19.21-.58.21-1.08.14-1.19-.06-.11-.22-.17-.47-.29z" />
+      </svg>
+    ),
+  },
+  {
+    name: "Intercom Chat",
+    bg: "bg-[#1F8FFF]",
+    iconContent: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-full w-full p-1"
+        fill="white"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M20 2H4a2 2 0 0 0-2 2v14.59A1 1 0 0 0 3.71 19.3L7 16h13a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM7 8h2v5H7V8zm4-1h2v6h-2V7zm4 2h2v4h-2V9z" />
+      </svg>
+    ),
+  },
 ];
 
 const ROW_CONFIG = [
-  [40, 7],
-  [120, 6],
-  [95, 5],
-  [55, 8],
+  [50, 6],
+  [0, 6],
+  [100, 5],
+  [2, 7],
+  [80, 7],
 ];
 
 function getIntegrationRows() {
@@ -408,7 +484,9 @@ function IntegrationBadge({ item }) {
         className={`h-10 shrink-0 rounded-full ${item.bg}`}
         style={{ width: item.width || "60px" }}
         title={item.name}
-      />
+      >
+        <span className="sr-only">{item.name}</span>
+      </div>
     );
   }
 
@@ -426,13 +504,10 @@ function IntegrationBadge({ item }) {
   );
 }
 
-function MarqueeRow({ items, reverse = false, offset = 0 }) {
+function MarqueeRow({ items, offset = 0 }) {
   return (
     <div className="overflow-hidden">
-      <div
-        className="flex w-max gap-2"
-        style={reverse ? { transform: `translateX(${offset}px)` } : {}}
-      >
+      <div className="flex w-max gap-2" style={{ marginLeft: offset }}>
         {items.map((item, i) => (
           <IntegrationBadge key={`${item.name}-${i}`} item={item} />
         ))}
@@ -463,7 +538,6 @@ export default function IntegrateWith() {
               <MarqueeRow
                 key={index}
                 items={row}
-                reverse={index % 2 !== 0}
                 offset={ROW_CONFIG[index][0]}
               />
             ))}

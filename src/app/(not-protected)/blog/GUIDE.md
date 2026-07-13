@@ -1,6 +1,43 @@
 # Writing a Blog Post
 
-Blog posts live in `content/blog/*.mdx`. Each file is one post. The filename (minus `.mdx`) becomes the URL slug, e.g. `my-post.mdx` → `/blog/my-post`.
+## Where posts actually live (read this first)
+
+Blog posts are stored in the backend database (`blog_posts` table in **Backend Dashboard**), not in this repo. In production, `/blog` and `/blog/[slug]` are served entirely from the DB via on-demand ISR — publishing, editing, or deleting a post takes effect within seconds, **with no `npm run build` and no redeploy**.
+
+`content/blog/*.mdx` still exists, but only as a **local, dev-only authoring shortcut** — see the next section. Everything below about frontmatter, headings, components, etc. applies identically whether the MDX source is a local file or a DB row, since both are compiled through the same `compileMdx()` function.
+
+### The two ways to publish a post
+
+1. **Local-file draft → DB (recommended for writing)**
+   Drop a `.mdx` file in `content/blog/` and iterate on it exactly as described in this guide — instant preview at `/blog/your-slug` in `npm run dev`, zero backend calls, fastest feedback loop for content/formatting. This path is automatically disabled in production (`NODE_ENV === 'production'`), so it can never accidentally go live on its own.
+   Once you're happy with it, publish it to the DB (see below) and **delete the local `.mdx` file** — otherwise the local file keeps shadowing the DB version in your own dev environment (local files win on slug collision).
+
+2. **Directly via the Blog Admin Dashboard**
+   A separate, standalone app — [`blog_admin_dashboard`](../../../../../../blog_admin_dashboard) (peer folder to this project) — talks straight to the backend's CRUD API. Run it with `npm run dev` (serves on `http://localhost:3002`, backend must be running on `:8000`). No login/JWT — it's an admin-only local tool, not meant to be deployed publicly.
+   - `/` — paginated list of all posts (drafts + published)
+   - `/posts/new` — create a post (paste your finished MDX content into the `content` field)
+   - `/posts/[id]` — view/edit full content, change `status` to `PUBLISHED`/`DRAFT` to publish or unpublish, or delete
+   - Every action shows the raw server response so you can confirm exactly what happened.
+
+   Publishing (setting `status: PUBLISHED`) or editing a post through the dashboard automatically triggers the frontend's revalidation endpoint (`/api/revalidate`) — the change is live on `/blog` and `/blog/[slug]` within seconds.
+
+### Migrating existing local posts into the DB
+
+A one-time script, `Frontend Dashboard/scripts/seed-blog-posts.js`, reads every `content/blog/*.mdx` file and creates a matching row in the DB via the backend's create endpoint (skips slugs that already exist). Run it from `Frontend Dashboard/`:
+
+```bash
+node scripts/seed-blog-posts.js
+```
+
+### Frontmatter fields → DB columns
+
+If you're publishing through the admin dashboard instead of a `.mdx` file, the same frontmatter concepts apply, just as form fields / request body keys instead of YAML: `title`, `slug` (optional, derived from title), `description`, `content` (the MDX body), `status` (`DRAFT`/`PUBLISHED` — replaces the old `draft: true/false` flag), `tags`, `category`, `keywords`, `featured`, `noindex`, `authorSlugs` (array of author registry ids — same registry described below), `coverImage`, `canonicalUrl`, `seriesName`/`seriesPart`. `publishedAt` and `updatedAt` are set automatically by the backend (first publish time, and every save, respectively) rather than hand-written.
+
+---
+
+Everything below describes writing the MDX content itself — same rules whether the source is a local `.mdx` file (dev-only) or a `content` field submitted through the admin dashboard (DB-backed, production).
+
+Blog posts written as local files live in `content/blog/*.mdx`. Each file is one post. The filename (minus `.mdx`) becomes the URL slug, e.g. `my-post.mdx` → `/blog/my-post`. (A DB-stored post's slug comes from its `slug` field instead of a filename — same rule, same result.)
 
 ## Frontmatter
 
@@ -32,13 +69,13 @@ Frontmatter is validated with a Zod schema (`src/lib/blogSchema.js`) when the po
 | `title` | yes | Page `<title>` and `<h1>`-equivalent metadata. |
 | `description` | yes | Used for SEO meta description, OG, and Twitter cards. |
 | `publishedAt` | yes | ISO date string (`YYYY-MM-DD`). Posts are sorted newest-first by this field. |
-| `author` | no | Author id string, e.g. `"krishna-gupta"` — must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. |
+| `author` | no | Author id string, e.g. `"krishna-gupta"`, or an array of ids for co-authored posts, e.g. `["krishna-gupta", "jane-doe"]` — each must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. The first author is treated as the primary author (`post.author`); the full list is available as `post.authors`. |
 | `updatedAt` | no | ISO date string. Shown as "last modified" if present. |
 | `tags` | no | Array of strings. Used for tag pills, related posts, and as a fallback category filter if `category` isn't set anywhere. |
 | `category` | no | Single string. Once any post has a `category`, the blog index filter switches from tag-based to category-based. |
 | `keywords` | no | Array of strings. Passed through to page `<meta name="keywords">`. |
 | `coverImage` | no | Path under `/public`, e.g. `/icons/foo.svg`. Used for OG/Twitter card images and falls back to an auto-generated OG image if omitted. |
-| `draft` | no | `true`/`false`, default `false`. Draft posts are visible in `npm run dev` but excluded from production builds, the blog index, sitemap, RSS feed, and related posts. |
+| `draft` | no | `true`/`false`, default `false`. **Local `.mdx` files only** — draft posts are visible in `npm run dev` but excluded from production, the blog index, sitemap, RSS feed, and related posts. For DB-stored posts (admin dashboard), the equivalent is the `status` field: `DRAFT` vs `PUBLISHED`. |
 | `featured` | no | `true`/`false`, default `false`. Featured posts render in a highlighted section above the regular grid on `/blog`. |
 | `noindex` | no | `true`/`false`, default `false`. Sets `robots: noindex` and excludes the post from `sitemap-blog.xml`. |
 | `canonicalUrl` | no | Overrides the default canonical URL (`/blog/[slug]`) — use for cross-posted content. |
@@ -127,6 +164,20 @@ $$
 
 - Path should be relative to `/public`.
 - Rendered via `next/image` at 1200×630, wrapped in a rounded/bordered container. Always provide meaningful alt text — `npm run lint:blog` flags images without it.
+
+### Hosting images on ImageKit
+
+Blog images (cover images and in-post images) should be hosted on **ImageKit** instead of `/public` — keeps the repo/deploy bundle small and gets CDN delivery + automatic format optimization.
+
+1. Upload the image directly via the [ImageKit dashboard](https://imagekit.io/dashboard) (drag-and-drop) — no upload tooling exists in this repo, and none is needed.
+2. Copy the resulting file URL (looks like `https://ik.imagekit.io/your-id/blog/my-image.png`).
+3. Use it directly as `coverImage` in frontmatter, or in an `![alt](url)` tag in the post body — same as any other image:
+
+   ```mdx
+   coverImage: "https://ik.imagekit.io/your-id/blog/my-image.png"
+   ```
+
+`ik.imagekit.io` is whitelisted in `next.config.mjs` under `images.remotePatterns`, so `next/image` (used by `BlogList`, `AuthorCard`, `AuthorBar`, etc.) can optimize it like any other remote image. If you switch to a different ImageKit account/custom domain, add its hostname there too.
 
 ## Code Blocks
 
@@ -237,6 +288,18 @@ These are registered globally (`src/components/blog/MDXComponents.jsx`) — use 
 <YouTube id="dQw4w9WgXcQ" title="Demo video" />
 ```
 
+## Manually linking a related post
+
+`RelatedPosts.jsx` (plural) is the automatic, tag-based "Related posts" section shown at the bottom of every post — see [What's automatic](#whats-automatic-dont-set-manually) below.
+
+For a **one-off manual link** to a specific post (e.g. referencing a specific guide inline in the body, outside the automatic section), use the `RelatedPost` component (singular) — takes just a `title` and `link`:
+
+```jsx
+<RelatedPost title="How to Reduce Support Tickets by 60% with AI" link="/blog/reduce-support-tickets-with-ai" />
+```
+
+Source: [RelatedPost.jsx](../../../components/blog/RelatedPost.jsx). It is not currently registered in `MDXComponents.jsx`, so import it directly wherever you need it in JSX (not usable bare inside `.mdx` content until registered).
+
 ## Categories & Featured Posts
 
 - Set `category` in frontmatter to group posts under a single label. The `/blog` filter bar switches to category mode automatically once any post has one; otherwise it falls back to filtering by `tags`.
@@ -277,7 +340,13 @@ To add a new author:
    author: "krishna-gupta"
    ```
 
-That's it — `author` in frontmatter is just the registry key as a string, not an inline object. `getAuthorBySlug()` resolves it to the full author record at read time, so every post exposes `post.author` as `{ slug, name, avatar, title, bio, socials }` regardless of what's in the MDX file.
+   For co-authored posts, use an array of ids instead:
+
+   ```mdx
+   author: ["krishna-gupta", "jane-doe"]
+   ```
+
+That's it — `author` in frontmatter is just the registry key as a string (or an array of keys), not an inline object. Each id is resolved to the full author record at read time via `getAuthorBySlug()`, so every post exposes `post.author` (the primary/first author, as `{ slug, name, avatar, title, bio, socials }`) and `post.authors` (the full array, same shape, always at least one entry) regardless of what's in the MDX file.
 
 Each author automatically gets an archive page at `/blog/author/[slug]` (avatar, title, bio, social links, and a grid of their posts). The author name in the post header (`AuthorBar`) links there automatically. Authors with zero posts still get a page (with an empty state) as long as they exist in the registry.
 
@@ -308,12 +377,13 @@ Each author automatically gets an archive page at `/blog/author/[slug]` (avatar,
 
 ## Adding a new post checklist
 
-1. Create `content/blog/your-slug.mdx`.
+1. Create `content/blog/your-slug.mdx` and iterate locally (see [The two ways to publish a post](#the-two-ways-to-publish-a-post) above).
 2. Fill in frontmatter (`title`, `description`, `publishedAt` at minimum). Invalid or missing required fields will fail the build with a clear error naming the file.
 3. Write content using `##`/`###` headings so the TOC works.
 4. Use `[!NOTE]` / `[!TIP]` / `[!WARNING]` callouts, `<Tabs>`, `<Accordion>`, `<CodeGroup>`, etc. where useful instead of plain emphasis.
 5. Run `npm run lint:blog` to catch missing image alt text or broken internal links.
-6. Ask a teammate to run the dev server and preview `/blog/your-slug` before publishing — this repo's workflow does not auto-verify pages.
+6. Preview `/blog/your-slug` locally, then publish it via the [Blog Admin Dashboard](#the-two-ways-to-publish-a-post) (paste the content in, set `status: PUBLISHED`) — this is what actually makes it live in production, since production only reads from the DB.
+7. Delete the local `content/blog/your-slug.mdx` file once it's live in the DB, so it doesn't shadow the published version in future local dev sessions.
 
 ## Known gap
 

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import {
-  getAllPosts,
   getPostBySlug,
   getAdjacentPosts,
   getRelatedPosts,
@@ -8,6 +7,7 @@ import {
 } from "@/lib/blog";
 import { compileMdx } from "@/lib/mdx";
 import { getPostUrl, getPostImageUrl, buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { playfairDisplay, inter } from "@/lib/fonts";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import AuthorBar, { formatDate } from "@/components/blog/AuthorBar";
 import TableOfContents from "@/components/blog/TableOfContents";
@@ -21,13 +21,14 @@ import { ArrowLeft } from "lucide-react";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-export function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
-}
+// New slugs render on first request instead of requiring a rebuild; on-demand
+// revalidation (via /api/revalidate) keeps published pages fresh, this is a TTL safety net.
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
 
   const url = getPostUrl(post, SITE_URL);
@@ -46,7 +47,9 @@ export async function generateMetadata({ params }) {
       url,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt ?? post.publishedAt,
-      authors: [`${SITE_URL}/blog/author/${post.author.slug}`],
+      authors: (post.authors ?? [post.author]).map(
+        (author) => `${SITE_URL}/blog/author/${author.slug}`
+      ),
       tags: post.tags,
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },
@@ -61,13 +64,13 @@ export async function generateMetadata({ params }) {
 
 export default async function BlogPostPage({ params }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const { MDXContent, headings } = await compileMdx(post.content);
-  const { prev, next } = getAdjacentPosts(slug);
-  const related = getRelatedPosts(post);
-  const seriesPosts = post.series ? getSeriesPosts(post.series.name) : [];
+  const { prev, next } = await getAdjacentPosts(slug);
+  const related = await getRelatedPosts(post);
+  const seriesPosts = post.series ? await getSeriesPosts(post.series.name) : [];
 
   const url = getPostUrl(post, SITE_URL);
   const articleJsonLd = buildArticleJsonLd(post, SITE_URL);
@@ -86,10 +89,10 @@ export default async function BlogPostPage({ params }) {
 
       <div className="mx-auto max-w-[1600px] px-4 pt-16 pb-24 sm:px-6 lg:px-8">
         <header className="m-28 mb-16 mt-20 max-w-5xl">
-          <h1 className="text-3xl font-bold tracking-tight text-secondary-900 mt-8 sm:text-4xl lg:text-5xl xl:text-6xl">
+          <h1 className={`${playfairDisplay.className} text-3xl font-bold tracking-tight text-secondary-900 mt-8 sm:text-4xl lg:text-5xl xl:text-6xl`}>
             {post.title}
           </h1>
-          <p className="text-lg font-normal text-secondary-600 mt-4 lg:text-2xl text-slate-600 leading-tight tracking-tighter">{post.description}</p>
+          <p className={`${inter.className} text-lg font-normal text-secondary-600 mt-4 lg:text-2xl text-slate-600 leading-tight tracking-tighter`}>{post.description}</p>
           <div className="mt-10 flex flex-wrap items-center gap-2">
             {post.tags.map((tag) => (
               <span

@@ -3,10 +3,11 @@ import { getPostBySlug } from "@/lib/blog";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+export const revalidate = 3600;
 
 export default async function Image({ params }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   return new ImageResponse(
     (
@@ -36,7 +37,9 @@ export default async function Image({ params }) {
           {post?.title ?? "ContextGPT Blog"}
         </div>
         <div style={{ display: "flex", fontSize: 26, opacity: 0.85 }}>
-          {post?.author?.name ?? "ContextGPT Team"}
+          {post?.authors?.length
+            ? post.authors.map((author) => author.name).join(", ")
+            : (post?.author?.name ?? "ContextGPT Team")}
         </div>
       </div>
     ),

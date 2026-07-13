@@ -2,9 +2,11 @@ import { Feed } from "feed";
 import { getAllPosts } from "@/lib/blog";
 import { getPostImageUrl } from "@/lib/seo";
 
+export const revalidate = 3600;
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
 
   const feed = new Feed({
     title: "ContextGPT Blog",
@@ -23,7 +25,7 @@ export async function GET() {
       id: `${baseUrl}/blog/${post.slug}`,
       link: `${baseUrl}/blog/${post.slug}`,
       description: post.description,
-      author: [{ name: post.author.name }],
+      author: (post.authors ?? [post.author]).map((author) => ({ name: author.name })),
       date: new Date(post.updatedAt ?? post.publishedAt),
       image: getPostImageUrl(post, baseUrl),
       category: post.tags.map((tag) => ({ name: tag })),

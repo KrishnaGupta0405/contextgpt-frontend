@@ -3,18 +3,36 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { inter } from "@/lib/fonts";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar";
 
 const PAGE_SIZE = 9;
 
+// Rough chars-per-line estimate at each title size/width, used to decide
+// whether a title needs 1 or 2 clamped lines without measuring the DOM.
+const SINGLE_LINE_CHAR_LIMIT = { featured: 32, default: 35 };
+
+function getTitleClampClass(title, featured) {
+  const limit = featured ? SINGLE_LINE_CHAR_LIMIT.featured : SINGLE_LINE_CHAR_LIMIT.default;
+  return (title?.length ?? 0) > limit ? "line-clamp-2" : "line-clamp-1";
+}
+
 function PostCard({ post, featured = false }) {
+  const titleClamp = getTitleClampClass(post.title, featured);
+
   return (
-    <article
-      className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-md ${
-        featured ? "sm:col-span-2 lg:col-span-2" : ""
-      }`}
-    >
+    <article className="group flex flex-col overflow-hidden bg-white">
       <Link href={`/blog/${post.slug}`} className="flex flex-1 flex-col">
-        <div className="relative aspect-[1.9/1] w-full overflow-hidden bg-slate-100">
+        <div
+          className={`relative w-full overflow-hidden rounded-sm border ${
+            featured ? "aspect-[1.8/1]" : "aspect-[2/1]"
+          }`}
+        >
           {post.coverImage ? (
             <Image src={post.coverImage} alt={post.title} fill className="object-cover" />
           ) : (
@@ -24,20 +42,17 @@ function PostCard({ post, featured = false }) {
           )}
         </div>
 
-        <div className="flex flex-1 flex-col p-6">
+        <div className="flex flex-1 flex-col pl-0 max-w-[75%]">
           <h2
-            className={`font-bold leading-snug text-slate-900 group-hover:text-blue-600 ${
-              featured ? "text-xl" : "text-lg"
+            className={`${inter.className} ${titleClamp} font-bold text-balance mt-4 text-slate-900 ${
+              featured ? "text-[2.25rem] leading-tight" : "text-xl"
             }`}
+            style={{ letterSpacing: featured ? "-0.07em" : "-0.04em" }}
           >
             {post.title}
           </h2>
 
-          <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-            {post.description}
-          </p>
-
-          <div className="mt-5 flex items-center gap-2.5">
+          <div className={`flex items-center gap-2 ${featured ? "pt-4" : "pt-2"}`}>
             <div className="relative h-7 w-7 overflow-hidden rounded-full bg-slate-200">
               {post.author.avatar ? (
                 <Image
@@ -52,9 +67,9 @@ function PostCard({ post, featured = false }) {
                 </div>
               )}
             </div>
-            <span className="text-sm text-slate-700">{post.author.name}</span>
-            <span className="text-slate-300">·</span>
-            <span className="text-sm text-slate-500">
+            <span className="text-md text-slate-500 tracking-tight">{post.author.name}</span>
+            <span className="text-slate-500 text-lg tracking-tight">·</span>
+            <span className="text-md text-slate-500 tracking-tight">
               {new Date(post.publishedAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -102,24 +117,9 @@ export default function BlogList({ posts, featuredPosts = [] }) {
 
   return (
     <>
-      {featuredPosts.length > 0 && activeCategory === "All" && page === 1 && (
-        <section className="px-4 pb-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Featured
-            </h2>
-            <div className="grid gap-8 sm:grid-cols-2">
-              {featuredPosts.map((post) => (
-                <PostCard key={post.slug} post={post} featured />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* ─── Category Filter ─── */}
-      <section className="px-4 pt-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-5xl flex-wrap gap-2">
+      <section className="px-4 pt-10 pb-10 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -136,9 +136,27 @@ export default function BlogList({ posts, featuredPosts = [] }) {
         </div>
       </section>
 
+      {featuredPosts.length > 0 && activeCategory === "All" && page === 1 && (
+        <section className="px-4 pb-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            {/* <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Featured
+            </h2> */}
+            <div className="grid gap-8 sm:grid-cols-2">
+              {featuredPosts.map((post) => (
+                <PostCard key={post.slug} post={post} featured />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── Posts Grid ─── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
+      <section className="px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-4 text-lg font-semibold tracking-[0.5em]">
+            Latest Posts
+          </h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {paginatedPosts.map((post) => (
               <PostCard key={post.slug} post={post} />

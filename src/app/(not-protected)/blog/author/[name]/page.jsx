@@ -4,13 +4,13 @@ import { Twitter, Linkedin, Facebook, Instagram, Globe } from "lucide-react";
 import { getAllAuthors, getPostsByAuthor } from "@/lib/blog";
 import BlogList from "@/components/blog/BlogList";
 
-export function generateStaticParams() {
-  return getAllAuthors().map((author) => ({ name: author.slug }));
-}
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {
   const { name } = await params;
-  const author = getAllAuthors().find((a) => a.slug === name);
+  const authors = await getAllAuthors();
+  const author = authors.find((a) => a.slug === name);
   if (!author) return {};
 
   return {
@@ -21,10 +21,11 @@ export async function generateMetadata({ params }) {
 
 export default async function AuthorPage({ params }) {
   const { name } = await params;
-  const author = getAllAuthors().find((a) => a.slug === name);
+  const authors = await getAllAuthors();
+  const author = authors.find((a) => a.slug === name);
   if (!author) notFound();
 
-  const posts = getPostsByAuthor(name);
+  const posts = await getPostsByAuthor(name);
   const hasSocials =
     author.socials?.twitter ||
     author.socials?.linkedin ||
