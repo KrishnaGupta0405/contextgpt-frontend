@@ -2,7 +2,7 @@ import { Feed } from "feed";
 import { getAllPosts } from "@/lib/blog";
 import { getPostImageUrl } from "@/lib/seo";
 
-export const revalidate = 3600;
+export const revalidate = false;
 
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

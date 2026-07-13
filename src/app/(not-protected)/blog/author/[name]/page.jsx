@@ -4,7 +4,7 @@ import { Twitter, Linkedin, Facebook, Instagram, Globe } from "lucide-react";
 import { getAllAuthors, getPostsByAuthor } from "@/lib/blog";
 import BlogList from "@/components/blog/BlogList";
 
-export const revalidate = 3600;
+export const revalidate = false;
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {

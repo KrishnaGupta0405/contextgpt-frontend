@@ -3,8 +3,8 @@ import { playfairDisplay } from "@/lib/fonts";
 import BlogList from "@/components/blog/BlogList";
 import BlogSearch from "@/components/blog/BlogSearch";
 
-// TTL safety net — on-demand revalidation (via /api/revalidate) is the primary mechanism
-export const revalidate = 3600;
+// On-demand revalidation (via /api/revalidate) is the only mechanism that refreshes this page
+export const revalidate = false;
 
 export default async function Blog() {
   const posts = await getAllPosts();

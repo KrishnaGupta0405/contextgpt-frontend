@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, Info, Lightbulb } from "lucide-react";
+import { AlertTriangle, Info, Lightbulb, Link as LinkIcon } from "lucide-react";
 import CodeBlock from "./CodeBlock";
 import { Tabs, Tab } from "./Tabs";
 import { Accordion, AccordionItem } from "./Accordion";
 import { CodeGroup, CodeGroupItem } from "./CodeGroup";
 import { FileTree, FileTreeItem } from "./FileTree";
 import { YouTube } from "./YouTube";
+import RelatedPost from "./RelatedPost";
 
 const CALLOUT_STYLES = {
   NOTE: {
@@ -23,25 +24,60 @@ const CALLOUT_STYLES = {
   },
 };
 
-function Blockquote({ children }) {
+function Blockquote({ children, className, ...props }) {
   const text = extractText(children);
   const match = text.match(/^\[!(NOTE|TIP|WARNING)\]\s*/);
 
   if (!match) {
     return (
-      <blockquote className="border-l-4 border-slate-300 pl-4 italic text-slate-600">
+      <blockquote
+        className={[
+          "border-l-4 border-slate-300 pl-4 italic text-slate-600",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        {...props}
+      >
         {children}
       </blockquote>
     );
   }
 
   const kind = match[1];
-  const { icon: Icon, className } = CALLOUT_STYLES[kind];
+  const { icon: Icon, className: calloutClassName } = CALLOUT_STYLES[kind];
 
   return (
-    <div className={`my-6 flex gap-3 rounded-xl border-l-4 p-4 ${className}`}>
+    <div
+      className={[
+        `my-6 flex gap-3 rounded-xl border-l-4 p-4 ${calloutClassName}`,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
       <Icon className="mt-0.5 h-5 w-5 shrink-0" />
       <div className="[&>p]:m-0">{stripPrefix(children, match[0])}</div>
+    </div>
+  );
+}
+
+function Callout({ kind = "NOTE", children, className, ...props }) {
+  const { icon: Icon, className: calloutClassName } = CALLOUT_STYLES[kind];
+
+  return (
+    <div
+      className={[
+        `my-6 flex gap-3 rounded-xl border-l-4 p-4 ${calloutClassName}`,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
+      <Icon className="mt-0.5 h-5 w-5 shrink-0" />
+      <div className="[&>p]:m-0">{children}</div>
     </div>
   );
 }
@@ -71,9 +107,166 @@ function stripPrefix(children, prefix) {
   return children;
 }
 
+const HEADING_STYLES = {
+  h1: "text-5xl font-bold tracking-tight",
+  h2: "text-4xl font-bold tracking-tight",
+  h3: "text-3xl font-semibold",
+  h4: "text-2xl font-semibold",
+};
+
+function headingAnchor(Tag) {
+  return function Heading({ children, className, ...props }) {
+    const kids = Array.isArray(children) ? children : [children];
+    const [anchor, ...rest] = kids;
+    const isAnchor = anchor?.type === "a" || anchor?.props?.href;
+    const headingClassName = [HEADING_STYLES[Tag], className]
+      .filter(Boolean)
+      .join(" ");
+
+    if (!isAnchor) {
+      return (
+        <Tag className={headingClassName} {...props}>
+          {children}
+        </Tag>
+      );
+    }
+
+    const { href, children: anchorChildren, ...anchorProps } = anchor.props;
+
+    return (
+      <Tag className={headingClassName} {...props}>
+        <a
+          href={href}
+          {...anchorProps}
+          className="group relative no-underline hover:no-underline"
+        >
+          <LinkIcon
+            aria-hidden="true"
+            className="absolute right-full top-1/2 mr-2 h-[0.7em] w-[0.7em] -translate-y-1/2 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100"
+          />
+          {anchorChildren}
+        </a>
+        {rest}
+      </Tag>
+    );
+  };
+}
+
+function Paragraph({ children, className, ...props }) {
+  return (
+    <div
+      className={[
+        "my-4 text-lg leading-relaxed text-slate-800 [&>p]:m-0",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function UnorderedList({ children, className, ...props }) {
+  return (
+    <ul
+      className={[
+        "my-4 list-disc space-y-2 pl-6 text-lg leading-relaxed text-slate-800 marker:text-blue-500",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
+      {children}
+    </ul>
+  );
+}
+
+function OrderedList({ children, className, ...props }) {
+  return (
+    <ol
+      className={[
+        "my-4 list-decimal space-y-2 pl-6 text-lg leading-relaxed text-slate-800 marker:text-blue-500",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
+      {children}
+    </ol>
+  );
+}
+
+function ListItem({ children, className, ...props }) {
+  return (
+    <li className={["pl-1 [&>p]:m-0", className].filter(Boolean).join(" ")} {...props}>
+      {children}
+    </li>
+  );
+}
+
+function BlogImage({ src, alt, className, caption, ...props }) {
+  if (process.env.NODE_ENV !== "production" && !alt) {
+    console.warn(`[blog] Image is missing alt text: ${src}`);
+  }
+  return (
+    <figure className="not-prose">
+      <span
+        className={[
+          "block overflow-hidden rounded-xl border border-slate-200",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <Image
+          src={src}
+          alt={alt ?? caption ?? ""}
+          width={1200}
+          height={630}
+          className="relative h-auto w-full"
+          {...props}
+        />
+      </span>
+      {caption && (
+        <figcaption className="mt-1 text-left text-sm text-slate-500">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+function headingComponent(Tag) {
+  const AnchoredHeading = headingAnchor(Tag);
+  return function NamedHeading({ children, className, toc, ...props }) {
+    return (
+      <AnchoredHeading className={className} {...props}>
+        {children}
+      </AnchoredHeading>
+    );
+  };
+}
+
 export const mdxComponents = {
+  p: Paragraph,
   blockquote: Blockquote,
   pre: CodeBlock,
+  h1: headingAnchor("h1"),
+  h2: headingAnchor("h2"),
+  h3: headingAnchor("h3"),
+  h4: headingAnchor("h4"),
+  // Explicit component aliases — same rendering as the HTML tags above,
+  // used when a post needs to pass extra props (e.g. className, id) that
+  // plain markdown syntax (##, etc.) can't carry.
+  Heading1: headingComponent("h1"),
+  Heading2: headingComponent("h2"),
+  Heading3: headingComponent("h3"),
+  Heading4: headingComponent("h4"),
+  Paragraph,
   a: ({ href, children, ...props }) => {
     const isInternal = href?.startsWith("/") || href?.startsWith("#");
     if (isInternal) {
@@ -89,22 +282,13 @@ export const mdxComponents = {
       </a>
     );
   },
-  img: ({ src, alt }) => {
-    if (process.env.NODE_ENV !== "production" && !alt) {
-      console.warn(`[blog] Image is missing alt text: ${src}`);
-    }
-    return (
-      <span className="my-6 block overflow-hidden rounded-xl border border-slate-200">
-        <Image
-          src={src}
-          alt={alt ?? ""}
-          width={1200}
-          height={630}
-          className="h-auto w-full"
-        />
-      </span>
-    );
-  },
+  img: BlogImage,
+  ul: UnorderedList,
+  ol: OrderedList,
+  li: ListItem,
+  Callout,
+  Blockquote,
+  BlogImage,
   Tabs,
   Tab,
   Accordion,
@@ -114,4 +298,5 @@ export const mdxComponents = {
   FileTree,
   FileTreeItem,
   YouTube,
+  RelatedPost,
 };

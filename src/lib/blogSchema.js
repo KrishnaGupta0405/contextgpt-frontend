@@ -8,6 +8,7 @@ export const blogFrontmatterSchema = z.object({
   updatedAt: z.string().nullable().optional().default(null),
   canonicalUrl: z.string().nullable().optional().default(null),
   coverImage: z.string().nullable().optional().default(null),
+  ogImage: z.string().nullable().optional().default(null),
   author: z
     .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
     .optional()

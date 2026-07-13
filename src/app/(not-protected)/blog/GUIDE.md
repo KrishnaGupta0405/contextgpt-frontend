@@ -21,9 +21,9 @@ Blog posts are stored in the backend database (`blog_posts` table in **Backend D
 
    Publishing (setting `status: PUBLISHED`) or editing a post through the dashboard automatically triggers the frontend's revalidation endpoint (`/api/revalidate`) — the change is live on `/blog` and `/blog/[slug]` within seconds.
 
-### Migrating existing local posts into the DB
+### Syncing local posts into the DB
 
-A one-time script, `Frontend Dashboard/scripts/seed-blog-posts.js`, reads every `content/blog/*.mdx` file and creates a matching row in the DB via the backend's create endpoint (skips slugs that already exist). Run it from `Frontend Dashboard/`:
+`Frontend Dashboard/scripts/seed-blog-posts.js` reads every `content/blog/*.mdx` file and syncs it to the DB: creates a new row (via the backend's create endpoint) for slugs that don't exist yet, and updates the existing row (via the update endpoint, matched by `id`) for slugs that already exist — so re-running it after editing a local `.mdx` file pushes those edits to the DB. Run it from `Frontend Dashboard/`:
 
 ```bash
 node scripts/seed-blog-posts.js
@@ -31,7 +31,7 @@ node scripts/seed-blog-posts.js
 
 ### Frontmatter fields → DB columns
 
-If you're publishing through the admin dashboard instead of a `.mdx` file, the same frontmatter concepts apply, just as form fields / request body keys instead of YAML: `title`, `slug` (optional, derived from title), `description`, `content` (the MDX body), `status` (`DRAFT`/`PUBLISHED` — replaces the old `draft: true/false` flag), `tags`, `category`, `keywords`, `featured`, `noindex`, `authorSlugs` (array of author registry ids — same registry described below), `coverImage`, `canonicalUrl`, `seriesName`/`seriesPart`. `publishedAt` and `updatedAt` are set automatically by the backend (first publish time, and every save, respectively) rather than hand-written.
+If you're publishing through the admin dashboard instead of a `.mdx` file, the same frontmatter concepts apply, just as form fields / request body keys instead of YAML: `title`, `slug` (optional, derived from title), `description`, `content` (the MDX body), `status` (`DRAFT`/`PUBLISHED` — replaces the old `draft: true/false` flag), `tags`, `category`, `keywords`, `featured`, `noindex`, `authorSlugs` (array of author registry ids — same registry described below), `coverImage`, `ogImage`, `canonicalUrl`, `seriesName`/`seriesPart`. `publishedAt` and `updatedAt` are set automatically by the backend (first publish time, and every save, respectively) rather than hand-written.
 
 ---
 
@@ -54,6 +54,7 @@ tags: ["Customer Support"]
 category: "Guides"
 keywords: ["ai chatbot", "support automation"]
 coverImage: "/icons/Contextgpt_icon.svg"
+ogImage: null
 draft: false
 featured: false
 noindex: false
@@ -74,7 +75,8 @@ Frontmatter is validated with a Zod schema (`src/lib/blogSchema.js`) when the po
 | `tags` | no | Array of strings. Used for tag pills, related posts, and as a fallback category filter if `category` isn't set anywhere. |
 | `category` | no | Single string. Once any post has a `category`, the blog index filter switches from tag-based to category-based. |
 | `keywords` | no | Array of strings. Passed through to page `<meta name="keywords">`. |
-| `coverImage` | no | Path under `/public`, e.g. `/icons/foo.svg`. Used for OG/Twitter card images and falls back to an auto-generated OG image if omitted. |
+| `coverImage` | no | Path under `/public` or an absolute URL (e.g. ImageKit), used as the in-page cover/hero image. Also used as the OG/Twitter card image fallback if `ogImage` isn't set. |
+| `ogImage` | no | Path under `/public` or an absolute URL, used specifically for OG/Twitter card images, JSON-LD `image`, sitemap `<image:image>`, and RSS item image. Takes precedence over `coverImage` for those; falls back to `coverImage`, then to an auto-generated OG image if both are omitted. |
 | `draft` | no | `true`/`false`, default `false`. **Local `.mdx` files only** — draft posts are visible in `npm run dev` but excluded from production, the blog index, sitemap, RSS feed, and related posts. For DB-stored posts (admin dashboard), the equivalent is the `status` field: `DRAFT` vs `PUBLISHED`. |
 | `featured` | no | `true`/`false`, default `false`. Featured posts render in a highlighted section above the regular grid on `/blog`. |
 | `noindex` | no | `true`/`false`, default `false`. Sets `robots: noindex` and excludes the post from `sitemap-blog.xml`. |
@@ -89,6 +91,28 @@ Use `##` and `###` (h2/h3). Only these two levels are picked up by the **Table o
 ## Section title
 ### Sub-section title
 ```
+
+### Component form (`<Heading2>`/`<Heading3>`)
+
+If you need to pass extra props to a heading — a custom `className`, or anything else `##` syntax can't carry — use the `Heading1`–`Heading4` components instead (registered in `MDXComponents.jsx`). They render identically to `h1`–`h4` (same styles, same auto-linking anchor), but **you must supply the `id` yourself**, since `rehype-slug` only auto-generates ids for real Markdown headings, not JSX components:
+
+```mdx
+<Heading2 id="what-is-a-chatbot" className="text-brand-600">
+  What is a Chatbot & Why Your Company Needs This?
+</Heading2>
+```
+
+Only `Heading2`/`Heading3` are picked up by the Table of Contents (matching the `##`/`###` rule above) — `Heading1`/`Heading4` render but aren't indexed. If you forget the `id` prop, the heading renders fine but silently won't appear in the ToC.
+
+Optionally add a `toc` prop to show different (usually shorter) text in the sidebar than what's actually rendered in the heading itself:
+
+```mdx
+<Heading2 id="what-is-a-chatbot" toc="Know about chatbot">
+  What is a Chatbot & Why Your Company Needs This?
+</Heading2>
+```
+
+The page still shows the full heading text; only the Table of Contents entry uses `toc`. Omit it to have the ToC just use the heading's own text (the default, unchanged behavior).
 
 ### Section / subsection structure for the animated ToC line
 
@@ -113,6 +137,26 @@ Example outline:
 
 As the reader scrolls, the highlighted line fills from a section's heading down to whichever of its subsections is currently active, then resets when they reach the next section — so write each section's subsections as a coherent, self-contained group rather than reusing one subsection across multiple sections.
 
+## Paragraphs
+
+Plain text separated by a blank line becomes a paragraph, rendered via a registered `p` override in `MDXComponents.jsx`.
+
+If your source text has inconsistent line-wrapping (e.g. copy-pasted from a doc with hard-wrapped lines instead of blank lines between paragraphs), a single `\n` won't start a new paragraph — Markdown only breaks paragraphs on a truly blank line, so wrapped text collapses into one paragraph.
+
+To sidestep this, wrap each paragraph explicitly in a `<Paragraph>` component instead of relying on blank-line detection:
+
+```mdx
+<Paragraph>
+Hello everyone! If you've landed here, it's likely because you're eager to learn the ins and outs of building a chatbot.
+</Paragraph>
+
+<Paragraph>
+You might be asking yourself, "What is the actual value of having a chatbot?"
+</Paragraph>
+```
+
+Each `<Paragraph>` renders as its own separate block regardless of internal line wrapping, and accepts a `className` prop for one-off styling. Internally it renders a `<div>` (not a `<p>`) — MDX auto-wraps the text you put inside it in its own `<p>`, so wrapping that in another `<p>` would be invalid, hydration-breaking HTML.
+
 ## Basic Markdown
 
 Standard Markdown is supported, plus GitHub Flavored Markdown (`remark-gfm`):
@@ -121,6 +165,17 @@ Standard Markdown is supported, plus GitHub Flavored Markdown (`remark-gfm`):
 - Bullet and numbered lists
 - Tables
 - Footnotes (`Some text[^1]` ... `[^1]: The footnote.`)
+
+### Lists
+
+Plain `-`/`*` (bullet) and `1.`/`2.` (numbered) Markdown lists render via registered `ul`/`ol`/`li` overrides in `MDXComponents.jsx`, styled to match paragraph typography — no special component needed for the common case:
+
+```mdx
+- A website URL
+- A single page
+- A sitemap
+- Documents you upload
+```
 
 ```mdx
 | Before | After |
@@ -164,6 +219,19 @@ $$
 
 - Path should be relative to `/public`.
 - Rendered via `next/image` at 1200×630, wrapped in a rounded/bordered container. Always provide meaningful alt text — `npm run lint:blog` flags images without it.
+
+### Component form (`<BlogImage>`)
+
+For a `className` on the wrapper, or an optional caption below the image, use the `BlogImage` component instead:
+
+```mdx
+<BlogImage
+  src="/images/screenshot.png"
+  alt="Dashboard screenshot showing the chatbot builder"
+  caption="The ContextGPT chatbot builder"
+  className="my-10"
+/>
+```
 
 ### Hosting images on ImageKit
 
@@ -219,9 +287,23 @@ A plain blockquote without one of these markers renders as a normal italic quote
 > Just a regular quote.
 ```
 
+### Component form (`<Callout>`)
+
+If you need a `className` or want to avoid the `[!KIND]` text-prefix convention, use the `Callout` component directly:
+
+```mdx
+<Callout kind="TIP" className="my-8">
+  Helpful tip or best practice (green).
+</Callout>
+```
+
+`kind` is one of `NOTE` (blue, default), `TIP` (green), or `WARNING` (amber) — same three styles as the blockquote markers above.
+
 ## Interactive components
 
 These are registered globally (`src/components/blog/MDXComponents.jsx`) — use them directly as JSX inside `.mdx` files.
+
+**Heading1 / Heading2 / Heading3 / Heading4, Paragraph, Callout, BlogImage** — component equivalents of plain-Markdown headings/paragraphs/callouts/images for when you need extra props (`className`, `id`, `caption`, etc.). See the [Headings](#component-form-heading2heading3), [Paragraphs](#paragraphs), [Callouts](#component-form-callout), and [Images](#component-form-blogimage) sections above for usage — documented there instead of duplicated here since they mirror existing Markdown syntax rather than being new interactive widgets.
 
 **Tabs**
 
@@ -359,18 +441,18 @@ Each author automatically gets an archive page at `/blog/author/[slug]` (avatar,
 ## What's automatic (don't set manually)
 
 - **Reading time** — computed from word count.
-- **Table of Contents** — built from all `##`/`###` headings.
+- **Table of Contents** — built from all `##`/`###` headings, plus any `<Heading2 id="...">`/`<Heading3 id="...">` components that have an explicit `id` prop.
 - **Related posts** — computed from shared `tags` (falls back to filling with other recent posts if fewer than 3 matches).
 - **Prev/Next navigation** — based on `publishedAt` order across all posts.
 - **JSON-LD structured data** — generated from frontmatter via `src/lib/seo.js`, emitted as two `<script>` blocks on every post:
-  - `BlogPosting` — includes a `Person` author (name, author-archive URL, and `sameAs` links built from the author's `socials` in `src/lib/authors.js`), a `publisher` (ContextGPT org + logo), `image` (falls back to the auto-generated OG image when `coverImage` isn't set, so it's never missing), `inLanguage`, `wordCount`, `timeRequired` (derived from reading time), and combined `tags`+`keywords`.
+  - `BlogPosting` — includes a `Person` author (name, author-archive URL, and `sameAs` links built from the author's `socials` in `src/lib/authors.js`), a `publisher` (ContextGPT org + logo), `image` (resolved via `getPostImageUrl`: `ogImage` → `coverImage` → auto-generated OG image, so it's never missing), `inLanguage`, `wordCount`, `timeRequired` (derived from reading time), and combined `tags`+`keywords`.
   - `BreadcrumbList` — Home → Blog → post title.
-- **Sitemap image/priority** — `sitemap-blog.xml` includes an `<image:image>` tag per post (using the same cover/OG-fallback image as JSON-LD) and boosts `priority` to `0.9` for `featured: true` posts (`0.6` otherwise).
-- **RSS feed image & freshness** — each `/blog/rss.xml` item includes an image (cover or OG fallback) and uses `updatedAt` (falling back to `publishedAt`) as its date, so feed readers see accurate freshness.
+- **Sitemap image/priority** — `sitemap-blog.xml` includes an `<image:image>` tag per post (using the same `getPostImageUrl` resolution as JSON-LD) and boosts `priority` to `0.9` for `featured: true` posts (`0.6` otherwise).
+- **RSS feed image & freshness** — each `/blog/rss.xml` item includes an image (via `getPostImageUrl`) and uses `updatedAt` (falling back to `publishedAt`) as its date, so feed readers see accurate freshness.
 - **Missing alt-text warning** — in `npm run dev`, an image without `alt` text logs a console warning naming the file, in addition to the hard `npm run lint:blog` check.
 - **Search index** — the `/blog` search box fuzzy-matches title/description/tags client-side (Fuse.js); no manual indexing needed.
 - **Pagination** — the blog index paginates at 9 posts/page automatically once there are enough posts.
-- **OG image** — auto-generated per post (`opengraph-image.jsx`) from the title/author when `coverImage` isn't set; `coverImage` takes precedence when present.
+- **OG image** — resolved via `getPostImageUrl` (`src/lib/seo.js`): `ogImage` takes precedence, then `coverImage`, then an auto-generated fallback (`opengraph-image.jsx`) from the title/author when neither is set.
 - **RSS feed** — available at `/blog/rss.xml`, generated from all non-draft posts.
 - **Sitemap** — non-draft, non-`noindex` posts are included in `/sitemap-blog.xml` automatically.
 - **robots.txt** — served from `src/app/robots.js`, points at `/sitemap.xml`.

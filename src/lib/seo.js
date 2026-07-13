@@ -11,10 +11,14 @@ export function getPostUrl(post, siteUrl) {
   return post.canonicalUrl ?? `${siteUrl}/blog/${post.slug}`;
 }
 
+function resolveImageUrl(image, siteUrl) {
+  if (!image) return null;
+  return /^https?:\/\//.test(image) ? image : `${siteUrl}${image}`;
+}
+
 export function getPostImageUrl(post, siteUrl) {
-  return post.coverImage
-    ? `${siteUrl}${post.coverImage}`
-    : `${siteUrl}/blog/${post.slug}/opengraph-image`;
+  const image = resolveImageUrl(post.ogImage, siteUrl) ?? resolveImageUrl(post.coverImage, siteUrl);
+  return image ?? `${siteUrl}/blog/${post.slug}/opengraph-image`;
 }
 
 export function getPostDates(post) {

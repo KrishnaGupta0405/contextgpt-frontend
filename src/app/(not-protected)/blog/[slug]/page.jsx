@@ -22,8 +22,8 @@ import { ArrowLeft } from "lucide-react";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 // New slugs render on first request instead of requiring a rebuild; on-demand
-// revalidation (via /api/revalidate) keeps published pages fresh, this is a TTL safety net.
-export const revalidate = 3600;
+// revalidation (via /api/revalidate) is the only mechanism that refreshes this page.
+export const revalidate = false;
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {
@@ -34,14 +34,17 @@ export async function generateMetadata({ params }) {
   const url = getPostUrl(post, SITE_URL);
   const image = getPostImageUrl(post, SITE_URL);
 
+  const pageTitle = post.title.length <= 60 ? `${post.title} | ContextGPT Blog` : post.title;
+
   return {
-    title: `${post.title} | ContextGPT Blog`,
+    title: pageTitle,
     description: post.description,
     keywords: post.keywords.length ? post.keywords : undefined,
     alternates: { canonical: url },
     robots: { index: !post.noindex, follow: true },
     openGraph: {
       type: "article",
+      siteName: "ContextGPT",
       title: post.title,
       description: post.description,
       url,
@@ -112,7 +115,7 @@ export default async function BlogPostPage({ params }) {
           </div> */}
         </header>
 
-        <div className="lg:grid lg:grid-cols-[240px_minmax(0,42rem)_240px] lg:justify-center lg:gap-16">
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,42rem)_320px] lg:justify-center lg:gap-16">
           <div className="hidden lg:block">
             <AuthorBar post={post} />
           </div>
@@ -120,9 +123,9 @@ export default async function BlogPostPage({ params }) {
           <article className="min-w-0">
             <SeriesNav series={post.series} posts={seriesPosts} currentSlug={post.slug} />
 
-            <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-pre:p-0">
+            <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-headings:no-underline prose-pre:p-0">
               <MDXContent components={mdxComponents} />
-              <NewsletterCTA />
+              {/* <NewsletterCTA /> */}
               <PrevNextNav prev={prev} next={next} />
             </div>
           </article>

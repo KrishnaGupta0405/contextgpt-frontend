@@ -4,6 +4,7 @@ import createMDX from '@next/mdx';
 const nextConfig = {
   compress: true,
   pageExtensions: ['js', 'jsx', 'mdx'],
+  allowedDevOrigins: ['*.trycloudflare.com'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

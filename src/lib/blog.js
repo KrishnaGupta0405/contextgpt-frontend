@@ -60,6 +60,7 @@ function normalizePost(raw) {
     updatedAt: raw.updatedAt ?? null,
     canonicalUrl: raw.canonicalUrl ?? null,
     coverImage: raw.coverImage ?? null,
+    ogImage: raw.ogImage ?? null,
     tags: raw.tags ?? [],
     category: raw.category ?? null,
     keywords: raw.keywords ?? [],
@@ -84,6 +85,7 @@ function mapApiPostToRaw(post) {
     updatedAt: post.updatedAt,
     canonicalUrl: post.canonicalUrl,
     coverImage: post.coverImage,
+    ogImage: post.ogImage,
     tags: post.tags ?? [],
     category: post.category,
     keywords: post.keywords ?? [],
@@ -99,11 +101,12 @@ function mapApiPostToRaw(post) {
 async function fetchAllApiPosts() {
   try {
     const res = await fetch(`${API_BASE_URL}/website/blog/posts`, {
-      next: { revalidate: 3600, tags: ['blog-posts'] },
+      next: { revalidate: false, tags: ['blog-posts'] },
     });
     if (!res.ok) return [];
     const json = await res.json();
     const posts = json?.data?.posts ?? [];
+    // console.log("fetched from backend->", posts)
     return posts.map((p) => normalizePost(mapApiPostToRaw(p)));
   } catch (err) {
     console.error('[blog] Failed to fetch posts from API:', err.message);
@@ -114,7 +117,7 @@ async function fetchAllApiPosts() {
 async function fetchApiPostBySlug(slug) {
   try {
     const res = await fetch(`${API_BASE_URL}/website/blog/posts/${encodeURIComponent(slug)}`, {
-      next: { revalidate: 3600, tags: ['blog-posts', `blog-post-${slug}`] },
+      next: { revalidate: false, tags: ['blog-posts', `blog-post-${slug}`] },
     });
     if (!res.ok) return null;
     const json = await res.json();

@@ -10,14 +10,33 @@ function getText(node) {
   return (node.children ?? []).map(getText).join("");
 }
 
+function getMdxJsxAttr(node, name) {
+  const attr = node.attributes?.find((a) => a.name === name);
+  return typeof attr?.value === "string" ? attr.value : undefined;
+}
+
 function extractHeadings(headings) {
   return () => (tree) => {
-    visit(tree, "element", (node) => {
-      if (!/^h[2-3]$/.test(node.tagName)) return;
-      const id = node.properties?.id;
-      if (!id) return;
-      const text = getText(node);
-      headings.push({ id, text, depth: Number(node.tagName[1]) });
+    visit(tree, (node) => {
+      if (node.type === "element" && /^h[2-3]$/.test(node.tagName)) {
+        const id = node.properties?.id;
+        if (!id) return;
+        headings.push({ id, text: getText(node), depth: Number(node.tagName[1]) });
+        return;
+      }
+
+      if (node.type === "mdxJsxFlowElement") {
+        const match = /^Heading([2-3])$/.exec(node.name ?? "");
+        if (!match) return;
+        const id = getMdxJsxAttr(node, "id");
+        if (!id) return;
+        const toc = getMdxJsxAttr(node, "toc");
+        headings.push({
+          id,
+          text: toc ?? getText(node),
+          depth: Number(match[1]),
+        });
+      }
     });
   };
 }

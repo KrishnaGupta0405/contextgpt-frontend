@@ -22,6 +22,7 @@ export default function TableOfContents({ headings, className = "" }) {
     activeTop: 0,
     activeX: 0,
   });
+  const navRef = useRef(null);
   const listRef = useRef(null);
   const itemRefs = useRef(new Map());
 
@@ -134,6 +135,19 @@ export default function TableOfContents({ headings, className = "" }) {
     return () => window.removeEventListener("resize", updateLayout);
   }, [activeId, headings, minDepth]);
 
+  useEffect(() => {
+    const navEl = navRef.current;
+    const activeEl = itemRefs.current.get(activeId);
+    if (!navEl || !activeEl) return;
+
+    const navRect = navEl.getBoundingClientRect();
+    const activeRect = activeEl.getBoundingClientRect();
+
+    if (activeRect.top < navRect.top || activeRect.bottom > navRect.bottom) {
+      activeEl.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }, [activeId]);
+
   if (headings.length === 0) return null;
 
   // Ancestors of the active heading: walk backwards and collect every
@@ -153,10 +167,10 @@ export default function TableOfContents({ headings, className = "" }) {
   }
 
   return (
-    <nav className={`sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block ${className}`}>
-      <p className="mb-3 flex items-center gap-1.5 text-xs uppercase tracking-wide">
+    <nav ref={navRef} className={`sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block ${className}`}>
+      <p className="mb-3 flex items-center gap-1.5 text-md font-bold text-slate-600 uppercase tracking-wide">
         <TextAlignStart className="size-4" />
-        On this page
+        Table of Content
       </p>
       <ul ref={listRef} className="relative space-y-2 text-sm">
         <svg
@@ -203,7 +217,7 @@ export default function TableOfContents({ headings, className = "" }) {
               href={`#${heading.id}`}
               className={`block py-1 transition-colors ${
                 activeId === heading.id
-                  ? "font-medium text-[#155ded] underline underline-offset-4"
+                  ? "font-medium text-[#155ded]"
                   : ancestorIds.has(heading.id)
                     ? "font-medium text-[#155ded]"
                     : "text-slate-500 hover:text-slate-900"

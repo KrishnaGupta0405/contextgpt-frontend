@@ -3,7 +3,7 @@ import { getPostBySlug } from "@/lib/blog";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const revalidate = 3600;
+export const revalidate = false;
 
 export default async function Image({ params }) {
   const { slug } = await params;
@@ -36,10 +36,27 @@ export default async function Image({ params }) {
         >
           {post?.title ?? "ContextGPT Blog"}
         </div>
-        <div style={{ display: "flex", fontSize: 26, opacity: 0.85 }}>
-          {post?.authors?.length
-            ? post.authors.map((author) => author.name).join(", ")
-            : (post?.author?.name ?? "ContextGPT Team")}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", fontSize: 26, opacity: 0.85 }}>
+            {post?.authors?.length
+              ? post.authors.map((author) => author.name).join(", ")
+              : (post?.author?.name ?? "ContextGPT Team")}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              fontSize: 28,
+              fontWeight: 800,
+              color: "#1e3a8a",
+              background: "white",
+              padding: "18px 36px",
+              borderRadius: 999,
+              boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
+            }}
+          >
+            Read Now →
+          </div>
         </div>
       </div>
     ),

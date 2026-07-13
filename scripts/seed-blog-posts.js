@@ -1,4 +1,4 @@
-// One-time migration: reads every content/blog/*.mdx file and creates a
+// Sync script: reads every content/blog/*.mdx file and creates or updates the
 // matching row in the backend's blog_posts table via the admin CRUD API.
 // Run from Frontend Dashboard/: node scripts/seed-blog-posts.js
 //
@@ -22,16 +22,28 @@ function slugify(value) {
     .replace(/^-+|-+$/g, "");
 }
 
-async function fetchExistingSlugs() {
+async function fetchExistingPosts() {
   const res = await fetch(`${API_BASE_URL}/blog/posts?limit=1000`);
   if (!res.ok) throw new Error(`Failed to list existing posts: ${res.status}`);
   const json = await res.json();
-  return new Set((json?.data?.posts ?? []).map((p) => p.slug));
+  const posts = json?.data?.posts ?? [];
+  return new Map(posts.map((p) => [p.slug, p.id]));
 }
 
 async function createPost(body) {
   const res = await fetch(`${API_BASE_URL}/blog/posts`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Failed (${res.status}): ${JSON.stringify(json)}`);
+  return json;
+}
+
+async function updatePost(id, body) {
+  const res = await fetch(`${API_BASE_URL}/blog/posts/${id}`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -49,19 +61,14 @@ async function main() {
   const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
   console.log(`Found ${files.length} local .mdx files.`);
 
-  const existingSlugs = await fetchExistingSlugs();
+  const existingPosts = await fetchExistingPosts();
 
   let created = 0;
-  let skipped = 0;
+  let updated = 0;
 
   for (const filename of files) {
     const slug = slugify(filename.replace(/\.mdx$/, ""));
-
-    if (existingSlugs.has(slug)) {
-      console.log(`SKIP  ${slug} (already exists in DB)`);
-      skipped++;
-      continue;
-    }
+    const existingId = existingPosts.get(slug);
 
     const raw = fs.readFileSync(path.join(BLOG_DIR, filename), "utf8");
     const { data, content } = matter(raw);
@@ -81,6 +88,7 @@ async function main() {
       noindex: data.noindex ?? false,
       authorSlugs,
       coverImage: data.coverImage ?? undefined,
+      ogImage: data.ogImage ?? undefined,
       canonicalUrl: data.canonicalUrl ?? undefined,
       seriesName: data.series?.name,
       seriesPart: data.series?.part,
@@ -88,15 +96,21 @@ async function main() {
     };
 
     try {
-      await createPost(body);
-      console.log(`OK    ${slug}`);
-      created++;
+      if (existingId) {
+        await updatePost(existingId, body);
+        console.log(`UPDATE ${slug}`);
+        updated++;
+      } else {
+        await createPost(body);
+        console.log(`OK    ${slug}`);
+        created++;
+      }
     } catch (err) {
       console.error(`FAIL  ${slug}: ${err.message}`);
     }
   }
 
-  console.log(`\nDone. Created ${created}, skipped ${skipped} of ${files.length}.`);
+  console.log(`\nDone. Created ${created}, updated ${updated} of ${files.length}.`);
 }
 
 main().catch((err) => {
