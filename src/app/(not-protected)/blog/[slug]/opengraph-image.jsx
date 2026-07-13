@@ -3,7 +3,8 @@ import { getPostBySlug } from "@/lib/blog";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const revalidate = false;
+// ISR paused: see ISR_implementation.md for the Vercel Edge Function quota reasoning.
+// export const revalidate = false;
 
 export default async function Image({ params }) {
   const { slug } = await params;

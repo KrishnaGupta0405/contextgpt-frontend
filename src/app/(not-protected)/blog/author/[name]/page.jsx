@@ -4,7 +4,10 @@ import { Twitter, Linkedin, Facebook, Instagram, Globe } from "lucide-react";
 import { getAllAuthors, getPostsByAuthor } from "@/lib/blog";
 import BlogList from "@/components/blog/BlogList";
 
-export const revalidate = false;
+// ISR paused: Edge Function invocations on every cache-hit/revalidate across /blog, /blog/[slug],
+// /blog/author/[name] and /api/revalidate were draining the Vercel quota too fast. This page is now
+// served the old build-time static way instead. See ISR_implementation.md for details.
+// export const revalidate = false;
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {

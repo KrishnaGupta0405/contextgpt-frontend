@@ -2,7 +2,8 @@ import { Feed } from "feed";
 import { getAllPosts } from "@/lib/blog";
 import { getPostImageUrl } from "@/lib/seo";
 
-export const revalidate = false;
+// ISR paused: see ISR_implementation.md for the Vercel Edge Function quota reasoning.
+// export const revalidate = false;
 
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

@@ -1,8 +1,10 @@
-// Uptime probe for BetterStack — confirms the Next.js server is up and responding
+// Uptime probe for BetterStack — runs on the Edge runtime so it's billed as
+// an edge request instead of a serverless function invocation on Vercel
+export const runtime = "edge";
+
 export async function GET() {
   return Response.json({
     status: "ok",
-    uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
 }

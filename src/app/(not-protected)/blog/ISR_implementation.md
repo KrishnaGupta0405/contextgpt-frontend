@@ -1,5 +1,20 @@
 # On-Demand ISR — Implementation Record
 
+## Currently not working -> ?
+
+## Paused (2026-07-13)
+
+After fully deploying this to Vercel, it turned out that **both** scenarios — a cache hit and an
+on-demand revalidation — invoke a Vercel Edge Function, and that happens across all 4 blog-related
+routes: `/blog`, `/blog/[slug]`, `/blog/author/[name]`, and `/api/revalidate`. That drains the Edge
+Function invocation quota much faster than expected. Since Vercel's **build-time** limit is
+unlimited (only Edge Function invocations are metered tightly), ISR is paused for now, on both the
+Backend Dashboard and the Frontend Dashboard. All the ISR/revalidation code described below has been
+commented out (not deleted) in both projects. Blog posts are back to being read from the `content/`
+folder and built/served the old way — plain static HTML/CSS generated at build time, no on-demand
+DB-backed rendering at request time. To bring a post live now requires adding/editing the `.mdx`
+file in `content/blog/` and running a rebuild + redeploy, same as before this feature existed.
+
 This documents the work done to move the blog off build-time static generation onto **On-Demand Incremental Static Regeneration (ISR)**: create/update/publish/unpublish/delete a post and the change goes live within seconds — no `npm run build`, no redeploy.
 
 ## Why
@@ -44,20 +59,20 @@ No slug-change history table — `updated_at` is enough; an old slug simply 404s
 
 ### Files added
 
-| File | Purpose |
-|---|---|
-| `src/controllers/blog.controller.js` | Admin CRUD: `createPost`, `listPosts` (paginated, includes drafts), `getPostById`, `updatePost` (partial update, detects slug changes), `deletePost`. Follows this repo's existing conventions (`asyncHandler`, `callDb`, `ApiError`/`ApiResponse`, manual whitelist validation — no zod on the backend). |
-| `src/routes/blog.routes.js` | Mounts the CRUD routes at `/api/v1/blog/posts`. **No auth middleware** — intentional, per user decision, since this is an admin-only tool used solely by the site owner. Must not be exposed publicly without adding auth back. |
+| File                                   | Purpose                                                                                                                                                                                                                                                                                                                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/controllers/blog.controller.js`   | Admin CRUD: `createPost`, `listPosts` (paginated, includes drafts), `getPostById`, `updatePost` (partial update, detects slug changes), `deletePost`. Follows this repo's existing conventions (`asyncHandler`, `callDb`, `ApiError`/`ApiResponse`, manual whitelist validation — no zod on the backend).                |
+| `src/routes/blog.routes.js`            | Mounts the CRUD routes at `/api/v1/blog/posts`. **No auth middleware** — intentional, per user decision, since this is an admin-only tool used solely by the site owner. Must not be exposed publicly without adding auth back.                                                                                          |
 | `src/utils/frontendRevalidate.util.js` | `triggerFrontendRevalidate({ paths, tags })` — fire-and-forget POST to the frontend's `/api/revalidate`, native `fetch` + `AbortController` timeout (8s), matches the style of the existing `webhookDispatch.util.js`. Never throws; logs and swallows failures so a revalidation outage can never fail a blog mutation. |
 
 ### Files modified
 
-| File | Change |
-|---|---|
-| `src/app.js` | Mounted `blogRouter` at `/api/v1/blog`. |
-| `src/controllers/website.controller.js` | Added `getPublicBlogPosts` and `getPublicBlogPostBySlug` — public, unauthenticated reads of **published-only** posts, for the public-facing frontend. |
-| `src/routes/website.route.js` | Wired the two new public routes: `GET /blog/posts`, `GET /blog/posts/:slug`. |
-| `.env` | Added `FRONTEND_REVALIDATE_SECRET` (shared secret with the frontend); added `http://localhost:3002` to `CORS_ORIGIN` for the new admin dashboard's origin. Reused existing `FRONTEND_URL`/`PROD_FRONTEND_URL`. |
+| File                                    | Change                                                                                                                                                                                                         |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app.js`                            | Mounted `blogRouter` at `/api/v1/blog`.                                                                                                                                                                        |
+| `src/controllers/website.controller.js` | Added `getPublicBlogPosts` and `getPublicBlogPostBySlug` — public, unauthenticated reads of **published-only** posts, for the public-facing frontend.                                                          |
+| `src/routes/website.route.js`           | Wired the two new public routes: `GET /blog/posts`, `GET /blog/posts/:slug`.                                                                                                                                   |
+| `.env`                                  | Added `FRONTEND_REVALIDATE_SECRET` (shared secret with the frontend); added `http://localhost:3002` to `CORS_ORIGIN` for the new admin dashboard's origin. Reused existing `FRONTEND_URL`/`PROD_FRONTEND_URL`. |
 
 ### Revalidation trigger points
 
@@ -75,23 +90,23 @@ Every mutation in `blog.controller.js` calls `triggerFrontendRevalidate` after a
 
 ### Files added
 
-| File | Purpose |
-|---|---|
+| File                              | Purpose                                                                                                                                                                                                                                                                                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/app/api/revalidate/route.js` | Secret-protected endpoint (`x-revalidate-secret` header, checked against `process.env.FRONTEND_REVALIDATE_SECRET`). Calls `revalidatePath`/`revalidateTag` for each path/tag in the request body. This is what the backend calls after every mutation. Modeled on the existing secret-gated pattern in `src/app/api/indexnow/route.js`. |
-| `scripts/seed-blog-posts.js` | One-time migration script. Reads every `content/blog/*.mdx` file, parses frontmatter with `gray-matter` (same parser already used by `src/lib/blog.js`), and `POST`s each one to the backend's create endpoint — skips slugs that already exist in the DB. Run once via `node scripts/seed-blog-posts.js` from `Frontend Dashboard/`. |
+| `scripts/seed-blog-posts.js`      | One-time migration script. Reads every `content/blog/*.mdx` file, parses frontmatter with `gray-matter` (same parser already used by `src/lib/blog.js`), and `POST`s each one to the backend's create endpoint — skips slugs that already exist in the DB. Run once via `node scripts/seed-blog-posts.js` from `Frontend Dashboard/`.   |
 
 ### Files modified
 
-| File | Change |
-|---|---|
-| `src/lib/blog.js` | Rewritten. All exported functions (`getAllPosts`, `getPostBySlug`, `getAdjacentPosts`, `getRelatedPosts`, `getFeaturedPosts`, `getSeriesPosts`, `getAllCategories`, `getPostsByCategory`, `getAllAuthors`, `getPostsByAuthor`, `getSearchIndex`) are now `async`. Posts are sourced by merging two normalized sources: local `.mdx` files (via `fs`, gated to `NODE_ENV !== 'production'`, local wins on slug collision) and the backend's public API (`fetch` with `next: { revalidate: 3600, tags: [...] }`). In production only the API source is ever used. |
-| `src/app/(not-protected)/blog/page.jsx` | Added `export const revalidate = 3600` (TTL safety net; on-demand is the primary mechanism). Component is now `async`, all data calls `await`ed. |
-| `src/app/(not-protected)/blog/[slug]/page.jsx` | Removed `generateStaticParams()`. Added `export const dynamicParams = true` (new slugs render on first request instead of requiring a rebuild) and `export const revalidate = 3600`. All data calls `await`ed. |
-| `src/app/(not-protected)/blog/author/[name]/page.jsx` | Same treatment: removed `generateStaticParams()`, added `dynamicParams = true` + `revalidate = 3600`, `await`ed all data calls. |
-| `src/app/(not-protected)/blog/rss.xml/route.js` | Added `export const revalidate = 3600`; `await`ed `getAllPosts()`. |
-| `src/app/(not-protected)/blog/[slug]/opengraph-image.jsx` | Added `export const revalidate = 3600`; `await`ed `getPostBySlug()`. |
-| `.env` | Added `FRONTEND_REVALIDATE_SECRET` (must match the backend's value). Reused existing `NEXT_PUBLIC_BACKEND_API_URL`. |
-| `GUIDE.md` (this directory) | Documented the new DB-backed workflow, the two ways to publish (local-file dev shortcut vs. the admin dashboard), the seed script, and a frontmatter-field → DB-column mapping. |
+| File                                                      | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/blog.js`                                         | Rewritten. All exported functions (`getAllPosts`, `getPostBySlug`, `getAdjacentPosts`, `getRelatedPosts`, `getFeaturedPosts`, `getSeriesPosts`, `getAllCategories`, `getPostsByCategory`, `getAllAuthors`, `getPostsByAuthor`, `getSearchIndex`) are now `async`. Posts are sourced by merging two normalized sources: local `.mdx` files (via `fs`, gated to `NODE_ENV !== 'production'`, local wins on slug collision) and the backend's public API (`fetch` with `next: { revalidate: 3600, tags: [...] }`). In production only the API source is ever used. |
+| `src/app/(not-protected)/blog/page.jsx`                   | Added `export const revalidate = 3600` (TTL safety net; on-demand is the primary mechanism). Component is now `async`, all data calls `await`ed.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `src/app/(not-protected)/blog/[slug]/page.jsx`            | Removed `generateStaticParams()`. Added `export const dynamicParams = true` (new slugs render on first request instead of requiring a rebuild) and `export const revalidate = 3600`. All data calls `await`ed.                                                                                                                                                                                                                                                                                                                                                  |
+| `src/app/(not-protected)/blog/author/[name]/page.jsx`     | Same treatment: removed `generateStaticParams()`, added `dynamicParams = true` + `revalidate = 3600`, `await`ed all data calls.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `src/app/(not-protected)/blog/rss.xml/route.js`           | Added `export const revalidate = 3600`; `await`ed `getAllPosts()`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `src/app/(not-protected)/blog/[slug]/opengraph-image.jsx` | Added `export const revalidate = 3600`; `await`ed `getPostBySlug()`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `.env`                                                    | Added `FRONTEND_REVALIDATE_SECRET` (must match the backend's value). Reused existing `NEXT_PUBLIC_BACKEND_API_URL`.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `GUIDE.md` (this directory)                               | Documented the new DB-backed workflow, the two ways to publish (local-file dev shortcut vs. the admin dashboard), the seed script, and a frontmatter-field → DB-column mapping.                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ---
 
@@ -99,14 +114,14 @@ Every mutation in `blog.controller.js` calls `triggerFrontendRevalidate` after a
 
 A separate, minimal Next.js app (peer directory to `Frontend Dashboard` / `Backend Dashboard`) — the actual tool used to manage posts day-to-day. No login/JWT, since it's a personal/admin-only local tool talking directly to the unauthenticated `/api/v1/blog/*` routes.
 
-| Path | Purpose |
-|---|---|
-| `src/lib/api.js` | Thin fetch wrapper for the backend's blog endpoints (`listPosts`, `getPost`, `createPost`, `updatePost`, `deletePost`). Never throws — always resolves `{ ok, status, body }` so the UI can render the raw server response either way. |
-| `src/app/page.jsx` | Paginated post list (10/page, Prev/Next), status badges, links to each post's detail page. |
-| `src/app/posts/new/page.jsx` | Create-post form. |
-| `src/app/posts/[id]/page.jsx` | Fetches full post content by id, pre-fills the same form for editing (change `status` to publish/unpublish), plus a Delete button with confirmation. |
-| `src/components/PostForm.jsx` | Shared form used by both create and edit pages. |
-| `src/components/ResponsePanel.jsx` | Renders the raw JSON server response (status + body) under every action, success or failure. |
+| Path                               | Purpose                                                                                                                                                                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/api.js`                   | Thin fetch wrapper for the backend's blog endpoints (`listPosts`, `getPost`, `createPost`, `updatePost`, `deletePost`). Never throws — always resolves `{ ok, status, body }` so the UI can render the raw server response either way. |
+| `src/app/page.jsx`                 | Paginated post list (10/page, Prev/Next), status badges, links to each post's detail page.                                                                                                                                             |
+| `src/app/posts/new/page.jsx`       | Create-post form.                                                                                                                                                                                                                      |
+| `src/app/posts/[id]/page.jsx`      | Fetches full post content by id, pre-fills the same form for editing (change `status` to publish/unpublish), plus a Delete button with confirmation.                                                                                   |
+| `src/components/PostForm.jsx`      | Shared form used by both create and edit pages.                                                                                                                                                                                        |
+| `src/components/ResponsePanel.jsx` | Renders the raw JSON server response (status + body) under every action, success or failure.                                                                                                                                           |
 
 Runs on `http://localhost:3002` (`npm run dev` → `next dev -p 3002`), configured via its own `.env` (`NEXT_PUBLIC_BACKEND_API_URL`).
 

@@ -3,8 +3,10 @@ import { playfairDisplay } from "@/lib/fonts";
 import BlogList from "@/components/blog/BlogList";
 import BlogSearch from "@/components/blog/BlogSearch";
 
-// On-demand revalidation (via /api/revalidate) is the only mechanism that refreshes this page
-export const revalidate = false;
+// ISR paused: Edge Function invocations on every cache-hit/revalidate across /blog, /blog/[slug],
+// /blog/author/[name] and /api/revalidate were draining the Vercel quota too fast. This page is now
+// served the old build-time static way instead. See ISR_implementation.md for details.
+// export const revalidate = false;
 
 export default async function Blog() {
   const posts = await getAllPosts();

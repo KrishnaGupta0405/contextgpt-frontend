@@ -97,11 +97,14 @@ function mapApiPostToRaw(post) {
     source: 'api',
   };
 }
-
+ 
 async function fetchAllApiPosts() {
   try {
+    // ISR paused: Edge Function invocations on every cache-hit/revalidate across /blog, /blog/[slug],
+    // /blog/author/[name] and /api/revalidate were draining the Vercel quota too fast. Content is now
+    // served the old build-time static way, so the `next.revalidate` tag option is commented out.
     const res = await fetch(`${API_BASE_URL}/website/blog/posts`, {
-      next: { revalidate: false, tags: ['blog-posts'] },
+      // next: { revalidate: false, tags: ['blog-posts'] },
     });
     if (!res.ok) return [];
     const json = await res.json();
@@ -116,8 +119,9 @@ async function fetchAllApiPosts() {
 
 async function fetchApiPostBySlug(slug) {
   try {
+    // ISR paused: see fetchAllApiPosts() above for the reason.
     const res = await fetch(`${API_BASE_URL}/website/blog/posts/${encodeURIComponent(slug)}`, {
-      next: { revalidate: false, tags: ['blog-posts', `blog-post-${slug}`] },
+      // next: { revalidate: false, tags: ['blog-posts', `blog-post-${slug}`] },
     });
     if (!res.ok) return null;
     const json = await res.json();
