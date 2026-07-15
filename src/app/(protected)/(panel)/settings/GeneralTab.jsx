@@ -647,7 +647,6 @@ const GeneralTab = () => {
                     <Label className="text-sm font-semibold text-gray-900">
                       Limit Messages Per Conversation
                     </Label>
-                    <Lock className="text-muted-foreground/60 h-3 w-3" />
                   </div>
                   <p className="text-muted-foreground max-w-[650px] text-[12px] leading-relaxed">
                     When enabled, users will be prompted to start a new conversation
@@ -677,7 +676,6 @@ const GeneralTab = () => {
                   >
                     Max Messages Per Conversation
                   </Label>
-                  <Lock className="text-muted-foreground/60 h-3 w-3" />
                 </div>
                 {isLoading ? (
                   <Skeleton className="h-10 w-full rounded-md" />

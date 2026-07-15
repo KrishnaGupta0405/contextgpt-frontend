@@ -4,11 +4,26 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 
 const features = [
-  "7-day risk-free trial",
-  "Cancel at any time",
-  "Tailored onboarding support",
-  "Fair pricing that scales",
-  "100+ global languages",
+  {
+    text: "7-day risk-free trial",
+    chatMessage: "How does the 7-day risk-free trial work?",
+  },
+  {
+    text: "Cancel at any time",
+    chatMessage: "How do I cancel my subscription?",
+  },
+  {
+    text: "Tailored onboarding support",
+    chatMessage: "How does personalized onboarding help work?",
+  },
+  {
+    text: "Fair pricing that scales",
+    chatMessage: "How does your pricing scale as I grow?",
+  },
+  {
+    text: "100+ global languages",
+    chatMessage: "Which languages do you support?",
+  },
 ];
 export default function HeroSection() {
   useEffect(() => {
@@ -85,14 +100,19 @@ export default function HeroSection() {
                 Disclaimer: This platform is an independent product and is not affiliated with Google, Anthropic, OpenAi. We provide access to the LLMs through our custom interface.
               </p>
               <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
-                {features.map((f) => (
+                {features.map(({ text, chatMessage }) => (
                   <span
-                    key={f}
-                    className="flex items-center gap-1.5 text-sm text-gray-700"
+                    key={text}
+                    onClick={
+                      chatMessage
+                        ? () => window.$cgpt?.push(["do", "message:send", chatMessage])
+                        : undefined
+                    }
+                    className="flex cursor-pointer items-center gap-1.5 text-sm text-gray-700"
                   >
                     <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-blue-500" />
                     <span className="underline decoration-dotted underline-offset-2">
-                      {f}
+                      {text}
                     </span>
                   </span>
                 ))}
