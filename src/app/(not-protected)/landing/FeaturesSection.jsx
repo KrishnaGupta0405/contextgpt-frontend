@@ -91,17 +91,49 @@ const benefits = [
 
 const FeaturesSectionLead = () => {
   const problems = [
-    { bold: "Potential customers hate waiting,", rest: " and most won't stick around for a callback" },
-    { bold: "Your competitors are faster,", rest: " which means they're capturing leads you paid to attract" },
-    { bold: "First response wins more business,", rest: " especially when prospects are comparing options" },
-    { bold: "Miss an inquiry today,", rest: " and someone else could close the deal tomorrow" },
+    {
+      bold: "Potential customers hate waiting,",
+      rest: " and most won't stick around for a callback",
+      chatMessage: "Why do my potential customers hate waiting, and how can ContextGPT fix that for my business?",
+    },
+    {
+      bold: "Your competitors are faster,",
+      rest: " which means they're capturing leads you paid to attract",
+      chatMessage: "How can ContextGPT help me respond faster than my competitors so I stop losing leads?",
+    },
+    {
+      bold: "First response wins more business,",
+      rest: " especially when prospects are comparing options",
+      chatMessage: "How does ContextGPT make sure I'm always the first to respond to a new lead?",
+    },
+    {
+      bold: "Miss an inquiry today,",
+      rest: " and someone else could close the deal tomorrow",
+      chatMessage: "How does ContextGPT stop me from missing inquiries and losing deals to competitors?",
+    },
   ]
 
   const benefits = [
-    { bold: "Get started in 5 minutes:", rest: " train your AI directly from your website content" },
-    { bold: "Never leave a question unanswered:", rest: " provide immediate help to every visitor" },
-    { bold: "Capture leads around the clock:", rest: " even when you're busy, offline, or asleep" },
-    { bold: "Simple setup:", rest: " no coding, developers, or complex integrations needed" },
+    {
+      bold: "Get started in 5 minutes:",
+      rest: " train your AI directly from your website content",
+      chatMessage: "How can I get ContextGPT set up for my business in just 5 minutes?",
+    },
+    {
+      bold: "Never leave a question unanswered:",
+      rest: " provide immediate help to every visitor",
+      chatMessage: "How does ContextGPT make sure none of my visitors' questions go unanswered?",
+    },
+    {
+      bold: "Capture leads around the clock:",
+      rest: " even when you're busy, offline, or asleep",
+      chatMessage: "How can ContextGPT capture leads for my business 24/7, even when I'm offline?",
+    },
+    {
+      bold: "Simple setup:",
+      rest: " no coding, developers, or complex integrations needed",
+      chatMessage: "How simple is it to set up ContextGPT without any coding or developers?",
+    },
   ]
 
   return (
@@ -134,7 +166,10 @@ const FeaturesSectionLead = () => {
               {problems.map((problem, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <span className="w-2 h-2 rounded-full bg-red-400 mt-2.5 flex-shrink-0" />
-                  <p className="text-base text-neutral-700 leading-relaxed underline underline-offset-4 decoration-neutral-400 decoration-dotted">
+                  <p
+                    onClick={() => window.$cgpt?.push(["do", "message:send", problem.chatMessage])}
+                    className="text-base text-neutral-700 leading-relaxed underline underline-offset-4 decoration-neutral-400 decoration-dotted hover:text-blue-600 hover:decoration-blue-500 cursor-pointer"
+                  >
                     <strong>{problem.bold}</strong>{problem.rest}
                   </p>
                 </li>
@@ -157,7 +192,10 @@ const FeaturesSectionLead = () => {
               {benefits.map((benefit, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-blue-50 leading-relaxed underline underline-offset-4 decoration-blue-300 decoration-dotted">
+                  <p
+                    onClick={() => window.$cgpt?.push(["do", "message:send", benefit.chatMessage])}
+                    className="text-base text-blue-50 leading-relaxed underline underline-offset-4 decoration-blue-300 decoration-dotted hover:text-white hover:decoration-white cursor-pointer"
+                  >
                     <strong>{benefit.bold}</strong>{benefit.rest}
                   </p>
                 </li>

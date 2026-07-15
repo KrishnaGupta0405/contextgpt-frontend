@@ -25,16 +25,16 @@ export default function FAQSection() {
       </div>
 
       <Tabs defaultValue={faqCategories[0].value}>
-        <div className="mb-8 w-full overflow-x-auto">
+        <div className="mb-8 w-full h-12 overflow-x-auto overflow-y-hidden">
           <TabsList
             variant="line"
-            className="flex h-auto min-w-max mx-auto flex-nowrap gap-1 bg-transparent p-0 justify-center items-center"
+            className="flex h-12 min-w-max mx-auto flex-nowrap gap-1 bg-transparent p-0 justify-center items-center"
           >
             {faqCategories.map((cat) => (
               <TabsTrigger
                 key={cat.value}
                 value={cat.value}
-                className="flex-none rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 text-lg font-medium text-gray-500 shadow-none data-[state=active]:border-b-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 data-[state=active]:shadow-none dark:text-gray-400 dark:data-[state=active]:border-blue-400 dark:data-[state=active]:text-blue-400"
+                className="flex-none rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 text-lg font-medium text-gray-500 shadow-none after:opacity-0! data-[state=active]:border-b-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 data-[state=active]:shadow-none dark:text-gray-400 dark:data-[state=active]:border-blue-400 dark:data-[state=active]:text-blue-400"
               >
                 {cat.label}
               </TabsTrigger>

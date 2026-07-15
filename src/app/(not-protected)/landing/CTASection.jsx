@@ -6,12 +6,27 @@ import { CheckCircle } from "lucide-react";
 
 export default function CTASection() {
   const features = [
-    "Guided onboarding support",
-    "Scales with cost-efficient pricing",
-    "Supports 95+ languages",
-    "Free 7-day trial included",
-    "Cancel anytime, no lock-in",
-    // "SOC 2 Type II certified",
+    {
+      label: "Guided onboarding support",
+      prompt: "What does guided onboarding support include?",
+    },
+    {
+      label: "Scales with cost-efficient pricing",
+      prompt: "How does pricing scale as I grow?",
+    },
+    {
+      label: "Supports 95+ languages",
+      prompt: "Which languages does ContextGPT support?",
+    },
+    {
+      label: "Free 7-day trial included",
+      prompt: "What's included in the free 7-day trial?",
+    },
+    {
+      label: "Cancel anytime, no lock-in",
+      prompt: "Can I cancel my subscription anytime?",
+    },
+    // { label: "SOC 2 Type II certified", prompt: "Is ContextGPT SOC 2 Type II certified?" },
   ];
 
   return (
@@ -50,8 +65,13 @@ export default function CTASection() {
           {features.map((feature, index) => (
             <div key={index} className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-white" />
-              <span className="border-b border-dotted border-white/70 pb-0.5">
-                {feature}
+              <span
+                onClick={() =>
+                  window.$cgpt?.push(["do", "message:send", feature.prompt])
+                }
+                className="cursor-pointer border-b border-dotted border-white/70 pb-0.5 transition-colors hover:border-white hover:text-blue-100"
+              >
+                {feature.label}
               </span>
             </div>
           ))}

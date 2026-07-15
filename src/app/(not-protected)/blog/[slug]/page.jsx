@@ -91,12 +91,12 @@ export default async function BlogPostPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <div className="mx-auto max-w-[1600px] px-4 pt-16 pb-24 sm:px-6 lg:px-8">
-        <header className="m-28 mb-16 mt-20 max-w-5xl">
+      <div className="mx-auto max-w-[1600px] px-4 pt-8 pb-24 sm:px-6 lg:px-8">
+        <header className="mx-4 mb-16 mt-8 max-w-5xl sm:mx-8 sm:mt-12 lg:mx-28 lg:mt-20">
           <h1 className={`${playfairDisplay.className} text-3xl font-bold tracking-tight text-secondary-900 mt-8 sm:text-4xl lg:text-5xl xl:text-6xl`}>
             {post.title}
           </h1>
-          <p className={`${inter.className} text-lg font-normal text-secondary-600 mt-4 lg:text-2xl text-slate-600 leading-tight tracking-tighter`}>{post.description}</p>
+          <p className={`${inter.className} text-base font-normal text-secondary-600 mt-4 sm:text-lg lg:text-2xl text-slate-600 leading-tight tracking-tighter`}>{post.description}</p>
           <div className="mt-10 flex flex-wrap items-center gap-2">
             {post.tags.map((tag) => (
               <span

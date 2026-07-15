@@ -27,6 +27,12 @@ const ADDON_ICONS = {
   extra_pages_5k: Zap,
 };
 
+const ADDON_PROMPTS = {
+  remove_branding: "Can I remove the 'Powered by ContextGPT' branding from my chatbots?",
+  extra_messages_5k: "How does the extra 5,000 messages add-on work?",
+  extra_pages_5k: "How does the extra 5,000 pages add-on work?",
+};
+
 /**
  * AddonCard — displays a single add-on with purchase button.
  *
@@ -104,7 +110,18 @@ export default function AddonCard({ addon, purchaseCount = 0, isLoggedIn, onBuyS
           </div>
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold text-slate-900">{addon.title}</h3>
+              <h3
+                onClick={() =>
+                  window.$cgpt?.push([
+                    "do",
+                    "message:send",
+                    ADDON_PROMPTS[addon.identifier] || `Tell me more about the ${addon.title} add-on.`,
+                  ])
+                }
+                className="cursor-pointer text-base font-semibold text-slate-900 underline decoration-slate-300 decoration-dotted decoration-2 underline-offset-4 transition-colors hover:text-blue-600 hover:decoration-blue-600"
+              >
+                {addon.title}
+              </h3>
               {/* Bonus badge for messages and pages addons */}
               {(addon.identifier === "extra_messages_5k" || addon.identifier === "extra_pages_5k") && (
                 <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700">

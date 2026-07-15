@@ -6,8 +6,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { MessageSquare } from "lucide-react";
 import Link from "next/link";
+
+function AskIcon(props) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
+      <rect width="256" height="256" fill="none" />
+      <circle cx="128" cy="120" r="12" />
+      <circle cx="84" cy="120" r="12" />
+      <circle cx="172" cy="120" r="12" />
+      <path
+        d="M105.07,192l16,28a8,8,0,0,0,13.9,0l16-28H216a8,8,0,0,0,8-8V56a8,8,0,0,0-8-8H40a8,8,0,0,0-8,8V184a8,8,0,0,0,8,8Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="16"
+      />
+    </svg>
+  );
+}
 
 export default function FAQAccordion({ items }) {
   const mid = Math.ceil(items.length / 2);
@@ -30,10 +48,13 @@ function FAQColumn({ items, startIndex }) {
           <AccordionTrigger className="flex items-start gap-3 py-4 text-left text-sm font-medium text-gray-900 hover:no-underline dark:text-white [&>svg]:shrink-0">
             <span className="flex-1">{item.question}</span>
             <div
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                window.$cgpt?.push(["do", "message:send", item.question]);
+              }}
               className="ml-2 flex shrink-0 items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 cursor-pointer"
             >
-              <MessageSquare className="h-3.5 w-3.5" />
+              <AskIcon className="h-3.5 w-3.5" />
               Ask
             </div>
           </AccordionTrigger>

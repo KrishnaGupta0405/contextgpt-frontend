@@ -89,19 +89,47 @@ export default function Features() {
           <div className="relative z-10 mt-12 flex flex-col items-center justify-center pb-8">
             <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-4">
               {[
-                "7-day risk-free trial",
-                "Cancel at any time",
-                "Tailored onboarding support",
-                "Fair pricing that scales",
-                "100+ global languages",
-              ].map((f) => (
+                {
+                  text: "7-day risk-free trial",
+                  chatMessage: "How does the 7-day risk-free trial work?",
+                },
+                {
+                  text: "Cancel at any time",
+                  chatMessage: "How do I cancel my subscription?",
+                },
+                {
+                  text: "Tailored onboarding support",
+                  chatMessage: "How does personalized onboarding help work?",
+                },
+                {
+                  text: "Fair pricing that scales",
+                  chatMessage: "How does your pricing scale as I grow?",
+                },
+                {
+                  text: "100+ global languages",
+                  chatMessage: "Which languages do you support?",
+                },
+              ].map(({ text, chatMessage }) => (
                 <span
-                  key={f}
-                  className="flex items-center gap-2 text-base font-medium text-slate-800"
+                  key={text}
+                  onClick={
+                    chatMessage
+                      ? () => window.$cgpt?.push(["do", "message:send", chatMessage])
+                      : undefined
+                  }
+                  className={cn(
+                    "flex items-center gap-2 text-base font-medium text-slate-800 hover:text-blue-600",
+                    chatMessage && "hover:cursor-pointer"
+                  )}
                 >
                   <CheckCircle2 className="h-5 w-5 shrink-0 text-blue-600" />
-                  <span className="underline decoration-slate-400 decoration-dotted underline-offset-4">
-                    {f}
+                  <span
+                    className={cn(
+                      "underline decoration-slate-400 decoration-dotted underline-offset-4",
+                      chatMessage && "hover:decoration-blue-500 hover:text-blue-600 hover:cursor-pointer"
+                    )}
+                  >
+                    {text}
                   </span>
                 </span>
               ))}

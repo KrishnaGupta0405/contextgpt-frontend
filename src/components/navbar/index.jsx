@@ -46,6 +46,7 @@ const NAV_LINKS = [
   { href: "/integration", label: "Integrations" },
   { href: "/pricing", label: "Pricing" },
   { href: "/security", label: "Security" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const RESOURCE_LINKS = [
@@ -72,16 +73,16 @@ export default function NavigationMenuDemo() {
         "fixed bg-background/90 border-border top-0 right-0 left-0 z-50 border-b shadow-sm backdrop-blur-md",
       )}
     >
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-1.5">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-1.5 md:grid md:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <img
               src="/icons/Contextgpt_icon.png"
               alt="ContextGPT"
-              className="-mt-2 h-10 w-full"
+              className="-mt-2 h-8 w-auto shrink-0 sm:h-10"
             />
             <span
-              className="text-2xl tracking-tight"
+              className="whitespace-nowrap text-lg tracking-tight sm:text-2xl"
               style={{ fontWeight: 650 }}
             >
               Context
@@ -93,8 +94,8 @@ export default function NavigationMenuDemo() {
         </div>
 
         {/* Desktop nav — hidden on mobile */}
-        <NavigationMenu aria-label="Main navigation" className="hidden md:flex">
-          <NavigationMenuList>
+        <NavigationMenu aria-label="Main navigation" className="hidden md:flex md:justify-center">
+          <NavigationMenuList className="gap-2">
             {NAV_LINKS.map(({ href, label }) => (
               <NavigationMenuItem key={href}>
                 <Link href={href} legacyBehavior passHref>
@@ -222,7 +223,7 @@ export default function NavigationMenuDemo() {
         </NavigationMenu>
 
         {/* Desktop auth buttons — hidden on mobile */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 justify-self-end">
           {user ? (
             <>
               <Link
@@ -247,40 +248,36 @@ export default function NavigationMenuDemo() {
               >
                 Sign In
               </Link>
-              {pathname !== "/pricing" && (
-                <Link
-                  href="/pricing"
-                  className="text-[#155ded] border border-[#155ded] flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-medium transition-all hover:opacity-90"
-                >
-                  Start a free trial
-                </Link>
-              )}
+              <Link
+                href="/pricing"
+                className="text-[#155ded] border border-[#155ded] flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-medium transition-all hover:opacity-90"
+              >
+                Start a free trial
+              </Link>
             </>
           )}
         </div>
 
         {/* Mobile: primary action button + hamburger */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-1.5 shrink-0">
           {user ? (
             <Link
               href="/dashboard"
-              className="bg-[#155ded] text-white flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium"
+              className="bg-[#155ded] text-white flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium sm:px-3 sm:text-sm"
             >
-              <LayoutDashboard className="h-4 w-4" />
+              <LayoutDashboard className="h-4 w-4 shrink-0" />
               Dashboard
             </Link>
           ) : (
-            pathname !== "/pricing" && (
-              <Link
-                href="/pricing"
-                className="bg-[#155ded] text-white flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium"
-              >
-                Start a free trial
-              </Link>
-            )
+            <Link
+              href="/pricing"
+              className="bg-[#155ded] text-white flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium sm:px-3 sm:text-sm"
+            >
+              Start a free trial
+            </Link>
           )}
           <button
-            className="flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 transition-colors"
+            className="flex shrink-0 items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="Toggle menu"
           >

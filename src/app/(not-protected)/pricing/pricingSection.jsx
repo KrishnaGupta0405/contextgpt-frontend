@@ -602,30 +602,35 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: "Up to 10,000 chatbots",
                     included: true,
+                    prompt: "Can I get up to 10,000 chatbots on the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     // isBold: true,
                   },
                   {
                     label: "Customizable message volume",
                     included: true,
+                    prompt: "Can you customize the message volume for the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     // isBold: true,
                   },
                   {
                     label: "Up to 500,000 pages",
                     included: true,
+                    prompt: "Can I index up to 500,000 pages on the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     // isBold: true,
                   },
                   {
                     label: "Manual Refresh",
                     included: true,
+                    prompt: "What is manual refresh and how does it work on the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     // isBold: true,
                   },
                   {
                     label: "Up to 10,000 team members",
                     included: true,
+                    prompt: "Can I add up to 10,000 team members on the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     isBold: true,
                     isExtraBold: true,
@@ -633,6 +638,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: "Integrations with multiple platforms",
                     included: true,
+                    prompt: "Which platforms does the Enterprise plan integrate with?",
                     //highlightColor: "text-emerald-600",
                     isBold: true,
                     isExtraBold: true,
@@ -640,6 +646,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: "API Access",
                     included: true,
+                    prompt: "Does the Enterprise plan include API access?",
                     // highlightColor: "text-emerald-600",
                     isBold: true,
                     isExtraBold: true,
@@ -647,6 +654,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: "Rate Limiting",
                     included: true,
+                    prompt: "How does rate limiting work on the Enterprise plan?",
                     // highlightColor: "text-emerald-600",
                     isBold: true,
                     isExtraBold: true,
@@ -654,30 +662,35 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: "Auto Refresh (Daily)",
                     included: true,
+                    prompt: "How does daily auto refresh work on the Enterprise plan?",
                     highlightColor: "text-emerald-600",
                     isBold: true,
                   },
                   {
                     label: "Priority Support",
                     included: true,
+                    prompt: "What does priority support include on the Enterprise plan?",
                     highlightColor: "text-emerald-600",
                     isBold: true,
                   },
                   {
                     label: "Webhook Support",
                     included: true,
+                    prompt: "Does the Enterprise plan support webhooks?",
                     highlightColor: "text-emerald-600",
                     isBold: true,
                   },
                   {
                     label: "Custom Integrations",
                     included: true,
+                    prompt: "Can I get custom integrations on the Enterprise plan?",
                     highlightColor: "text-emerald-600",
                     isBold: true,
                   },
                   {
                     label: "Signed DPA on request",
                     included: true,
+                    prompt: "Can I get a signed DPA on the Enterprise plan?",
                     highlightColor: "text-emerald-600",
                     isBold: true,
                   },
@@ -699,6 +712,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                   {
                     label: `${plan.chatbotGiven === -1 || plan.chatbotGiven > 99999 ? "Up to 10,000" : plan.chatbotGiven === 1 ? "1" : "Up to " + plan.chatbotGiven.toLocaleString()} chatbot${plan.chatbotGiven === 1 ? "" : "s"}`,
                     included: plan.chatbotGiven > 0 || plan.chatbotGiven === -1,
+                    prompt: `Can I embed ${plan.chatbotGiven === 1 ? "1 chatbot" : plan.chatbotGiven === -1 || plan.chatbotGiven > 99999 ? "up to 10,000 chatbots" : "up to " + plan.chatbotGiven.toLocaleString() + " chatbots"} on my website?`,
                     highlightColor: "text-slate-600 font-medium",
                   },
                   {
@@ -706,22 +720,26 @@ function PricingSectionContent({ plans = [], loading = true }) {
                     included:
                       plan.messagesSentByAi > 0 ||
                       plan.messagesSentByAi === -1,
+                    prompt: "What happens if I exceed the message volume limit?",
                     highlightColor: "text-slate-600 font-medium",
                   },
                   {
                     label: `Up to ${plan.pagesUpto === -1 || plan.pagesUpto > 99999 ? "500,000" : plan.pagesUpto.toLocaleString()} pages`,
                     included: plan.pagesUpto > 0 || plan.pagesUpto === -1,
+                    prompt: "How do you define a page ? what actually it consist of ?",
                     highlightColor: "text-slate-600 font-medium",
                   },
                   {
                     label: "Manual Refresh",
                     included: true,
+                    prompt: "What is manual refresh and how does it work?",
                     highlightColor: "text-slate-600 font-medium",
                   },
                   {
                     label: `${plan.teamMemberAccess === -1 || plan.teamMemberAccess > 99999 ? "Up to 10,000" : plan.teamMemberAccess === 1 ? "1" : "Up to " + plan.teamMemberAccess.toLocaleString()} team member${plan.teamMemberAccess === 1 ? "" : "s"}`,
                     included:
                       plan.teamMemberAccess > 0 || plan.teamMemberAccess === -1,
+                    prompt: "What does a team member means ?",
                     highlightColor: "text-slate-900",
                     isBold: plan.teamMemberAccess > 1,
                   },
@@ -730,12 +748,14 @@ function PricingSectionContent({ plans = [], loading = true }) {
                     included:
                       isGrowth ||
                       plan.type.toLowerCase().includes("scale"),
+                    prompt: "What various integrations do you support?",
                     highlightColor: "text-slate-900",
                     isBold: true,
                   },
                   {
                     label: "API Access",
                     included: plan.apiAccess,
+                    prompt: "Tell me about API access?",
                     highlightColor: "text-slate-900",
                     isBold: true,
                   },
@@ -745,14 +765,16 @@ function PricingSectionContent({ plans = [], loading = true }) {
                       plan.conversationLimit == true &&
                       (isGrowth ||
                         plan.type.toLowerCase().includes("scale")),
+                    prompt: "How does rate limiting work ?",
                     highlightColor: "text-slate-900",
                     isBold: true,
-                  },                  
+                  },
                   {
                     label: plan.autoRefreshData
                       ? `Auto Refresh (${plan.autoRefreshDataOccurrence?.charAt(0).toUpperCase() + plan.autoRefreshDataOccurrence?.slice(1) || ""})`
                       : null,
                     included: plan.autoRefreshData,
+                    prompt: "What is auto-refresh ?",
                     highlightColor: "text-blue-600 font-bold",
                   },
                   {
@@ -760,6 +782,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                       ? `Auto Scan (${plan.autoScanDataOccurrence?.charAt(0).toUpperCase() + plan.autoScanDataOccurrence?.slice(1) || "Daily"})`
                       : null,
                     included: plan.autoScanData,
+                    prompt: "What is auto-scan ?",
                     highlightColor: "text-blue-600",
                     isBold: true,
                   },
@@ -768,6 +791,7 @@ function PricingSectionContent({ plans = [], loading = true }) {
                     included:
                       plan.webhookSupport &&
                       plan.type.toLowerCase().includes("scale"),
+                    prompt: "How do webhooks work ?",
                     highlightColor: "text-blue-600",
                     isBold: true,
                   },
@@ -974,7 +998,14 @@ function PricingSectionContent({ plans = [], loading = true }) {
                                   strokeWidth={2.5}
                                 />
                                 <span
-                                  className={`text-[13px] sm:text-[15px] underline decoration-slate-400 decoration-dotted decoration-2 underline-offset-4 ${feature.highlightColor}`}
+                                  onClick={() =>
+                                    window.$cgpt?.push([
+                                      "do",
+                                      "message:send",
+                                      feature.prompt || feature.label,
+                                    ])
+                                  }
+                                  className={`cursor-pointer text-[13px] underline decoration-slate-400 decoration-dotted decoration-2 underline-offset-4 transition-colors hover:text-blue-600 hover:decoration-blue-600 hover:decoration-dotted sm:text-[15px] ${feature.highlightColor}`}
                                   style={{ ...(feature.isBold && { fontWeight: 700 }) }}
                                 >
                                   {feature.label}
