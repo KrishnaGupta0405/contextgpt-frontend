@@ -267,17 +267,29 @@ export const mdxComponents = {
   Heading3: headingComponent("h3"),
   Heading4: headingComponent("h4"),
   Paragraph,
-  a: ({ href, children, ...props }) => {
+  a: ({ href, children, className, ...props }) => {
+    const linkClassName = [
+      "text-blue-600 hover:text-blue-800",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ");
     const isInternal = href?.startsWith("/") || href?.startsWith("#");
     if (isInternal) {
       return (
-        <Link href={href} {...props}>
+        <Link href={href} className={linkClassName} {...props}>
           {children}
         </Link>
       );
     }
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={linkClassName}
+        {...props}
+      >
         {children}
       </a>
     );

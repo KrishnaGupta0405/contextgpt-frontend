@@ -1,5 +1,7 @@
 # Writing a Blog Post
 
+Most important -> While writing try to make ContextGPT as the superior one, and write the same using flirty language.
+
 ## Where posts actually live (read this first)
 
 Blog posts are stored in the backend database (`blog_posts` table in **Backend Dashboard**), not in this repo. In production, `/blog` and `/blog/[slug]` are served entirely from the DB via on-demand ISR — publishing, editing, or deleting a post takes effect within seconds, **with no `npm run build` and no redeploy**.
@@ -65,23 +67,23 @@ series: null
 
 Frontmatter is validated with a Zod schema (`src/lib/blogSchema.js`) when the post is read. **A missing required field or wrong type throws a build error** naming the offending file — you'll see it immediately in `npm run dev`/`npm run build` output, not as a silently broken page.
 
-| Field | Required | Notes |
-|---|---|---|
-| `title` | yes | Page `<title>` and `<h1>`-equivalent metadata. |
-| `description` | yes | Used for SEO meta description, OG, and Twitter cards. |
-| `publishedAt` | yes | ISO date string (`YYYY-MM-DD`). Posts are sorted newest-first by this field. |
-| `author` | no | Author id string, e.g. `"krishna-gupta"`, or an array of ids for co-authored posts, e.g. `["krishna-gupta", "jane-doe"]` — each must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. The first author is treated as the primary author (`post.author`); the full list is available as `post.authors`. |
-| `updatedAt` | no | ISO date string. Shown as "last modified" if present. |
-| `tags` | no | Array of strings. Used for tag pills, related posts, and as a fallback category filter if `category` isn't set anywhere. |
-| `category` | no | Single string. Once any post has a `category`, the blog index filter switches from tag-based to category-based. |
-| `keywords` | no | Array of strings. Passed through to page `<meta name="keywords">`. |
-| `coverImage` | no | Path under `/public` or an absolute URL (e.g. ImageKit), used as the in-page cover/hero image. Also used as the OG/Twitter card image fallback if `ogImage` isn't set. |
-| `ogImage` | no | Path under `/public` or an absolute URL, used specifically for OG/Twitter card images, JSON-LD `image`, sitemap `<image:image>`, and RSS item image. Takes precedence over `coverImage` for those; falls back to `coverImage`, then to an auto-generated OG image if both are omitted. |
-| `draft` | no | `true`/`false`, default `false`. **Local `.mdx` files only** — draft posts are visible in `npm run dev` but excluded from production, the blog index, sitemap, RSS feed, and related posts. For DB-stored posts (admin dashboard), the equivalent is the `status` field: `DRAFT` vs `PUBLISHED`. |
-| `featured` | no | `true`/`false`, default `false`. Featured posts render in a highlighted section above the regular grid on `/blog`. |
-| `noindex` | no | `true`/`false`, default `false`. Sets `robots: noindex` and excludes the post from `sitemap-blog.xml`. |
-| `canonicalUrl` | no | Overrides the default canonical URL (`/blog/[slug]`) — use for cross-posted content. |
-| `series` | no | Object `{ name, part }`. Posts sharing a `series.name` get a series navigation box, ordered by `part`. |
+| Field          | Required | Notes                                                                                                                                                                                                                                                                                                                                                                         |
+| -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | yes      | Page `<title>` and `<h1>`-equivalent metadata.                                                                                                                                                                                                                                                                                                                                |
+| `description`  | yes      | Used for SEO meta description, OG, and Twitter cards.                                                                                                                                                                                                                                                                                                                         |
+| `publishedAt`  | yes      | ISO date string (`YYYY-MM-DD`). Posts are sorted newest-first by this field.                                                                                                                                                                                                                                                                                                  |
+| `author`       | no       | Author id string, e.g. `"krishna-gupta"`, or an array of ids for co-authored posts, e.g. `["krishna-gupta", "jane-doe"]` — each must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. The first author is treated as the primary author (`post.author`); the full list is available as `post.authors`. |
+| `updatedAt`    | no       | ISO date string. Shown as "last modified" if present.                                                                                                                                                                                                                                                                                                                         |
+| `tags`         | no       | Array of strings. Used for tag pills, related posts, and as a fallback category filter if `category` isn't set anywhere.                                                                                                                                                                                                                                                      |
+| `category`     | no       | Single string. Once any post has a `category`, the blog index filter switches from tag-based to category-based.                                                                                                                                                                                                                                                               |
+| `keywords`     | no       | Array of strings. Passed through to page `<meta name="keywords">`.                                                                                                                                                                                                                                                                                                            |
+| `coverImage`   | no       | Path under `/public` or an absolute URL (e.g. ImageKit), used as the in-page cover/hero image. Also used as the OG/Twitter card image fallback if `ogImage` isn't set.                                                                                                                                                                                                        |
+| `ogImage`      | no       | Path under `/public` or an absolute URL, used specifically for OG/Twitter card images, JSON-LD `image`, sitemap `<image:image>`, and RSS item image. Takes precedence over `coverImage` for those; falls back to `coverImage`, then to an auto-generated OG image if both are omitted.                                                                                        |
+| `draft`        | no       | `true`/`false`, default `false`. **Local `.mdx` files only** — draft posts are visible in `npm run dev` but excluded from production, the blog index, sitemap, RSS feed, and related posts. For DB-stored posts (admin dashboard), the equivalent is the `status` field: `DRAFT` vs `PUBLISHED`.                                                                              |
+| `featured`     | no       | `true`/`false`, default `false`. Featured posts render in a highlighted section above the regular grid on `/blog`.                                                                                                                                                                                                                                                            |
+| `noindex`      | no       | `true`/`false`, default `false`. Sets `robots: noindex` and excludes the post from `sitemap-blog.xml`.                                                                                                                                                                                                                                                                        |
+| `canonicalUrl` | no       | Overrides the default canonical URL (`/blog/[slug]`) — use for cross-posted content.                                                                                                                                                                                                                                                                                          |
+| `series`       | no       | Object `{ name, part }`. Posts sharing a `series.name` get a series navigation box, ordered by `part`.                                                                                                                                                                                                                                                                        |
 
 ## Headings
 
@@ -89,6 +91,7 @@ Use `##` and `###` (h2/h3). Only these two levels are picked up by the **Table o
 
 ```mdx
 ## Section title
+
 ### Sub-section title
 ```
 
@@ -126,10 +129,13 @@ Example outline:
 
 ```mdx
 ## Section A
+
 ### Subsection 1
+
 ### Subsection 2
 
 ## Section B
+
 ### Subsection 1
 
 ## Section C
@@ -147,11 +153,12 @@ To sidestep this, wrap each paragraph explicitly in a `<Paragraph>` component in
 
 ```mdx
 <Paragraph>
-Hello everyone! If you've landed here, it's likely because you're eager to learn the ins and outs of building a chatbot.
+  Hello everyone! If you've landed here, it's likely because you're eager to
+  learn the ins and outs of building a chatbot.
 </Paragraph>
 
 <Paragraph>
-You might be asking yourself, "What is the actual value of having a chatbot?"
+  You might be asking yourself, "What is the actual value of having a chatbot?"
 </Paragraph>
 ```
 
@@ -161,7 +168,7 @@ Each `<Paragraph>` renders as its own separate block regardless of internal line
 
 Standard Markdown is supported, plus GitHub Flavored Markdown (`remark-gfm`):
 
-- **Bold**, *italic*, ~~strikethrough~~
+- **Bold**, _italic_, ~~strikethrough~~
 - Bullet and numbered lists
 - Tables
 - Footnotes (`Some text[^1]` ... `[^1]: The footnote.`)
@@ -178,8 +185,8 @@ Plain `-`/`*` (bullet) and `1.`/`2.` (numbered) Markdown lists render via regist
 ```
 
 ```mdx
-| Before | After |
-|---|---|
+| Before   | After  |
+| -------- | ------ |
 | 1,200/mo | 480/mo |
 ```
 
@@ -307,20 +314,12 @@ These are registered globally (`src/components/blog/MDXComponents.jsx`) — use 
 
 **Tabs**
 
-```mdx
+````mdx
 <Tabs>
-  <Tab label="npm">
-    ```bash
-    npm install contextgpt
-    ```
-  </Tab>
-  <Tab label="pnpm">
-    ```bash
-    pnpm add contextgpt
-    ```
-  </Tab>
+  <Tab label="npm">```bash npm install contextgpt ```</Tab>
+  <Tab label="pnpm">```bash pnpm add contextgpt ```</Tab>
 </Tabs>
-```
+````
 
 **Accordion**
 
@@ -337,20 +336,12 @@ These are registered globally (`src/components/blog/MDXComponents.jsx`) — use 
 
 **CodeGroup** — multiple named code panes with a tab strip:
 
-```mdx
+````mdx
 <CodeGroup>
-  <CodeGroupItem title="app.ts">
-    ```ts
-    console.log("hello");
-    ```
-  </CodeGroupItem>
-  <CodeGroupItem title="app.py">
-    ```python
-    print("hello")
-    ```
-  </CodeGroupItem>
+  <CodeGroupItem title="app.ts">```ts console.log("hello"); ```</CodeGroupItem>
+  <CodeGroupItem title="app.py">```python print("hello") ```</CodeGroupItem>
 </CodeGroup>
-```
+````
 
 **FileTree**
 
@@ -377,7 +368,10 @@ These are registered globally (`src/components/blog/MDXComponents.jsx`) — use 
 For a **one-off manual link** to a specific post (e.g. referencing a specific guide inline in the body, outside the automatic section), use the `RelatedPost` component (singular) — takes just a `title` and `link`:
 
 ```jsx
-<RelatedPost title="How to Reduce Support Tickets by 60% with AI" link="/blog/reduce-support-tickets-with-ai" />
+<RelatedPost
+  title="How to Reduce Support Tickets by 60% with AI"
+  link="/blog/reduce-support-tickets-with-ai"
+/>
 ```
 
 Source: [RelatedPost.jsx](../../../components/blog/RelatedPost.jsx). It is not currently registered in `MDXComponents.jsx`, so import it directly wherever you need it in JSX (not usable bare inside `.mdx` content until registered).
@@ -470,3 +464,20 @@ Each author automatically gets an archive page at `/blog/author/[slug]` (avatar,
 ## Known gap
 
 `NewsletterCTA` (rendered at the bottom of every post) is UI-only — its submit handler isn't wired to an email service yet. Hook it up in `src/components/blog/NewsletterCTA.jsx` before relying on it to actually collect subscribers.
+
+## Do also add some refference website
+
+Website that talk about some similar topic to our blog should be added like IMB, medium, etc. these should be unicorn companies
+
+add the link with utm param is must -> https://example.com/?utm_source=contextgpt&utm_medium=referral&utm_campaign=blog
+
+Or for a specific blog:
+
+https://example.com/?utm_source=contextgpt&utm_medium=blog&utm_campaign=ai_chatbot_guide
+Common UTM parameters
+Parameter Purpose Example
+utm_source Who sent the traffic contextgpt
+utm_medium Type of traffic referral, blog, partner
+utm_campaign Marketing campaign summer_launch, chatbot_guide
+utm_content Different link/button variants cta_button, footer_link
+utm_term Paid search keyword (mostly ads) ai+chatbot

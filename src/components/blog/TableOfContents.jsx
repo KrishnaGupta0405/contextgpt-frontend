@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { TextAlignStart } from "lucide-react";
+import { TextAlignStart, ChevronDown } from "lucide-react";
 
 const INDENT_STEP = 8; // px shift per heading depth level [right and leftness of section and subscetion ]
 const BASE_INDENT = 4; // [distance between line and section] x-position (px) of the line for the shallowest heading — controls line's starting offset
@@ -10,7 +10,7 @@ function lineX(depth, minDepth) {
   return BASE_INDENT + (depth - minDepth) * INDENT_STEP;
 }
 
-export default function TableOfContents({ headings, className = "" }) {
+export default function TableOfContents({ headings, className = "", mobileOnly = false, desktopOnly = false }) {
   const [activeId, setActiveId] = useState(headings[0]?.id);
   const [layout, setLayout] = useState({
     path: "",
@@ -25,6 +25,7 @@ export default function TableOfContents({ headings, className = "" }) {
   const navRef = useRef(null);
   const listRef = useRef(null);
   const itemRefs = useRef(new Map());
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const minDepth = headings.length ? Math.min(...headings.map((h) => h.depth)) : 2;
 
@@ -166,12 +167,7 @@ export default function TableOfContents({ headings, className = "" }) {
     }
   }
 
-  return (
-    <nav ref={navRef} className={`sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block ${className}`}>
-      <p className="mb-3 flex items-center gap-1.5 text-md font-bold text-slate-600 uppercase tracking-wide">
-        <TextAlignStart className="size-4" />
-        Table of Content
-      </p>
+  const tocList = (
       <ul ref={listRef} className="relative space-y-2 text-sm">
         <svg
           className="pointer-events-none absolute left-0 top-0 overflow-visible"
@@ -228,6 +224,41 @@ export default function TableOfContents({ headings, className = "" }) {
           </li>
         ))}
       </ul>
+  );
+
+  if (mobileOnly) {
+    return (
+      <div className="mb-8 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-expanded={mobileOpen}
+          className="flex w-full items-center justify-between gap-2 rounded-full border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700"
+        >
+          <span className="flex items-center gap-1.5">
+            <TextAlignStart className="size-4" />
+            Table of Contents
+          </span>
+          <ChevronDown
+            className={`size-4 transition-transform duration-200 ${mobileOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+        {mobileOpen && (
+          <div className="mt-3 max-h-[60vh] overflow-y-auto rounded-2xl border border-slate-200 p-4">
+            {tocList}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <nav ref={navRef} className={`sticky top-24 ${desktopOnly ? "hidden lg:block" : ""} max-h-[calc(100vh-8rem)] overflow-y-auto ${className}`}>
+      <p className="mb-3 flex items-center gap-1.5 text-md font-bold text-slate-600 uppercase tracking-wide">
+        <TextAlignStart className="size-4" />
+        Table of Content
+      </p>
+      {tocList}
     </nav>
   );
 }

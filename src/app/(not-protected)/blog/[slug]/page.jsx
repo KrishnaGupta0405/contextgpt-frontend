@@ -122,6 +122,7 @@ export default async function BlogPostPage({ params }) {
           </div>
 
           <article className="min-w-0">
+            <TableOfContents headings={headings} mobileOnly />
             <SeriesNav series={post.series} posts={seriesPosts} currentSlug={post.slug} />
 
             <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-headings:no-underline prose-pre:p-0">
@@ -131,7 +132,7 @@ export default async function BlogPostPage({ params }) {
             </div>
           </article>
 
-          <TableOfContents headings={headings} className="ml-20" />
+          <TableOfContents headings={headings} className="ml-20" desktopOnly />
         </div>
           <AuthorCard post={post} url={url} />
             <RelatedPosts posts={related} />

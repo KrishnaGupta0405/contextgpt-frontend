@@ -10,15 +10,37 @@ import BlogList from "@/components/blog/BlogList";
 // export const revalidate = false;
 export const dynamicParams = true;
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export async function generateMetadata({ params }) {
   const { name } = await params;
   const authors = await getAllAuthors();
   const author = authors.find((a) => a.slug === name);
   if (!author) return {};
 
+  const title = `${author.name} | ContextGPT Blog`;
+  const description = author.bio || `Posts written by ${author.name} on the ContextGPT blog.`;
+  const url = `${SITE_URL}/blog/author/${author.slug}`;
+  const image = author.avatar ? `${SITE_URL}${author.avatar}` : "/icons/Contextgpt_icon.svg";
+
   return {
-    title: `${author.name} | ContextGPT Blog`,
-    description: author.bio || `Posts written by ${author.name} on the ContextGPT blog.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "profile",
+      siteName: "ContextGPT",
+      title,
+      description,
+      url,
+      images: [{ url: image, width: 1200, height: 630, alt: author.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 

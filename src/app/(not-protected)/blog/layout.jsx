@@ -6,7 +6,6 @@ export const metadata = {
   keywords: ["AI chatbot blog", "customer support tips", "chatbot guides", "lead generation tips"],
   alternates: {
     canonical: "https://contextgpt.in/blog",
-    types: { "application/rss+xml": "https://contextgpt.in/blog/rss.xml" },
   },
   openGraph: {
     type: "website",
