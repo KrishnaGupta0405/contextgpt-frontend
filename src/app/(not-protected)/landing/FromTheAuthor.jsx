@@ -56,7 +56,8 @@ export function ThreeStepsSection() {
               1
             </div>
             <h3
-              className="text-xl font-bold underline decoration-blue-600 decoration-dashed"
+              onClick={() => window.$cgpt?.push(["do", "message:send", "How do I sync my website or files as training data for my chatbot?"])}
+              className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Sync training data
@@ -75,7 +76,8 @@ export function ThreeStepsSection() {
               2
             </div>
             <h3
-              className="text-xl font-bold underline decoration-blue-600 decoration-dashed"
+              onClick={() => window.$cgpt?.push(["do", "message:send", "How do I install ContextGPT on my website?"])}
+              className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Install on your site
@@ -94,7 +96,8 @@ export function ThreeStepsSection() {
               3
             </div>
             <h3
-              className="text-xl font-bold underline decoration-blue-600 decoration-dashed"
+              onClick={() => window.$cgpt?.push(["do", "message:send", "How can I improve my chatbot with real chat history?"])}
+              className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Learn and refine

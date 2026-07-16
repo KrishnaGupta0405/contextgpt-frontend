@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff", ".gif"}
-MAX_SIZE_BYTES = 150 * 1024
+MAX_SIZE_BYTES = 90 * 1024
 START_QUALITY = 80
 MIN_QUALITY = 20
 QUALITY_STEP = 5
