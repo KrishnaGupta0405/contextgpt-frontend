@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { useAuth } from "@/context/AuthContext";
+import { hasSubscriptionAccess } from "@/lib/subscription";
 import { useChatbot } from "@/context/ChatbotContext";
 import api from "@/lib/axios";
 import { toast } from "sonner";
@@ -329,7 +330,9 @@ const IntegrationPageContent = () => {
               {PLATFORMS.map((platform) => {
                 const active = getActiveIntegration(platform.key);
                 const isConnected = !!active?.isConnected;
-                const isLocked = !subscription?.platformIntegrationAllowed && platform.key !== "PERSONAL_WEBSITE";
+                const isLocked =
+                  !hasSubscriptionAccess(subscription) ||
+                  (!subscription?.platformIntegrationAllowed && platform.key !== "PERSONAL_WEBSITE");
                 // console.log("Subscription -> ", subscription)
 
                 return (

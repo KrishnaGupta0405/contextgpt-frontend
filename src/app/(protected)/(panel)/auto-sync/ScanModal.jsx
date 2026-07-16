@@ -17,12 +17,14 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useAuth } from "@/context/AuthContext";
+import { hasSubscriptionAccess } from "@/lib/subscription";
 import { usePlanUpgradeNotification } from "@/components/PlanUpgradeNotification";
 
 export function ScanModal({ isOpen, onClose, onEnrolled }) {
   const { selectedChatbot } = useChatbot();
   const { subscription } = useAuth();
-  const { showNotification } = usePlanUpgradeNotification();
+  const { showNotification, showNoSubscriptionNotification } = usePlanUpgradeNotification();
+  const hasAccess = hasSubscriptionAccess(subscription);
   const autoScanOccurrence = subscription?.autoScanDataOccurrence ?? "daily";
   const autoScanSupported = subscription?.autoScanData ?? false;
   const isStarterPlanUser = /^pri_starter_/i.test(subscription?.planType ?? "");
@@ -40,6 +42,10 @@ export function ScanModal({ isOpen, onClose, onEnrolled }) {
   }, [isOpen, autoScanOccurrence]);
 
   const handleEnroll = async () => {
+    if (!hasAccess) {
+      showNoSubscriptionNotification();
+      return;
+    }
     if (isStarterPlanUser || !autoScanSupported) {
       showNotification("autoScanData");
       return;

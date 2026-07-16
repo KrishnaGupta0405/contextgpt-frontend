@@ -8,6 +8,7 @@ import { useChatbot } from "@/context/ChatbotContext";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import {
   Form,
   FormControl,
@@ -681,14 +682,16 @@ const PersonasTab = () => {
 
       {/*Save Button Container */}
       <div className="fixed right-0 bottom-0 left-[240px] z-10 flex justify-end border-t border-gray-200 bg-white p-4">
-        <Button
-          onClick={handleSaveChanges}
-          disabled={loading}
-          className="h-10 rounded-md bg-blue-600 px-8 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
-        >
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Save Changes
-        </Button>
+        <GatedAction>
+          <Button
+            onClick={handleSaveChanges}
+            disabled={loading}
+            className="h-10 rounded-md bg-blue-600 px-8 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
+        </GatedAction>
       </div>
     </div>
   );

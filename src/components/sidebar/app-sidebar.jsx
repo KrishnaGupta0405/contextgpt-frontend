@@ -77,8 +77,10 @@ import {
   CreditCard,
   LogOut,
   Megaphone,
+  Compass,
   // Sparkles,
 } from "lucide-react";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import {
@@ -287,6 +289,7 @@ export function AppSidebar() {
   const { user } = useAuth();
   const { selectedChatbot } = useChatbot();
   const router = useRouter();
+  const { startTour } = useProductTour();
   const isAgent = selectedChatbot?.userRole === "AGENT";
 
   const navMain = isAgent ? filterForAgent(data.navMain) : data.navMain;
@@ -298,7 +301,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem data-tour="sidebar-chatbot-switcher">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-14">
@@ -350,7 +353,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {/* Main Nav */}
-        <SidebarGroup>
+        <SidebarGroup data-tour="sidebar-dashboard">
           <SidebarGroupContent>
             <SidebarMenu>
               {navMain.map((item) => (
@@ -362,7 +365,7 @@ export function AppSidebar() {
 
         {/* Knowledge Base */}
         {knowledgeBase.length > 0 && (
-          <SidebarGroup>
+          <SidebarGroup data-tour="sidebar-knowledge-base">
             <SidebarGroupLabel className="text-muted-foreground/70 text-[11px] font-bold tracking-wider uppercase">
               Knowledge Base
             </SidebarGroupLabel>
@@ -378,7 +381,7 @@ export function AppSidebar() {
 
         {/* Customizations */}
         {customizations.length > 0 && (
-          <SidebarGroup>
+          <SidebarGroup data-tour="sidebar-customizations">
             <SidebarGroupLabel className="text-muted-foreground/70 text-[11px] font-bold tracking-wider uppercase">
               Customizations
             </SidebarGroupLabel>
@@ -394,7 +397,7 @@ export function AppSidebar() {
 
         {/* Advanced */}
         {advanced.length > 0 && (
-          <SidebarGroup>
+          <SidebarGroup data-tour="sidebar-advanced">
             <SidebarGroupLabel className="text-muted-foreground/70 text-[11px] font-bold tracking-wider uppercase">
               Advanced
             </SidebarGroupLabel>
@@ -410,6 +413,18 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Take a Tour"
+              onClick={() => {
+                router.push("/dashboard");
+                startTour();
+              }}
+            >
+              <Compass className="h-4 w-4" />
+              <span>Take a Tour</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="What's New" data-featurebase-changelog>
               <Megaphone className="h-4 w-4" />

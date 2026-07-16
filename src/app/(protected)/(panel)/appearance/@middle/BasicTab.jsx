@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -665,13 +666,15 @@ const BasicTab = () => {
           </Button>
         </div>
 
-        <Button
-          className="bg-blue-600 text-white shadow-sm hover:bg-blue-700"
-          onClick={handleSave}
-          disabled={isSaving || isLoading}
-        >
-          {isSaving ? "Saving..." : "Save Changes"}
-        </Button>
+        <GatedAction>
+          <Button
+            className="bg-blue-600 text-white shadow-sm hover:bg-blue-700"
+            onClick={handleSave}
+            disabled={isSaving || isLoading}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
+        </GatedAction>
       </div>
 
       {isLoading ? (

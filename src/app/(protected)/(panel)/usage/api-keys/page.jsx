@@ -46,6 +46,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { hasSubscriptionAccess } from "@/lib/subscription";
 import { usePlanUpgradeNotification } from "@/components/PlanUpgradeNotification";
 
 function KeyRow({ apiKey, onRevoke }) {
@@ -532,7 +533,8 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
 
 export default function ApiKeysPage() {
   const { subscription } = useAuth();
-  const { showNotification } = usePlanUpgradeNotification();
+  const { showNotification, showNoSubscriptionNotification } = usePlanUpgradeNotification();
+  const hasAccess = hasSubscriptionAccess(subscription);
   const [apiKeys, setApiKeys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -609,6 +611,7 @@ export default function ApiKeysPage() {
         </div>
         <Button
           onClick={() => {
+            if (!hasAccess) { showNoSubscriptionNotification(); return; }
             if (isStarterPlanUser || !apiAccessSupported) { showNotification("apiAccess"); return; }
             setShowDialog(true);
           }}
@@ -666,6 +669,7 @@ export default function ApiKeysPage() {
                 size="sm"
                 variant="outline"
                 onClick={() => {
+                  if (!hasAccess) { showNoSubscriptionNotification(); return; }
                   if (isStarterPlanUser || !apiAccessSupported) { showNotification("apiAccess"); return; }
                   setShowDialog(true);
                 }}

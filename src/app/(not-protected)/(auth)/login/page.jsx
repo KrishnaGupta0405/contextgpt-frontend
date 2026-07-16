@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { FieldSeparator } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { Chrome, Eye, EyeOff } from "lucide-react";
+import { Chrome, Github, Eye, EyeOff } from "lucide-react";
 import { CustomBreadcrumb } from "@/components/ui/CustomBreadcrumb";
 import api from "@/lib/axios";
 import { toast } from "sonner";
@@ -208,6 +208,18 @@ function LoginForm() {
               >
                 <Chrome className="mr-2 h-5 w-5" />
                 Continue with Google
+              </Button>
+
+              <Button
+                variant="outline"
+                type="button"
+                className="bg-background hover:bg-muted h-11 w-full font-medium transition-colors"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/github`;
+                }}
+              >
+                <Github className="mr-2 h-5 w-5" />
+                Continue with GitHub
               </Button>
             </div>
 

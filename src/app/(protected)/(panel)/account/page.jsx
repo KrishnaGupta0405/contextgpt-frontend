@@ -30,6 +30,7 @@ import {
   Wifi,
   Trash2,
   Chrome,
+  Github,
   CheckCircle2,
   KeyRound,
 } from "lucide-react";
@@ -69,6 +70,8 @@ const AccountContent = () => {
   const [resettingPassword, setResettingPassword] = useState(false);
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
   const [isDisconnectingGoogle, setIsDisconnectingGoogle] = useState(false);
+  const [githubDisconnectDialogOpen, setGithubDisconnectDialogOpen] = useState(false);
+  const [isDisconnectingGithub, setIsDisconnectingGithub] = useState(false);
   // Delete account state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteStep, setDeleteStep] = useState(1);
@@ -148,11 +151,17 @@ const AccountContent = () => {
         .get("/users/current-user")
         .then((res) => setProfileData(res.data.data))
         .catch(() => {});
+    } else if (connected === "github") {
+      toast.success("GitHub account connected!");
+      api
+        .get("/users/current-user")
+        .then((res) => setProfileData(res.data.data))
+        .catch(() => {});
     } else if (connectError) {
       toast.error(
         connectError === "already_linked"
-          ? "This Google account is already linked to another account."
-          : "Failed to connect Google account. Please try again."
+          ? "This account is already linked to another account."
+          : "Failed to connect account. Please try again."
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,6 +185,27 @@ const AccountContent = () => {
       );
     } finally {
       setIsDisconnectingGoogle(false);
+    }
+  };
+
+  const handleGithubConnect = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/github/connect`;
+  };
+
+  const handleGithubDisconnect = async () => {
+    try {
+      setIsDisconnectingGithub(true);
+      const response = await api.post("/auth/github/disconnect");
+      toast.success("GitHub account disconnected.");
+      setProfileData(response.data.data);
+      setGithubDisconnectDialogOpen(false);
+    } catch (error) {
+      console.error("Error disconnecting GitHub:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to disconnect GitHub account."
+      );
+    } finally {
+      setIsDisconnectingGithub(false);
     }
   };
 
@@ -571,6 +601,41 @@ const AccountContent = () => {
                     size="sm"
                     className="text-red-500 hover:bg-red-50 hover:text-red-700"
                     onClick={() => setDisconnectDialogOpen(true)}
+                  >
+                    Disconnect
+                  </Button>
+                )}
+              </div>
+
+              {/* GitHub row */}
+              <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <Github className="h-5 w-5 text-slate-500" />
+                  <div>
+                    <p className="text-sm font-medium text-slate-800">GitHub</p>
+                    {loading ? (
+                      <Skeleton className="mt-1 h-3 w-32" />
+                    ) : profileData?.githubLinked ? (
+                      <p className="flex items-center gap-1 text-xs text-green-600">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Connected as {profileData?.email}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-slate-400">Not connected</p>
+                    )}
+                  </div>
+                </div>
+                {!loading && !profileData?.githubLinked && (
+                  <Button variant="outline" size="sm" onClick={handleGithubConnect}>
+                    Connect GitHub
+                  </Button>
+                )}
+                {!loading && profileData?.githubLinked && profileData?.hasPassword && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setGithubDisconnectDialogOpen(true)}
                   >
                     Disconnect
                   </Button>
@@ -1280,6 +1345,48 @@ const AccountContent = () => {
               disabled={isDisconnectingGoogle}
             >
               {isDisconnectingGoogle ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Disconnecting...
+                </>
+              ) : (
+                "Disconnect"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Disconnect GitHub Confirmation Dialog */}
+      <Dialog
+        open={githubDisconnectDialogOpen}
+        onOpenChange={(open) => {
+          if (!isDisconnectingGithub) setGithubDisconnectDialogOpen(open);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Disconnect GitHub Account</DialogTitle>
+            <DialogDescription>
+              You'll no longer be able to sign in with GitHub. You can reconnect it
+              anytime from this page. You'll still be able to sign in with your
+              password.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setGithubDisconnectDialogOpen(false)}
+              disabled={isDisconnectingGithub}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleGithubDisconnect}
+              disabled={isDisconnectingGithub}
+            >
+              {isDisconnectingGithub ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Disconnecting...

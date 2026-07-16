@@ -10,6 +10,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -729,10 +730,12 @@ export default function WebhooksPage() {
               {/* Actions */}
               <div className="flex items-center justify-between pt-1">
                 <div className="flex gap-2">
-                  <Button onClick={handleSave} disabled={saving}>
-                    {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {webhook ? "Update Webhook" : "Create Webhook"}
-                  </Button>
+                  <GatedAction>
+                    <Button onClick={handleSave} disabled={saving}>
+                      {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {webhook ? "Update Webhook" : "Create Webhook"}
+                    </Button>
+                  </GatedAction>
                   {webhook && (
                     <Button
                       variant="destructive"

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/AuthContext";
 import { useChatbot } from "@/context/ChatbotContext";
@@ -121,13 +122,15 @@ Our product has 4 pricing plans – $19/month, $49/month, $99/month and $199/mon
           )}
 
           <div className="mt-6 flex justify-start">
-            <Button
-              onClick={handleSave}
-              disabled={isSaving || isLoading}
-              className="h-10 rounded-lg bg-blue-600 px-6 font-semibold text-white shadow-sm hover:bg-blue-700"
-            >
-              {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
+            <GatedAction>
+              <Button
+                onClick={handleSave}
+                disabled={isSaving || isLoading}
+                className="h-10 rounded-lg bg-blue-600 px-6 font-semibold text-white shadow-sm hover:bg-blue-700"
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
+            </GatedAction>
           </div>
         </div>
       </div>

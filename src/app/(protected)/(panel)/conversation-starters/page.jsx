@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -419,17 +420,19 @@ const ConversationStarters = () => {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button
-                  className="h-10 rounded-lg bg-blue-600 px-6 font-semibold text-white shadow-sm hover:bg-blue-700"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                >
-                  {isSaving
-                    ? "Saving..."
-                    : editingId
-                      ? "Update Button"
-                      : "Add Button"}
-                </Button>
+                <GatedAction>
+                  <Button
+                    className="h-10 rounded-lg bg-blue-600 px-6 font-semibold text-white shadow-sm hover:bg-blue-700"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving
+                      ? "Saving..."
+                      : editingId
+                        ? "Update Button"
+                        : "Add Button"}
+                  </Button>
+                </GatedAction>
                 {editingId && (
                   <Button
                     variant="outline"

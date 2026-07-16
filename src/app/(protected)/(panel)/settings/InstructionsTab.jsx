@@ -8,6 +8,7 @@ import { useChatbot } from "@/context/ChatbotContext";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import {
   Form,
   FormControl,
@@ -593,14 +594,16 @@ const InstructionsTab = () => {
       {/* Global Save Button Container */}
       <div className="fixed right-0 bottom-0 z-10 w-[calc(100%-256px)] border-t bg-white p-4">
         <div className="flex justify-end px-6">
-          <Button
-            onClick={handleSaveChanges}
-            disabled={loading}
-            className="h-10 rounded-md bg-blue-600 px-8 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
-          >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
-          </Button>
+          <GatedAction>
+            <Button
+              onClick={handleSaveChanges}
+              disabled={loading}
+              className="h-10 rounded-md bg-blue-600 px-8 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Changes
+            </Button>
+          </GatedAction>
         </div>
       </div>
     </div>

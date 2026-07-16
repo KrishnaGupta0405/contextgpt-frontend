@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import {
   Tooltip,
@@ -566,12 +567,14 @@ const WebsiteLinks = () => {
                   className="w-full bg-white pl-8 sm:w-[250px]"
                 />
               </div>
-              <Button
-                className="border-0 bg-blue-600 text-white hover:bg-blue-700"
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Add Links
-              </Button>
+              <GatedAction>
+                <Button
+                  className="border-0 bg-blue-600 text-white hover:bg-blue-700"
+                  onClick={() => setIsAddModalOpen(true)}
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Add Links
+                </Button>
+              </GatedAction>
             </div>
           </div>
 

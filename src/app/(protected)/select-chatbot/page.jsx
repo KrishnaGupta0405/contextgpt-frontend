@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChatbot } from "@/context/ChatbotContext";
+import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/axios";
 import { getSocket } from "@/lib/socket";
 import {
@@ -29,6 +30,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function SelectChatbotPage() {
   const [accountGroups, setAccountGroups] = useState([]);
@@ -39,7 +46,11 @@ export default function SelectChatbotPage() {
   const [isCreatingChatbot, setIsCreatingChatbot] = useState(false);
 
   const { selectChatbot } = useChatbot();
+  const { subscription } = useAuth();
   const router = useRouter();
+
+  const hasSubscriptionAccess =
+    subscription?.status === "active" || subscription?.status === "trialing";
 
   // Tear down the embedded widget when the user lands on this page so they
   // aren't interacting with a stale chatbot while selecting a new one.
@@ -58,6 +69,11 @@ export default function SelectChatbotPage() {
   const allChatbots = accountGroups.flatMap((g) =>
     g.chatbots.map((cb) => ({ ...cb, id: cb.chatbotId, userRole: cb.userChatbotRole || g.userRole, accountName: g.accountName }))
   );
+
+  // NO_SUBSCRIPTION users may create exactly 1 demo chatbot; once it exists
+  // the create action is disabled until they subscribe.
+  const atFreeChatbotLimit = !hasSubscriptionAccess && allChatbots.length >= 1;
+  const canCreateChatbot = hasSubscriptionAccess || allChatbots.length === 0;
 
   const fetchChatbots = async () => {
     setLoading(true);
@@ -213,75 +229,100 @@ export default function SelectChatbotPage() {
               <RefreshCw className="h-4 w-4" />
             </Button>
             {ownRole && ownRole !== "AGENT" && (
-              <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+              canCreateChatbot ? (
+                <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create New
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Chatbot</DialogTitle>
+                      <DialogDescription>
+                        Give your new chatbot a name and an optional description.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Name
+                        </Label>
+                        <Input
+                          id="name"
+                          value={newChatbotName}
+                          onChange={(e) => setNewChatbotName(e.target.value)}
+                          className="col-span-3"
+                          placeholder="e.g., My Website Assistant"
+                          disabled={isCreatingChatbot}
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-start gap-4">
+                        <Label htmlFor="description" className="text-right">
+                          Description
+                        </Label>
+                        <Textarea
+                          id="description"
+                          value={newChatbotDescription}
+                          onChange={(e) =>
+                            setNewChatbotDescription(e.target.value)
+                          }
+                          className="col-span-3"
+                          placeholder="e.g., A friendly AI to help visitors navigate my site."
+                          rows={4}
+                          disabled={isCreatingChatbot}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowCreateModal(false)}
+                        disabled={isCreatingChatbot}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        onClick={handleCreateChatbot}
+                        disabled={isCreatingChatbot}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        {isCreatingChatbot ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Plus className="mr-2 h-4 w-4" />
+                        )}
+                        Create Chatbot
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              ) : atFreeChatbotLimit ? (
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button className="bg-blue-600 hover:bg-blue-700" disabled>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Create New
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      Start a free trial or choose a plan to create more chatbots.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                  <a href="/pricing">
                     <Plus className="mr-2 h-4 w-4" />
-                    Create New
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create New Chatbot</DialogTitle>
-                    <DialogDescription>
-                      Give your new chatbot a name and an optional description.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        Name
-                      </Label>
-                      <Input
-                        id="name"
-                        value={newChatbotName}
-                        onChange={(e) => setNewChatbotName(e.target.value)}
-                        className="col-span-3"
-                        placeholder="e.g., My Website Assistant"
-                        disabled={isCreatingChatbot}
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label htmlFor="description" className="text-right">
-                        Description
-                      </Label>
-                      <Textarea
-                        id="description"
-                        value={newChatbotDescription}
-                        onChange={(e) =>
-                          setNewChatbotDescription(e.target.value)
-                        }
-                        className="col-span-3"
-                        placeholder="e.g., A friendly AI to help visitors navigate my site."
-                        rows={4}
-                        disabled={isCreatingChatbot}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowCreateModal(false)}
-                      disabled={isCreatingChatbot}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      onClick={handleCreateChatbot}
-                      disabled={isCreatingChatbot}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      {isCreatingChatbot ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Plus className="mr-2 h-4 w-4" />
-                      )}
-                      Create Chatbot
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                    Start Free Trial
+                  </a>
+                </Button>
+              )
             )}
           </div>
         </div>
@@ -298,75 +339,81 @@ export default function SelectChatbotPage() {
                 : "You haven't created any chatbots yet. Get started by creating your first one."}
             </CardDescription>
             {ownRole && ownRole !== "AGENT" && (
-              <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    Create Your First Chatbot
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create New Chatbot</DialogTitle>
-                    <DialogDescription>
-                      Give your new chatbot a name and an optional description.
-                      Both of these can be changed later on.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        Name
-                      </Label>
-                      <Input
-                        id="name"
-                        value={newChatbotName}
-                        onChange={(e) => setNewChatbotName(e.target.value)}
-                        className="col-span-3"
-                        placeholder="e.g., My Website Assistant"
-                        disabled={isCreatingChatbot}
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label htmlFor="description" className="text-right">
-                        Description
-                      </Label>
-                      <Textarea
-                        id="description"
-                        value={newChatbotDescription}
-                        onChange={(e) =>
-                          setNewChatbotDescription(e.target.value)
-                        }
-                        className="col-span-3"
-                        placeholder="e.g., A friendly AI to help visitors navigate my site."
-                        rows={4}
-                        disabled={isCreatingChatbot}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowCreateModal(false)}
-                      disabled={isCreatingChatbot}
-                    >
-                      Cancel
+              canCreateChatbot ? (
+                <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      Create Your First Chatbot
                     </Button>
-                    <Button
-                      type="submit"
-                      onClick={handleCreateChatbot}
-                      disabled={isCreatingChatbot}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      {isCreatingChatbot ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Plus className="mr-2 h-4 w-4" />
-                      )}
-                      Create Chatbot
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Chatbot</DialogTitle>
+                      <DialogDescription>
+                        Give your new chatbot a name and an optional description.
+                        Both of these can be changed later on.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Name
+                        </Label>
+                        <Input
+                          id="name"
+                          value={newChatbotName}
+                          onChange={(e) => setNewChatbotName(e.target.value)}
+                          className="col-span-3"
+                          placeholder="e.g., My Website Assistant"
+                          disabled={isCreatingChatbot}
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-start gap-4">
+                        <Label htmlFor="description" className="text-right">
+                          Description
+                        </Label>
+                        <Textarea
+                          id="description"
+                          value={newChatbotDescription}
+                          onChange={(e) =>
+                            setNewChatbotDescription(e.target.value)
+                          }
+                          className="col-span-3"
+                          placeholder="e.g., A friendly AI to help visitors navigate my site."
+                          rows={4}
+                          disabled={isCreatingChatbot}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowCreateModal(false)}
+                        disabled={isCreatingChatbot}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        onClick={handleCreateChatbot}
+                        disabled={isCreatingChatbot}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        {isCreatingChatbot ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Plus className="mr-2 h-4 w-4" />
+                        )}
+                        Create Chatbot
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                  <a href="/pricing">Start Free Trial</a>
+                </Button>
+              )
             )}
           </Card>
         ) : (

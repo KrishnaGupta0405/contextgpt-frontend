@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
@@ -11,13 +11,16 @@ import { UnsavedChangesProvider } from "@/context/UnsavedChangesContext";
 import { getSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import Link from "next/link";
-import { CreditCard, BarChart2, KeyRound, User } from "lucide-react";
+import { CreditCard, BarChart2, KeyRound, User, Sparkles, X } from "lucide-react";
 
 const ALLOWED_ROUTES = ["/account", "/billing", "/usage", "/usage/api-keys"];
 
+function isNoSubscription(subscription) {
+  return !subscription || subscription.status === "NO_SUBSCRIPTION";
+}
+
 function isSubscriptionExpired(subscription) {
-  console.log("Subscription ->", subscription)
-  if (!subscription) return false;
+  if (isNoSubscription(subscription)) return false;
   if (subscription.status && subscription.status !== "active") return true;
   if (subscription.currentPeriodEnd) {
     return new Date(subscription.currentPeriodEnd) < new Date();
@@ -33,9 +36,9 @@ export default function StandaloneClientWrapper({ children }) {
   const chatbotId = selectedChatbot?.id || selectedChatbot?.chatbotId;
   const accountId = selectedChatbot?.accountId;
   const { subscription } = useAuth();
-  // console.log("subscription", subscription)
   const expired = isSubscriptionExpired(subscription);
-  // console.log("Subscription is expired-> ", expired);
+  const noSubscription = isNoSubscription(subscription);
+  const [ctaDismissed, setCtaDismissed] = useState(false);
   const isAllowedRoute = ALLOWED_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   );
@@ -137,13 +140,38 @@ export default function StandaloneClientWrapper({ children }) {
   }, [chatbotId]);
 
   const showOverlay = expired && !isAllowedRoute;
+  const showNoSubscriptionCta = noSubscription && !ctaDismissed;
 
   return (
     <ChattingSocketProvider>
       <UnsavedChangesProvider>
         <div className="flex min-h-screen w-full">
           {/* <FeaturebaseWidget /> */}
-          <Sidebar>{children}</Sidebar>
+          <Sidebar>
+            {showNoSubscriptionCta && (
+              <div className="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 mb-4 dark:border-blue-900/50 dark:bg-blue-950/30">
+                <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
+                <p className="flex-1 text-sm text-blue-900 dark:text-blue-200">
+                  Start your 7-day free trial or choose a plan to unlock chatbot creation and premium features.
+                </p>
+                <Link
+                  href="/pricing"
+                  className="shrink-0 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1.5 transition-colors"
+                >
+                  Choose a plan
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setCtaDismissed(true)}
+                  aria-label="Dismiss"
+                  className="shrink-0 text-blue-600 dark:text-blue-400 hover:opacity-70 transition-opacity"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+            {children}
+          </Sidebar>
         </div>
 
         {showOverlay && (

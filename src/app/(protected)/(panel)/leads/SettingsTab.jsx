@@ -8,6 +8,7 @@ import * as z from "zod";
 import { useChatbot } from "@/context/ChatbotContext";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import {
   Form,
   FormControl,
@@ -1410,21 +1411,23 @@ const SettingsTab = () => {
             />
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" /> Save Settings
-              </>
-            )}
-          </Button>
+          <GatedAction>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" /> Save Settings
+                </>
+              )}
+            </Button>
+          </GatedAction>
         </form>
       </Form>
     </div>

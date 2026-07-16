@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -202,17 +203,19 @@ export const OutgoingAccountInvitations = () => {
               })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            className="w-full bg-blue-500 px-6 font-semibold text-white shadow-sm hover:bg-blue-600 xl:w-auto"
-            onClick={handleSendInvite}
-            disabled={sending || atLimit}
-          >
-            {sending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Send Invite"
-            )}
-          </Button>
+          <GatedAction>
+            <Button
+              className="w-full bg-blue-500 px-6 font-semibold text-white shadow-sm hover:bg-blue-600 xl:w-auto"
+              onClick={handleSendInvite}
+              disabled={sending || atLimit}
+            >
+              {sending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Send Invite"
+              )}
+            </Button>
+          </GatedAction>
         </div>
       </div>
 

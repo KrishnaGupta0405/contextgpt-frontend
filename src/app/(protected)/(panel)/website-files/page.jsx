@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Input } from "@/components/ui/input";
 import {
   Tooltip,
@@ -595,12 +596,14 @@ const WebsiteFiles = () => {
                   className="w-full bg-white pl-8 sm:w-[250px]"
                 />
               </div>
-              <Button
-                className="border-0 bg-blue-600 text-white hover:bg-blue-700"
-                onClick={() => setIsAddFileModalOpen(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Add Files
-              </Button>
+              <GatedAction>
+                <Button
+                  className="border-0 bg-blue-600 text-white hover:bg-blue-700"
+                  onClick={() => setIsAddFileModalOpen(true)}
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Add Files
+                </Button>
+              </GatedAction>
             </div>
           </div>
 

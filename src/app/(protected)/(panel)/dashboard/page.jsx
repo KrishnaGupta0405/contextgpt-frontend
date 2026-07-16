@@ -1,16 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { RefreshCw, ExternalLink, Copy, CodeXml } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShikiCodeBlock } from "@/components/ui/ShikiCodeBlock";
 import PerformanceFunnel from "./PerformanceFunnel";
 import { useChatbot } from "@/context/ChatbotContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 export default function Dashboard() {
   const { selectedChatbot } = useChatbot();
   const chatbotId = selectedChatbot?.id ?? "";
+  const { startTour, hasSeenTour } = useProductTour();
+
+  useEffect(() => {
+    if (!chatbotId || hasSeenTour()) return;
+    const timer = setTimeout(() => startTour(), 600);
+    return () => clearTimeout(timer);
+  }, [chatbotId, hasSeenTour, startTour]);
+
   return (
     <>
       <PanelNavbar items={[{ label: "Dashboard" }]} />
@@ -64,7 +73,10 @@ export default function Dashboard() {
           <h3 className="text-[17px] font-bold text-slate-900">Installation</h3>
           <div className="space-y-4">
             {/* Chatbot ID */}
-            <div className="rounded-[14px] border border-blue-100 bg-[#f4f7fc] p-6 shadow-sm">
+            <div
+              data-tour="dashboard-chatbot-id"
+              className="rounded-[14px] border border-blue-100 bg-[#f4f7fc] p-6 shadow-sm"
+            >
               <div className="mb-2 flex items-center gap-2.5">
                 <Copy className="h-4 w-4 text-blue-600" />
                 <h4 className="text-[14.5px] font-bold text-slate-900">
@@ -86,7 +98,10 @@ export default function Dashboard() {
             </div>
 
             {/* Embed Code */}
-            <div className="rounded-[14px] border border-blue-100 bg-[#f4f7fc] p-6 shadow-sm">
+            <div
+              data-tour="dashboard-embed-code"
+              className="rounded-[14px] border border-blue-100 bg-[#f4f7fc] p-6 shadow-sm"
+            >
               <div className="mb-2 flex items-center gap-2.5">
                 <CodeXml className="h-[18px] w-[18px] text-blue-600" />
                 <h4 className="text-[14.5px] font-bold text-slate-900">

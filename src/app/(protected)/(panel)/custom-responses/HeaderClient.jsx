@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Plus, PlayCircle } from "lucide-react";
 import PromptFormModal from "./@right/PromptFormModal";
 import { useCustomResponses } from "./CustomResponsesProvider";
@@ -36,14 +37,16 @@ export default function HeaderClient() {
         </div>
 
         {/* Right side: Add Button */}
-        <Button
-          className="h-10 gap-1.5 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-          onClick={() => setIsModalOpen(true)}
-          disabled={!selectedChatbot}
-        >
-          <Plus className="h-4 w-4" />
-          Add
-        </Button>
+        <GatedAction>
+          <Button
+            className="h-10 gap-1.5 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+            onClick={() => setIsModalOpen(true)}
+            disabled={!selectedChatbot}
+          >
+            <Plus className="h-4 w-4" />
+            Add
+          </Button>
+        </GatedAction>
       </div>
 
       <PromptFormModal

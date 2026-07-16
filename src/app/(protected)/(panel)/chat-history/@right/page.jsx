@@ -8,6 +8,7 @@ import { useChattingSocket } from "@/context/ChattingSocketContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import GatedAction from "@/components/GatedAction";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -426,16 +427,18 @@ const ChatHistoryRightContent = () => {
               }
             }}
           />
-          <Button
-            size="icon"
-            onClick={handleSendMessage}
-            disabled={
-              sending || !newMessage.trim() || !threadDetails?.escalated || threadDetails?.platformSource === "ZOHO_SALES_IQ"
-            }
-            className="h-[50px] w-[50px]"
-          >
-            <Send className="h-5 w-5" />
-          </Button>
+          <GatedAction>
+            <Button
+              size="icon"
+              onClick={handleSendMessage}
+              disabled={
+                sending || !newMessage.trim() || !threadDetails?.escalated || threadDetails?.platformSource === "ZOHO_SALES_IQ"
+              }
+              className="h-[50px] w-[50px]"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </GatedAction>
         </div>
       </div>
 

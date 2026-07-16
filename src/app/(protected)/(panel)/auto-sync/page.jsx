@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useAuth } from "@/context/AuthContext";
+import { hasSubscriptionAccess } from "@/lib/subscription";
 import api from "@/lib/axios";
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
@@ -97,9 +98,10 @@ function isStarterPlan(planType) {
 export default function AutoSync() {
   const { selectedChatbot } = useChatbot();
   const { subscription } = useAuth();
-  const { showNotification } = usePlanUpgradeNotification();
+  const { showNotification, showNoSubscriptionNotification } = usePlanUpgradeNotification();
   const loadingBarRef = React.useRef(null);
 
+  const hasAccess = hasSubscriptionAccess(subscription);
   const isStarterPlanUser = isStarterPlan(subscription?.planType);
   const autoRefreshSupported = subscription?.autoRefreshData ?? false;
   const autoScanSupported = subscription?.autoScanData ?? false;
@@ -410,6 +412,7 @@ export default function AutoSync() {
                   <Button
                     className="border-0 bg-blue-600 text-white hover:bg-blue-700"
                     onClick={() => {
+                      if (!hasAccess) { showNoSubscriptionNotification(); return; }
                       if (isStarterPlanUser || !autoRefreshSupported) { showNotification("autoRefreshData"); return; }
                       setIsRefreshEnrollOpen(true);
                     }}
@@ -486,6 +489,7 @@ export default function AutoSync() {
                                 size="sm"
                                 className="mt-1 bg-blue-600 text-white hover:bg-blue-700"
                                 onClick={() => {
+                                  if (!hasAccess) { showNoSubscriptionNotification(); return; }
                                   if (isStarterPlanUser || !autoRefreshSupported) { showNotification("autoRefreshData"); return; }
                                   setIsRefreshEnrollOpen(true);
                                 }}
@@ -651,6 +655,7 @@ export default function AutoSync() {
                   <Button
                     className="border-0 bg-blue-600 text-white hover:bg-blue-700"
                     onClick={() => {
+                      if (!hasAccess) { showNoSubscriptionNotification(); return; }
                       if (isStarterPlanUser || !autoScanSupported) { showNotification("autoScanData"); return; }
                       setIsScanEnrollOpen(true);
                     }}
@@ -726,6 +731,7 @@ export default function AutoSync() {
                                 size="sm"
                                 className="mt-1 bg-blue-600 text-white hover:bg-blue-700"
                                 onClick={() => {
+                                  if (!hasAccess) { showNoSubscriptionNotification(); return; }
                                   if (isStarterPlanUser || !autoScanSupported) { showNotification("autoScanData"); return; }
                                   setIsScanEnrollOpen(true);
                                 }}
