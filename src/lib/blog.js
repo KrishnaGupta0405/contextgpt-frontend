@@ -14,7 +14,7 @@ const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
 const LOCAL_FILES_ENABLED = true;
 
 function readLocalPostFile(filename) {
-  const slug = filename.replace(/\.mdx$/, '');
+  const filenameSlug = filename.replace(/\.mdx$/, '');
   const raw = fs.readFileSync(path.join(BLOG_DIR, filename), 'utf8');
   const { data, content } = matter(raw);
 
@@ -26,9 +26,9 @@ function readLocalPostFile(filename) {
   }
 
   return normalizePost({
-    slug,
     content,
     ...frontmatter,
+    slug: frontmatter.slug || filenameSlug,
     authorSlugs: frontmatter.author,
     updatedAt: frontmatter.updatedAt,
     source: 'local',
@@ -150,9 +150,13 @@ export async function getAllPosts() {
 export async function getPostBySlug(slug) {
   const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
   if (fs.existsSync(filePath)) {
+    // Filename doubles as a backup slug: serve this file even if its
+    // frontmatter `slug` differs, so old filename-based URLs keep working.
     return readLocalPostFile(`${slug}.mdx`);
   }
-  return null;
+
+  const posts = await readAllLocalPostFiles();
+  return posts.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getAdjacentPosts(slug) {

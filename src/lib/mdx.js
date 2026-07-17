@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { visit } from "unist-util-visit";
+import GithubSlugger from "github-slugger";
 
 function getText(node) {
   if (node.type === "text") return node.value;
@@ -17,23 +18,35 @@ function getMdxJsxAttr(node, name) {
 
 function extractHeadings(headings) {
   return () => (tree) => {
+    const slugger = new GithubSlugger();
+
     visit(tree, (node) => {
-      if (node.type === "element" && /^h[2-3]$/.test(node.tagName)) {
+      if (node.type === "element" && /^h[2-4]$/.test(node.tagName)) {
         const id = node.properties?.id;
         if (!id) return;
+        slugger.slug(id, true);
         headings.push({ id, text: getText(node), depth: Number(node.tagName[1]) });
         return;
       }
 
       if (node.type === "mdxJsxFlowElement") {
-        const match = /^Heading([2-3])$/.exec(node.name ?? "");
+        const match = /^Heading([2-4])$/.exec(node.name ?? "");
         if (!match) return;
-        const id = getMdxJsxAttr(node, "id");
-        if (!id) return;
+        const text = getText(node);
+        let id = getMdxJsxAttr(node, "id");
+        if (!id) {
+          id = slugger.slug(text);
+          node.attributes = [
+            ...(node.attributes ?? []),
+            { type: "mdxJsxAttribute", name: "id", value: id },
+          ];
+        } else {
+          slugger.slug(id, true);
+        }
         const toc = getMdxJsxAttr(node, "toc");
         headings.push({
           id,
-          text: toc ?? getText(node),
+          text: toc ?? text,
           depth: Number(match[1]),
         });
       }

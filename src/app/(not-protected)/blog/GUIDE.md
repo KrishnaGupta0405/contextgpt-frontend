@@ -41,6 +41,21 @@ Everything below describes writing the MDX content itself — same rules whether
 
 Blog posts written as local files live in `content/blog/*.mdx`. Each file is one post. The filename (minus `.mdx`) becomes the URL slug, e.g. `my-post.mdx` → `/blog/my-post`. (A DB-stored post's slug comes from its `slug` field instead of a filename — same rule, same result.)
 
+### `slug` frontmatter vs. filename
+
+`slug` in frontmatter is **optional**. If you omit it, the filename is used as the slug automatically (`src/lib/blog.js` — `readLocalPostFile`):
+
+```js
+slug: frontmatter.slug || filenameSlug
+```
+
+Two things worth knowing:
+
+- **Set `slug` explicitly when you want a URL that differs from the filename** — e.g. a long, descriptive filename like `chatbot-vs-forms-what-does-customer-prefer.mdx` paired with a shorter `slug: "chatbots-vs-forms"` for a cleaner `/blog/chatbots-vs-forms` URL. Filenames are free to be long/descriptive for your own organization; the `slug` field is what actually becomes the URL.
+- **The filename also works as a backup URL even when `slug` is set.** `getPostBySlug` resolves `/blog/<param>` by first checking whether a file named `<param>.mdx` exists — if it does, that file is served directly, regardless of what its frontmatter `slug` says. So in the example above, both `/blog/chatbots-vs-forms` (the frontmatter slug) and `/blog/chatbot-vs-forms-what-does-customer-prefer` (the filename) render the same post. This exists so that old/incoming links built off a filename never 404 just because the frontmatter later added a shorter slug.
+
+Everywhere else in the app (post cards, related posts, prev/next, sitemap, RSS, JSON-LD) always links using `post.slug` — the resolved/canonical one — never the filename, so this fallback is purely a safety net for direct URL access, not something you need to link to on purpose.
+
 ## Frontmatter
 
 Every post starts with a YAML frontmatter block:
@@ -70,6 +85,7 @@ Frontmatter is validated with a Zod schema (`src/lib/blogSchema.js`) when the po
 | Field          | Required | Notes                                                                                                                                                                                                                                                                                                                                                                         |
 | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `title`        | yes      | Page `<title>` and `<h1>`-equivalent metadata.                                                                                                                                                                                                                                                                                                                                |
+| `slug`         | no       | URL slug. Defaults to the filename (minus `.mdx`) if omitted. See [`slug` frontmatter vs. filename](#slug-frontmatter-vs-filename) above — the filename also stays reachable as a backup URL even after you set an explicit `slug`.                                                                                                                                       |
 | `description`  | yes      | Used for SEO meta description, OG, and Twitter cards.                                                                                                                                                                                                                                                                                                                         |
 | `publishedAt`  | yes      | ISO date string (`YYYY-MM-DD`). Posts are sorted newest-first by this field.                                                                                                                                                                                                                                                                                                  |
 | `author`       | no       | Author id string, e.g. `"krishna-gupta"`, or an array of ids for co-authored posts, e.g. `["krishna-gupta", "jane-doe"]` — each must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. The first author is treated as the primary author (`post.author`); the full list is available as `post.authors`. |

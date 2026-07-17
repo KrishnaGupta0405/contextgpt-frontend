@@ -7,6 +7,7 @@ import { Accordion, AccordionItem } from "./Accordion";
 import { CodeGroup, CodeGroupItem } from "./CodeGroup";
 import { FileTree, FileTreeItem } from "./FileTree";
 import { YouTube } from "./YouTube";
+import { Giphy } from "./Giphy";
 import RelatedPost from "./RelatedPost";
 
 const CALLOUT_STYLES = {
@@ -241,12 +242,31 @@ function BlogImage({ src, alt, className, caption, ...props }) {
 }
 
 function headingComponent(Tag) {
-  const AnchoredHeading = headingAnchor(Tag);
-  return function NamedHeading({ children, className, toc, ...props }) {
+  const headingClassName = HEADING_STYLES[Tag];
+  return function NamedHeading({ children, className, toc, id, ...props }) {
+    const mergedClassName = [headingClassName, className].filter(Boolean).join(" ");
+
+    if (!id) {
+      return (
+        <Tag className={mergedClassName} {...props}>
+          {children}
+        </Tag>
+      );
+    }
+
     return (
-      <AnchoredHeading className={className} {...props}>
-        {children}
-      </AnchoredHeading>
+      <Tag id={id} className={mergedClassName} {...props}>
+        <a
+          href={`#${id}`}
+          className="group relative no-underline hover:no-underline"
+        >
+          <LinkIcon
+            aria-hidden="true"
+            className="absolute right-full top-1/2 mr-2 h-[0.7em] w-[0.7em] -translate-y-1/2 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100"
+          />
+          {children}
+        </a>
+      </Tag>
     );
   };
 }
@@ -310,5 +330,6 @@ export const mdxComponents = {
   FileTree,
   FileTreeItem,
   YouTube,
+  Giphy,
   RelatedPost,
 };

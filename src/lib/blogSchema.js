@@ -3,6 +3,12 @@ import { DEFAULT_AUTHOR_SLUG } from "./authors";
 
 export const blogFrontmatterSchema = z.object({
   title: z.string().min(1, "title is required"),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug must be lowercase, alphanumeric, hyphen-separated")
+    .nullable()
+    .optional()
+    .default(null),
   description: z.string().min(1, "description is required"),
   publishedAt: z.string().min(1, "publishedAt is required"),
   updatedAt: z.string().nullable().optional().default(null),
