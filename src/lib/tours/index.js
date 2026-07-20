@@ -137,14 +137,15 @@ function daysUntil(dateish) {
  * and the tier-aware branches tolerate a null by falling back to starter.
  */
 export function buildTour(tourKey, { subscription, tier } = {}) {
-  switch (tourKey) {
-    case "trial":
-      return trialTour(subscription, tier);
-    case "subscribed":
-      return subscribedTour(tier);
-    default:
-      return BASE_TOUR;
-  }
+  // switch (tourKey) {
+  //   case "trial":
+  //     return trialTour(subscription, tier);
+  //   case "subscribed":
+  //     return subscribedTour(tier);
+  //   default:
+  //     return BASE_TOUR;
+  // }
+  return BASE_TOUR;
 }
 
 /**
