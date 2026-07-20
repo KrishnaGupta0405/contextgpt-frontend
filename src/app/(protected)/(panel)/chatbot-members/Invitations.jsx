@@ -143,7 +143,7 @@ export const OutgoingInvitations = () => {
   return (
     <div className="flex h-full flex-col space-y-6 overflow-y-auto p-4 sm:p-6 lg:p-8">
       {/* ── Send Invitation ── */}
-      <div>
+      <div data-tour="chatbot-invite-form">
         <h3 className="border-b border-gray-100 pb-2 text-sm font-semibold text-gray-600">
           Send Invitation
         </h3>
@@ -167,6 +167,7 @@ export const OutgoingInvitations = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
+                data-tour="chatbot-invite-role"
                 className="w-full justify-between border-gray-300 bg-white font-normal text-gray-700 shadow-sm hover:bg-gray-50 xl:w-[140px]"
               >
                 {ROLES.find((r) => r.value === inviteRole)?.label || "Agent"}

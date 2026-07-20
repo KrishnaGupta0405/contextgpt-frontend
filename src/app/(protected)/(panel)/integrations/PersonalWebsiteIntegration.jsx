@@ -60,7 +60,7 @@ function DomainListEditor({ extraData, helpers }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex gap-2">
+      <div className="flex gap-2" data-tour="integrations-website-domain-row">
         <input
           type="text"
           className="flex-1 rounded-md border border-slate-300 px-3 py-1.5 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -71,6 +71,7 @@ function DomainListEditor({ extraData, helpers }) {
         />
         <button
           type="button"
+          data-tour="integrations-website-add-domain"
           onClick={addDomain}
           className="flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
         >

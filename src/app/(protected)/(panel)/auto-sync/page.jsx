@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useAuth } from "@/context/AuthContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 import { hasSubscriptionAccess } from "@/lib/subscription";
 import api from "@/lib/axios";
 import { toast } from "sonner";
@@ -99,7 +100,16 @@ export default function AutoSync() {
   const { selectedChatbot } = useChatbot();
   const { subscription } = useAuth();
   const { showNotification, showNoSubscriptionNotification } = usePlanUpgradeNotification();
+  const { resumeTour } = useProductTour();
   const loadingBarRef = React.useRef(null);
+
+  // TOUR_LEGS[13] — resumeTour(13) runs it when the API Keys leg handed off
+  // here, and no-ops otherwise. Same delay as the other legs, giving the tabs
+  // and jobs table a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(13), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   const hasAccess = hasSubscriptionAccess(subscription);
   const isStarterPlanUser = isStarterPlan(subscription?.planType);
@@ -375,8 +385,8 @@ export default function AutoSync() {
           {/* Tabs */}
           <Tabs defaultValue="refresh" className="space-y-6">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="refresh">Auto-Refresh</TabsTrigger>
-              <TabsTrigger value="scan">Auto-Scan</TabsTrigger>
+              <TabsTrigger value="refresh" data-tour="auto-sync-tab-refresh">Auto-Refresh</TabsTrigger>
+              <TabsTrigger value="scan" data-tour="auto-sync-tab-scan">Auto-Scan</TabsTrigger>
             </TabsList>
 
             {/* AUTO-REFRESH TAB */}
@@ -454,7 +464,7 @@ export default function AutoSync() {
               </div>
 
               {/* Table */}
-              <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+              <div className="overflow-hidden rounded-lg border bg-white shadow-sm" data-tour="auto-sync-refresh-jobs">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -654,6 +664,7 @@ export default function AutoSync() {
 
                   <Button
                     className="border-0 bg-blue-600 text-white hover:bg-blue-700"
+                    data-tour="auto-sync-add-sitemap"
                     onClick={() => {
                       if (!hasAccess) { showNoSubscriptionNotification(); return; }
                       if (isStarterPlanUser || !autoScanSupported) { showNotification("autoScanData"); return; }
@@ -697,7 +708,7 @@ export default function AutoSync() {
               </div>
 
               {/* Table */}
-              <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+              <div className="overflow-hidden rounded-lg border bg-white shadow-sm" data-tour="auto-sync-scan-jobs">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>

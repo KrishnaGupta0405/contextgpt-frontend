@@ -209,6 +209,11 @@ function ListItem({ children, className, ...props }) {
   );
 }
 
+// TODO: pending blog enhancements
+// 1. Add a TLDR section component (short summary block rendered at the top of a post).
+// 2. Add an FAQ section component (question/answer list, ideally with FAQ schema markup).
+// 3. Extend BlogImage: clicking the image should expand it to a larger/lightbox view,
+//    and clicking again should collapse it back to its inline size.
 function BlogImage({ src, alt, className, caption, ...props }) {
   if (process.env.NODE_ENV !== "production" && !alt) {
     console.warn(`[blog] Image is missing alt text: ${src}`);

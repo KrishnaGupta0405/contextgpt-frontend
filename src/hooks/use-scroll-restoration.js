@@ -8,6 +8,15 @@ export function useScrollRestoration() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // An explicit deep link (#section) must win over restoration. The tween
+    // below runs for ~1.8s and would otherwise overwrite the anchor scroll.
+    // Clear the saved position too, so it can't yank the user on a later
+    // hash-less visit to this route.
+    if (window.location.hash) {
+      sessionStorage.removeItem(`scrollPos:${pathname}`);
+      return;
+    }
+
     // 1. Instant reset to top on navigation to prevent layout jitter
     window.scrollTo(0, 0);
 

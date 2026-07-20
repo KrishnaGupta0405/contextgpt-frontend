@@ -141,6 +141,7 @@ export function AddFilesModal({ isOpen, onClose }) {
                 Choose a type to add files:
               </p>
 
+              <div data-tour="website-files-source-options">
               <HoverEffect
                 items={[
                   { title: "Local Files", description: "Upload files from your system", icon: <FileText strokeWidth={2.5} className="h-6 w-6 text-blue-500" />, onClick: () => setActiveView("local") },
@@ -158,6 +159,7 @@ export function AddFilesModal({ isOpen, onClose }) {
                 ]}
                 className="py-4"
               />
+              </div>
             </div>
           </div>
           </ScrollArea>

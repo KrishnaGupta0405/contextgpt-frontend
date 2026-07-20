@@ -197,7 +197,7 @@ const HumanSettingsTab = () => {
 
   return (
     <div className="rounded-xl border bg-white p-6 shadow-sm">
-      <div className="mb-6">
+      <div className="mb-6" data-tour="leads-human-support-intro">
         <h3 className="text-lg font-medium">Human Support Settings</h3>
         <p className="text-muted-foreground text-sm">
           Configure how the AI hands over conversations to human agents.

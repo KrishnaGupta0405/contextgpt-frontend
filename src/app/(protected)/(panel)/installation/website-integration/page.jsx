@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Copy, Globe } from "lucide-react";
 import { useChatbot } from "@/context/ChatbotContext";
 import { toast } from "sonner";
 import { ShikiCodeBlock } from "@/components/ui/ShikiCodeBlock";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 const PLATFORMS = [
   { key: "general", label: "General", icon: "🌐" },
@@ -231,6 +232,19 @@ export default function WebsiteIntegration() {
   const { selectedChatbot } = useChatbot();
   const chatbotId = selectedChatbot?.id ?? "";
   const [activePlatform, setActivePlatform] = useState("general");
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[0] — the dashboard leg ends by writing a resume marker and
+  // navigating here; resumeTour(0) picks it up, or no-ops when the user reached
+  // this page on their own. Gated on chatbotId because the embed cards the
+  // steps point at only render once a chatbot is selected — driver.js silently
+  // drops steps whose element is missing. The delay matches the dashboard's,
+  // giving the cards a frame to paint before the overlay lands.
+  useEffect(() => {
+    if (!chatbotId) return;
+    const timer = setTimeout(() => resumeTour(0), 600);
+    return () => clearTimeout(timer);
+  }, [chatbotId, resumeTour]);
 
   const jsEmbed = `
 <script type="module" 
@@ -290,7 +304,7 @@ data-chatbot-id="${chatbotId}">
 
         <div className="space-y-4">
           {/* Chatbot ID */}
-          <div className="rounded-[14px] border border-slate-200 bg-[#f4f7fc] p-6 shadow-sm">
+          <div data-tour="installation-chatbot-id" className="rounded-[14px] border border-slate-200 bg-[#f4f7fc] p-6 shadow-sm">
             <div className="flex items-start gap-2.5">
               <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-100">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#155ded" viewBox="0 0 256 256"><path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32Zm-8,128H176V88a8,8,0,0,0-8-8H96V48H208Z"></path></svg>
@@ -330,24 +344,25 @@ data-chatbot-id="${chatbotId}">
 
                 <div className="space-y-4">
                   {/* JavaScript Embed */}
-                  <div className="rounded-[10px] border border-slate-200 bg-white p-4">
+                  <div data-tour="installation-floating-embed" className="rounded-[10px] border border-slate-200 bg-white p-4">
                     <div className="mb-2 flex items-center gap-2.5">
                       <span className="text-[13.5px] font-semibold text-slate-800">
-                        JavaScript Embed
+                        JavaScript Embed (Floating)
                       </span>
                       <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold text-green-700">
                         Recommended
                       </span>
                     </div>
                     <p className="mb-3 text-[13px] text-blue-600/80">
-                      Best for most websites. Automatically positions the chatbot
-                      and works on all pages.
+                      Best for most websites. Adds a floating chat bubble in the
+                      bottom-right corner that opens the chat window on click —
+                      positioned automatically and works on all pages.
                     </p>
                     <ShikiCodeBlock code={jsEmbed} lang="html" />
                   </div>
 
                   {/* Embedded (fixed size) */}
-                  <div className="rounded-[10px] border border-slate-200 bg-white p-4">
+                  <div data-tour="installation-container-embed" className="rounded-[10px] border border-slate-200 bg-white p-4">
                     <div className="mb-2 flex items-center gap-2.5">
                       <span className="text-[13.5px] font-semibold text-slate-800">
                         Embedded (Fixed Size)
@@ -406,7 +421,7 @@ data-chatbot-id="${chatbotId}">
           </div>
 
           {/* Platform-Specific Instructions */}
-          <div className="rounded-[14px] border border-green-200 bg-[#f0faf4] p-6 shadow-sm">
+          <div data-tour="installation-platforms" className="rounded-[14px] border border-green-200 bg-[#f0faf4] p-6 shadow-sm">
             <div className="mb-1.5 flex items-center gap-2.5">
               <Globe className="h-5 w-5 text-green-600" />
               <h4 className="text-[14.5px] font-bold text-slate-900">

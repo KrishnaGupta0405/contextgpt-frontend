@@ -530,7 +530,10 @@ const CurrentLeadsTab = () => {
           )}
         </div>
 
-        <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
+        <div
+          className="overflow-hidden rounded-xl border bg-white shadow-sm"
+          data-tour="leads-table"
+        >
           <Table>
             <TableHeader className="bg-slate-50">
               <TableRow>

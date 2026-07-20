@@ -143,7 +143,7 @@ export const OutgoingAccountInvitations = () => {
   return (
     <div className="flex h-full flex-col space-y-6 overflow-y-auto p-4 sm:p-6 lg:p-8">
       {/* ── Send Account Invitation ── */}
-      <div>
+      <div data-tour="account-invite-form">
         <h3 className="border-b border-gray-100 pb-2 text-sm font-semibold text-gray-600">
           Send Account Invitation
         </h3>
@@ -169,6 +169,7 @@ export const OutgoingAccountInvitations = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
+                data-tour="account-invite-role"
                 className="w-full justify-between border-gray-300 bg-white font-normal text-gray-700 shadow-sm hover:bg-gray-50 xl:w-[140px]"
               >
                 {ROLES.find((r) => r.value === inviteRole)?.label || "Agent"}

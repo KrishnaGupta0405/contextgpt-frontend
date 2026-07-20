@@ -181,6 +181,7 @@ const ChatHistoryMiddleContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedThreadId = searchParams.get("threadId");
+  const hasAutoSelectedRef = useRef(false);
 
   const fetchThreads = useCallback(async (pageNum = 1, append = false) => {
     if (!selectedChatbot?.id) return;
@@ -256,7 +257,11 @@ const ChatHistoryMiddleContent = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [selectedChatbot?.id, filter, advancedFilters]);
+    // Depend on a serialized snapshot of advancedFilters so equal-value objects
+    // (e.g. a fresh reference with the same fields) don't churn this callback's
+    // identity and re-trigger the re-fetch effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChatbot?.id, filter, JSON.stringify(advancedFilters)]);
 
   // Always keep a ref to the latest fetchThreads so socket listeners
   // never capture a stale closure.
@@ -279,7 +284,20 @@ const ChatHistoryMiddleContent = () => {
     const statusFilter = params.get("status") || "open";
 
     setFilter(statusFilter);
-    setAdvancedFilters({ readStatus, escalated, important, anonymous, feedback, llmModel, tags });
+    // Only replace advancedFilters state when the URL actually carries filter
+    // values. Setting a fresh (same-valued) object on every mount would churn its
+    // reference and re-fire the re-fetch effect, contributing to a render loop.
+    const hasAnyFilter =
+      readStatus !== null ||
+      escalated !== null ||
+      important !== null ||
+      anonymous !== null ||
+      feedback !== null ||
+      llmModel !== null ||
+      tags.length > 0;
+    if (hasAnyFilter) {
+      setAdvancedFilters({ readStatus, escalated, important, anonymous, feedback, llmModel, tags });
+    }
   // Only run on mount to initialize from URL
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -329,13 +347,15 @@ const ChatHistoryMiddleContent = () => {
     advancedFilters.tags.length > 0 ? "tags" : null,
   ].filter(Boolean).length;
 
-  // Re-fetch when chatbot, filter, or advancedFilters change
+  // Re-fetch when chatbot, filter, or advancedFilters change. advancedFilters is
+  // serialized so a same-valued new object reference doesn't re-fire the fetch.
   useEffect(() => {
     setPage(1);
     setHasMore(true);
     setSelectedThreadIds(new Set());
     fetchThreads(1, false);
-  }, [selectedChatbot?.id, filter, advancedFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChatbot?.id, filter, JSON.stringify(advancedFilters)]);
 
   const scrollAreaRef = useRef(null);
 
@@ -481,6 +501,9 @@ const ChatHistoryMiddleContent = () => {
   }, [addListener, selectedChatbot?.id]);
 
   const handleThreadSelect = (threadId) => {
+    // No-op if this thread is already selected — avoids redundant router.replace
+    // calls that would otherwise re-render/re-navigate in a loop.
+    if (selectedThreadId === threadId) return;
     const params = new URLSearchParams(searchParams);
     params.set("threadId", threadId);
     router.replace(`?${params.toString()}`);
@@ -496,6 +519,39 @@ const ChatHistoryMiddleContent = () => {
       ),
     );
   };
+
+  // Memoized so it isn't a new array reference every render — the auto-select
+  // effect below depends on it, and an unstable reference would re-fire it.
+  const filteredThreads = useMemo(
+    () =>
+      threads.filter((thread) => {
+        if (fadingThreadIds.has(thread.id)) return true;
+        if (selectedVisitor !== "all" && thread.visitorId !== selectedVisitor)
+          return false;
+        if (advancedFilters.tags.length > 0) {
+          const threadTags = Array.isArray(thread.tags) ? thread.tags : [];
+          if (!advancedFilters.tags.every((tag) => threadTags.includes(tag)))
+            return false;
+        }
+        return true;
+      }),
+    [threads, selectedVisitor, advancedFilters, fadingThreadIds],
+  );
+
+  // Auto-open the first thread once, when none is selected on initial load, so
+  // the right pane isn't empty. Wait until loading settles (a real fetch), then
+  // navigate a single time — after which selectedThreadId is set and this bails.
+  // The ref is a secondary guard; the real loop-proofing is the stable deps.
+  useEffect(() => {
+    if (hasAutoSelectedRef.current) return;
+    if (selectedThreadId) return; // URL already selects a thread
+    if (loading) return; // wait for a real fetch to settle
+    const firstThread = filteredThreads[0];
+    if (!firstThread) return;
+    hasAutoSelectedRef.current = true;
+    handleThreadSelect(firstThread.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, selectedThreadId, filteredThreads]);
 
   const toggleSelectAll = () => {
     if (selectedThreadIds.size === threads.length) {
@@ -720,16 +776,6 @@ const ChatHistoryMiddleContent = () => {
     return Array.from(modelMap.values());
   }, [threads]);
 
-  const filteredThreads = threads.filter((thread) => {
-    if (fadingThreadIds.has(thread.id)) return true;
-    if (selectedVisitor !== "all" && thread.visitorId !== selectedVisitor) return false;
-    if (advancedFilters.tags.length > 0) {
-      const threadTags = Array.isArray(thread.tags) ? thread.tags : [];
-      if (!advancedFilters.tags.every((tag) => threadTags.includes(tag))) return false;
-    }
-    return true;
-  });
-
   if (!selectedChatbot) {
     return (
       <div className="flex h-full items-center justify-center p-4">
@@ -831,9 +877,13 @@ const ChatHistoryMiddleContent = () => {
           </div>
 
           {/* Advanced filter popover */}
-          <Popover open={filterPopoverOpen} onOpenChange={setFilterPopoverOpen}>
+          <Popover
+            open={filterPopoverOpen}
+            onOpenChange={setFilterPopoverOpen}
+          >
             <PopoverTrigger asChild>
               <Button
+                data-tour="chat-history-filters-trigger"
                 variant="outline"
                 size="sm"
                 className={cn(
@@ -852,7 +902,26 @@ const ChatHistoryMiddleContent = () => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-72 p-0" sideOffset={4}>
+            <PopoverContent
+              data-tour="chat-history-filters"
+              align="start"
+              className="w-72 p-0"
+              sideOffset={4}
+              onOpenAutoFocus={(e) => {
+                // When the tour opens this popover, the sheet's focus-restore
+                // would otherwise steal focus and trip an outside-close. Skip
+                // the auto-focus so we don't yank focus back into the popover.
+                if (window.__tourOpeningFilter) e.preventDefault();
+              }}
+              onInteractOutside={(e) => {
+                // Ignore the stray focus/pointer event left over from closing
+                // the detail sheet while the tour is programmatically opening.
+                if (window.__tourOpeningFilter) e.preventDefault();
+              }}
+              onFocusOutside={(e) => {
+                if (window.__tourOpeningFilter) e.preventDefault();
+              }}
+            >
               <div className="flex items-center justify-between border-b px-3 py-2">
                 <span className="text-sm font-semibold">Filters</span>
                 {activeAdvancedFilterCount > 0 && (
@@ -1094,7 +1163,7 @@ const ChatHistoryMiddleContent = () => {
         </div>
       </div>
 
-      <ScrollArea ref={scrollAreaRef} className="min-h-0 flex-1">
+      <ScrollArea ref={scrollAreaRef} data-tour="chat-history-thread-list" className="min-h-0 flex-1">
         <div className="flex flex-col p-2">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (

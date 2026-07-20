@@ -48,6 +48,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { hasSubscriptionAccess } from "@/lib/subscription";
 import { usePlanUpgradeNotification } from "@/components/PlanUpgradeNotification";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 function KeyRow({ apiKey, onRevoke }) {
   const [copied, setCopied] = useState(false);
@@ -356,7 +357,7 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
   const totalPages = Math.ceil(pagination.total / pagination.limit) || 1;
 
   return (
-    <Card className="border shadow-sm">
+    <Card data-tour="api-keys-logs" className="border shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
@@ -534,7 +535,17 @@ function ApiLogsSection({ apiKeys, apiAccessSupported, isStarterPlanUser }) {
 export default function ApiKeysPage() {
   const { subscription } = useAuth();
   const { showNotification, showNoSubscriptionNotification } = usePlanUpgradeNotification();
+  const { resumeTour } = useProductTour();
   const hasAccess = hasSubscriptionAccess(subscription);
+
+  // TOUR_LEGS[12] — resumeTour(12) runs it when the Webhooks leg handed off
+  // here, and no-ops otherwise. Same delay as the other legs, giving the key
+  // list and request log a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(12), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
+
   const [apiKeys, setApiKeys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -610,6 +621,7 @@ export default function ApiKeysPage() {
           </p>
         </div>
         <Button
+          data-tour="api-keys-new-key"
           onClick={() => {
             if (!hasAccess) { showNoSubscriptionNotification(); return; }
             if (isStarterPlanUser || !apiAccessSupported) { showNotification("apiAccess"); return; }
@@ -625,7 +637,7 @@ export default function ApiKeysPage() {
       <Separator />
 
       {/* Keys list */}
-      <Card className="border shadow-sm">
+      <Card data-tour="api-keys-list" className="border shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
             <Key className="h-4 w-4" />

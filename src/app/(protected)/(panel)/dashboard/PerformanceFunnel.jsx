@@ -648,7 +648,10 @@ export default function PerformanceFunnel() {
       )}
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        data-tour="dashboard-stat-cards"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {loading
           ? Array.from({ length: 7 }).map((_, i) => <SkeletonCard key={i} />)
           : statCards.map((card) => (

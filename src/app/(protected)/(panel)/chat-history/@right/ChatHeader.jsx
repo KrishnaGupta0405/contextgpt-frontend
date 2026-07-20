@@ -492,6 +492,7 @@ const ChatHeader = ({
         <Button
           variant="outline"
           size="sm"
+          data-tour="chat-history-view-detail"
           className="ml-2 h-8 gap-2 px-3 text-xs"
           onClick={onOpenDetail}
         >
@@ -505,6 +506,7 @@ const ChatHeader = ({
             <Button
               variant="outline"
               size="sm"
+              data-tour="chat-history-escalate-toggle"
               className={cn(
                 "ml-1 h-8 gap-2 px-3 text-xs transition-colors",
                 threadDetails?.escalated

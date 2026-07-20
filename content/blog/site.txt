@@ -163,3 +163,27 @@ SiteGPT takes advantage of the latest advancements in Natural Language Processin
 Not only does SiteGPT make your website more user-friendly, but it also saves you time and resources. You no longer have to manually answer repetitive questions or hire additional support staff. SiteGPT handles it all for you, allowing you to focus on other important aspects of your business.
 So, why wait? Try out SiteGPT today and witness the power of AI in action. Within minutes, you can have your very own AI chatbot fully built and ready to engage with your website visitors. Take your customer experience to the next level and see the positive impact it has on your business.
 Remember, whether you run an e-commerce store, manage a content-heavy website, or provide services to clients, SiteGPT is the ultimate solution for all your chatbot needs. Embrace the future of customer engagement and unlock the full potential of your website with SiteGPT.
+
+
+
+
+i want to implement that login feature that whenever someone comes to my page, there comes a google login popup as continue_as_<google_name>, help me implement this @Frontend Dashboard/src/app/(not-protected)/layout.js @Frontend Dashboard/src/app/(not-protected)/(auth)/login/page.jsx @Frontend Dashboard/src/app/(not-protected)/(auth)/google-callback/page.jsx --->That popup is generally called Federated Login or One Tap Sign-In, depending on the provider.
+
+For Google specifically, it's called:
+
+Google One Tap (the popup that says "Continue as Krishna" without redirecting)
+Sign in with Google (the button)
+Google Identity Services (GIS) (the SDK/API that provides both)
+
+If you're implementing it, you'll typically use:
+
+Google Identity Services (GIS) SDK
+OAuth 2.0
+OpenID Connect (OIDC)
+
+The coding term for this UX is:
+
+One Tap Authentication
+Federated Authentication
+Social Login
+Identity Provider (IdP) Login

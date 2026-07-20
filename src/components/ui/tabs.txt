@@ -1,0 +1,143 @@
+# Tabs https://www.radix-ui.com/primitives/docs/components/tabs#api-reference
+
+A set of layered sections of content—known as tab panels—that are displayed one at a time.
+
+## Features
+
+- Can be controlled or uncontrolled.
+
+- Supports horizontal/vertical orientation.
+
+- Supports automatic/manual activation.
+
+- Full keyboard navigation.
+
+## [Anatomy](#anatomy)
+
+Import all parts and piece them together.
+
+```jsx
+import { Tabs } from "radix-ui";
+
+export default () => (
+  <Tabs.Root>
+    <Tabs.List>
+      <Tabs.Trigger />
+    </Tabs.List>
+
+    <Tabs.Content />
+  </Tabs.Root>
+);
+```
+
+## [API Reference](#api-reference)
+
+### [Root](#root)
+
+Contains all the tabs component parts.
+
+| Prop             | Type       | Default          |
+| ---------------- | ---------- | ---------------- |
+| `asChild`        | `boolean`  | `false`          |
+| `defaultValue`   | `string`   | No default value |
+| `value`          | `string`   | No default value |
+| `onValueChange`  | `function` | No default value |
+| `orientation`    | `enum`     | `"horizontal"`   |
+| `dir`            | `enum`     | No default value |
+| `activationMode` | `enum`     | `"automatic"`    |
+
+| Data attribute       | Values                       |
+| -------------------- | ---------------------------- |
+| `[data-orientation]` | `"vertical" \| "horizontal"` |
+
+### [List](#list)
+
+Contains the triggers that are aligned along the edge of the active content.
+
+| Prop      | Type      | Default |
+| --------- | --------- | ------- |
+| `asChild` | `boolean` | `false` |
+| `loop`    | `boolean` | `true`  |
+
+| Data attribute       | Values                       |
+| -------------------- | ---------------------------- |
+| `[data-orientation]` | `"vertical" \| "horizontal"` |
+
+### [Trigger](#trigger)
+
+The button that activates its associated content.
+
+| Prop       | Type      | Default          |
+| ---------- | --------- | ---------------- |
+| `asChild`  | `boolean` | `false`          |
+| `value*`   | `string`  | No default value |
+| `disabled` | `boolean` | `false`          |
+
+| Data attribute       | Values                       |
+| -------------------- | ---------------------------- |
+| `[data-state]`       | `"active" \| "inactive"`     |
+| `[data-disabled]`    | Present when disabled        |
+| `[data-orientation]` | `"vertical" \| "horizontal"` |
+
+### [Content](#content)
+
+Contains the content associated with each trigger.
+
+| Prop         | Type      | Default          |
+| ------------ | --------- | ---------------- |
+| `asChild`    | `boolean` | `false`          |
+| `value*`     | `string`  | No default value |
+| `forceMount` | `boolean` | No default value |
+
+| Data attribute       | Values                       |
+| -------------------- | ---------------------------- |
+| `[data-state]`       | `"active" \| "inactive"`     |
+| `[data-orientation]` | `"vertical" \| "horizontal"` |
+
+## [Examples](#examples)
+
+### [Vertical](#vertical)
+
+You can create vertical tabs by using the `orientation` prop.
+
+```jsx
+import { Tabs } from "radix-ui";
+
+export default () => (
+  <Tabs.Root defaultValue="tab1" orientation="vertical">
+    <Tabs.List aria-label="tabs example">
+      <Tabs.Trigger value="tab1">One</Tabs.Trigger>
+
+      <Tabs.Trigger value="tab2">Two</Tabs.Trigger>
+
+      <Tabs.Trigger value="tab3">Three</Tabs.Trigger>
+    </Tabs.List>
+
+    <Tabs.Content value="tab1">Tab one content</Tabs.Content>
+
+    <Tabs.Content value="tab2">Tab two content</Tabs.Content>
+
+    <Tabs.Content value="tab3">Tab three content</Tabs.Content>
+  </Tabs.Root>
+);
+```
+
+## [Accessibility](#accessibility)
+
+Adheres to the [Tabs WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs).
+
+### [Keyboard Interactions](#keyboard-interactions)
+
+| Key          | Description                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `Tab`        | When focus moves onto the tabs, focuses the active trigger. When a trigger is focused, moves focus to the active content. |
+| `ArrowDown`  | Moves focus to the next trigger depending on `orientation` <!-- -->and activates its associated content.                  |
+| `ArrowRight` | Moves focus to the next trigger depending on `orientation` <!-- -->and activates its associated content.                  |
+| `ArrowUp`    | Moves focus to the previous trigger depending on<!-- --> `orientation` and activates its associated content.              |
+| `ArrowLeft`  | Moves focus to the previous trigger depending on<!-- --> `orientation` and activates its associated content.              |
+| `Home`       | Moves focus to the first trigger and activates its associated content.                                                    |
+| `End`        | Moves focus to the last trigger and activates its associated content.                                                     |
+
+<!--$-->
+
+<!--/$-->

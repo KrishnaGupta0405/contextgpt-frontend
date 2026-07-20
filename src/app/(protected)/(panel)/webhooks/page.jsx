@@ -63,6 +63,7 @@ import { useChattingSocket } from "@/context/ChattingSocketContext";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
 import { useAuth } from "@/context/AuthContext";
 import { usePlanUpgradeNotification } from "@/components/PlanUpgradeNotification";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -228,7 +229,16 @@ export default function WebhooksPage() {
   const { markDirty, markClean } = useUnsavedChanges();
   const { subscription } = useAuth();
   const { showNotification } = usePlanUpgradeNotification();
+  const { resumeTour } = useProductTour();
   const chatbotId = selectedChatbot?.id;
+
+  // TOUR_LEGS[11] — resumeTour(11) runs it when the Settings leg handed off
+  // here, and no-ops otherwise. Same delay as the other legs, giving the
+  // events list and delivery log a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(11), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
   const webhookSupported = subscription?.webhookSupport ?? false;
   const isStarterPlan = subscription?.planType?.includes("starter") ?? false;
 
@@ -685,7 +695,7 @@ export default function WebhooksPage() {
               </div>
 
               {/* Event types */}
-              <div className="space-y-2">
+              <div className="space-y-2" data-tour="webhooks-events">
                 <Label>Events to Subscribe</Label>
                 <div className="space-y-2">
                   {ALL_EVENTS.map((evt) => (
@@ -809,7 +819,7 @@ export default function WebhooksPage() {
       </Card>
 
       {/* ── Delivery log card ── */}
-      <Card>
+      <Card data-tour="webhooks-delivery-log">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
@@ -933,7 +943,7 @@ export default function WebhooksPage() {
       </Card>
 
       {/* ── Payload reference card ── */}
-      <Card>
+      <Card data-tour="webhooks-verify-signature">
         <CardHeader>
           <CardTitle className="text-base">Verifying Signatures</CardTitle>
           <CardDescription>

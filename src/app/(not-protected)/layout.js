@@ -6,6 +6,7 @@ import "./not-protected.css";
 export default function NotProtectedLayout({ children }) {
   return (
     <div className="not-protected-layout">
+      {/* GoogleOneTap is mounted once in the root layout. */}
       <NavigationMenuDemo />
       {children}
       <Footer />

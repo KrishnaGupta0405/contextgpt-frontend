@@ -105,7 +105,7 @@ const ChatModesTab = () => {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col space-y-5">
+          <div className="flex flex-col space-y-5" data-tour="settings-chat-modes">
             {/* Always Starts New Conversation with Human */}
             <label
               className="flex cursor-pointer items-start gap-3"

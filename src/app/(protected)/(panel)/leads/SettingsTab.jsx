@@ -667,7 +667,7 @@ const SettingsTab = () => {
   return (
     <div className="flex gap-6 items-start">
     <div className="min-w-0 flex-1 rounded-xl border bg-white p-6 shadow-sm">
-      <div className="mb-6">
+      <div className="mb-6" data-tour="leads-settings-intro">
         <h3 className="text-lg font-medium">Lead Collection Settings</h3>
         <p className="text-muted-foreground text-sm">
           Configure how and when your chatbot collects visitor information.
@@ -1312,6 +1312,7 @@ const SettingsTab = () => {
 
           {/* Notifications */}
           <div
+            data-tour="leads-notifications"
             className={`space-y-4 rounded-lg border p-4 ${!isEnabled ? "pointer-events-none opacity-50" : ""}`}
           >
             <h4 className="mb-2 text-sm font-medium">Notifications</h4>

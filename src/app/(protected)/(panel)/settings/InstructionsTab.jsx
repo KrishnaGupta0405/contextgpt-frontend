@@ -433,7 +433,10 @@ const InstructionsTab = () => {
       </div>
 
       {/* Custom Instructions Section */}
-      <div className="grid grid-cols-1 gap-8 py-10 md:grid-cols-4">
+      <div
+        data-tour="settings-instructions"
+        className="grid grid-cols-1 gap-8 py-10 md:grid-cols-4"
+      >
         <div className="pr-6 md:col-span-1">
           <h3 className="text-base font-semibold text-gray-900">
             Custom Instructions

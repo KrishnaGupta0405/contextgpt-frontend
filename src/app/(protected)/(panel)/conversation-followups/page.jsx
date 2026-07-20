@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 import { PlayCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -36,6 +37,16 @@ const ConversationFollowups = () => {
   const { account } = useAuth();
   const { selectedChatbot } = useChatbot();
   const { markDirty, markClean } = useUnsavedChanges();
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[7] — resumeTour(7) runs it when the Conversation Starters leg
+  // handed off here, and no-ops otherwise. Same delay as the other legs,
+  // giving the followups list and form a frame to paint before the overlay
+  // lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(7), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   const [followups, setFollowups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -261,7 +272,10 @@ const ConversationFollowups = () => {
 
         <div className="flex min-h-0 flex-1 gap-8">
           {/* Left Column: List of Followups */}
-          <div className="flex w-1/2 flex-col gap-4 overflow-y-auto pr-2 pb-10">
+          <div
+            data-tour="followups-list"
+            className="flex w-1/2 flex-col gap-4 overflow-y-auto pr-2 pb-10"
+          >
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -376,7 +390,10 @@ const ConversationFollowups = () => {
                   onValueChange={(v) => { setActionType(v); markDirty(); }}
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-3 bg-slate-100 p-1">
+                  <TabsList
+                    data-tour="followups-action-type"
+                    className="grid w-full grid-cols-3 bg-slate-100 p-1"
+                  >
                     <TabsTrigger
                       value="message"
                       className="rounded-md text-[13px] font-medium text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
@@ -391,6 +408,7 @@ const ConversationFollowups = () => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="escalate"
+                      data-tour="followups-tab-escalate"
                       className="relative rounded-md text-[13px] font-medium text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
                     >
                       Escalate

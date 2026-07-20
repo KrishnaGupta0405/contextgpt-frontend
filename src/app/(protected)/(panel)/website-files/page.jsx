@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useChattingSocket } from "@/context/ChattingSocketContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 import api from "@/lib/axios";
 import { toast } from "sonner";
 import { formatDistanceToNow, format } from "date-fns";
@@ -84,6 +85,17 @@ const TABS = [
 const WebsiteFiles = () => {
   const { selectedChatbot } = useChatbot();
   const { send, addListener, isConnected } = useChattingSocket() || {};
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[3] — resumeTour(3) runs it when the Website Links
+  // leg handed off here, and no-ops otherwise. No chatbotId gate: every anchor
+  // here (the sidebar link, the status cards and the Add Files button) renders
+  // regardless of which chatbot is selected. The delay matches the other legs,
+  // giving the status cards a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(3), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
   const [activeTab, setActiveTab] = useState("total");
   const [files, setFiles] = useState([]);
   const [selectedfiles, setSelectedfiles] = useState([]);
@@ -598,6 +610,7 @@ const WebsiteFiles = () => {
               </div>
               <GatedAction>
                 <Button
+                  data-tour="website-files-add"
                   className="border-0 bg-blue-600 text-white hover:bg-blue-700"
                   onClick={() => setIsAddFileModalOpen(true)}
                 >
@@ -607,7 +620,10 @@ const WebsiteFiles = () => {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div
+            data-tour="website-files-status-cards"
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+          >
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
               return (

@@ -10,7 +10,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -78,7 +77,7 @@ export default function SelectChatbotPage() {
   const fetchChatbots = async () => {
     setLoading(true);
     try { 
-      const response = await api.get("/chatbots/my-chatbots");
+      const response = await api.get("/chatbots/my-chatbots"); 
       const groups = response.data.data?.accounts || [];
       setAccountGroups(groups);
     } catch (error) {
@@ -433,38 +432,39 @@ export default function SelectChatbotPage() {
                 {group.chatbots.length === 0 ? (
                   <p className="text-sm text-slate-500 italic">No chatbots in this account yet.</p>
                 ) : (
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-6 rounded-none sm:grid-cols-2 lg:grid-cols-3">
                     {group.chatbots.map((chatbot) => {
                       const mapped = { ...chatbot, id: chatbot.chatbotId, userRole: chatbot.userChatbotRole || group.userRole, accountName: group.accountName };
                       return (
                         <Card
                           key={chatbot.chatbotId}
-                          className="group relative cursor-pointer overflow-hidden transition-all hover:border-blue-200 hover:shadow-lg"
+                          className="group relative cursor-pointer py-3 overflow-hidden rounded-sm transition-all hover:border-blue-200 hover:shadow-lg"
                           onClick={() => handleSelect(mapped)}
                         >
                           <div className="absolute top-0 left-0 h-full w-1 bg-blue-600 opacity-0 transition-opacity group-hover:opacity-100" />
-                          <CardHeader>
-                            <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-xl font-bold text-blue-600 uppercase">
-                              {chatbot.name.substring(0, 2)}
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                              <CardTitle>{chatbot.name}</CardTitle>
-                              {chatbot.userChatbotRole && (
-                                <span className="shrink-0 rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-600">
-                                  {chatbot.userChatbotRole}
-                                </span>
-                              )}
-                            </div>
-                            <CardDescription className="line-clamp-2">
-                              {chatbot.description ||
-                                "Conversational AI agent for your website."}
-                            </CardDescription>
-                          </CardHeader>
-                          <CardFooter className="mt-auto border-t bg-slate-50 py-3">
-                            <span className="text-sm font-medium text-blue-600 group-hover:underline">
-                              Manage Chatbot →
+                          {chatbot.userChatbotRole && (
+                            <span className="absolute top-2 right-2 rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-600">
+                              {chatbot.userChatbotRole}
                             </span>
-                          </CardFooter>
+                          )}
+                          <CardHeader>
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-50 text-xl font-bold text-blue-600 uppercase">
+                                {chatbot.botIconSrc ? (
+                                  <img
+                                    src={chatbot.botIconSrc}
+                                    alt={chatbot.name}
+                                    className="h-full w-full object-contain"
+                                  />
+                                ) : (
+                                  chatbot.name.substring(0, 2)
+                                )}
+                              </div>
+                              <CardTitle className="min-w-0 flex-1 truncate">
+                                {chatbot.name}
+                              </CardTitle>
+                            </div>
+                          </CardHeader>
                         </Card>
                       );
                     })}

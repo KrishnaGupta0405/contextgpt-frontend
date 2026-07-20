@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import { useChatbot } from "@/context/ChatbotContext";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 import {
   PlayCircle,
   ChevronUp,
@@ -24,6 +25,15 @@ const ConversationStarters = () => {
   const { account } = useAuth();
   const { selectedChatbot } = useChatbot();
   const { markDirty, markClean } = useUnsavedChanges();
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[6] — resumeTour(6) runs it when the Leads leg handed off
+  // here, and no-ops otherwise. Same delay as the other legs, giving the
+  // starters list and form a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(6), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   const [starters, setStarters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,7 +248,10 @@ const ConversationStarters = () => {
 
         <div className="flex min-h-0 flex-1 gap-8">
           {/* Left Column: List of Starters */}
-          <div className="flex w-1/2 flex-col gap-4 overflow-y-auto pr-2 pb-10">
+          <div
+            data-tour="starters-list"
+            className="flex w-1/2 flex-col gap-4 overflow-y-auto pr-2 pb-10"
+          >
             {isLoading && starters.length === 0 ? (
               <>
                 {[0, 1, 2].map((i) => (
@@ -335,12 +348,12 @@ const ConversationStarters = () => {
           </div>
 
           {/* Right Column: Form */}
-          <div className="flex w-1/2 max-w-[500px] flex-col">
+          <div className="flex w-1/2 max-w-[500px] flex-col" data-tour="starters-action-type">
             <h2 className="mb-6 text-xl font-bold text-slate-900">
               {editingId ? "Edit Button" : "Add Button"}
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-6" >
               <div className="space-y-2">
                 <Label className="text-sm font-semibold text-slate-700">
                   Button Action <span className="text-red-500">*</span>
@@ -353,7 +366,9 @@ const ConversationStarters = () => {
                   }}
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-2 bg-slate-100 p-1">
+                  <TabsList
+                    className="grid w-full grid-cols-2 bg-slate-100 p-1"
+                  >
                     <TabsTrigger
                       value="message"
                       className="rounded-md text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm"
@@ -419,7 +434,7 @@ const ConversationStarters = () => {
                 )}
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div data-tour="starters-save" className="flex gap-3 pt-2">
                 <GatedAction>
                   <Button
                     className="h-10 rounded-lg bg-blue-600 px-6 font-semibold text-white shadow-sm hover:bg-blue-700"

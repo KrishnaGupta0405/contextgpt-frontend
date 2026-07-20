@@ -155,17 +155,38 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const socket = getSocket();
 
+    // This event replaces the user object wholesale. Emitters that do not
+    // compute tourContext (profile edits, avatar uploads) would otherwise wipe
+    // it and leave the dashboard unable to decide which tour is pending, so
+    // carry the previous value forward whenever the payload omits it.
     const handleUserUpdated = (payload) => {
-      setUser(payload.user);
-      localStorage.setItem("user", JSON.stringify(payload.user));
+      setUser((prev) => {
+        const next = payload.user?.tourContext
+          ? payload.user
+          : { ...payload.user, tourContext: prev?.tourContext };
+        localStorage.setItem("user", JSON.stringify(next));
+        return next;
+      });
     };
 
+    // Billing webhooks ship a recomputed tourContext alongside the subscription
+    // — that is what lets a trial start or plan upgrade trigger the matching
+    // tour mid-session rather than on the next reload.
     const handleSubscriptionUpdated = (payload) => {
       setSubscription(payload.subscription);
       if (payload.subscription) {
         localStorage.setItem("subscription", JSON.stringify(payload.subscription));
       } else {
         localStorage.removeItem("subscription");
+      }
+
+      if (payload.tourContext) {
+        setUser((prev) => {
+          if (!prev) return prev;
+          const next = { ...prev, tourContext: payload.tourContext };
+          localStorage.setItem("user", JSON.stringify(next));
+          return next;
+        });
       }
     };
 

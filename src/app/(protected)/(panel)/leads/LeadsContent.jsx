@@ -9,16 +9,27 @@ import { useChatbot } from "@/context/ChatbotContext";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 
 const LeadsContent = () => {
   const { selectedChatbot } = useChatbot();
   const { guardNavigation } = useUnsavedChanges();
+  const { resumeTour } = useProductTour();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState(tabParam || "current");
+
+  // TOUR_LEGS[5] — resumeTour(5) runs it when the Chat History
+  // leg handed off here, and no-ops otherwise. The delay lets the tabs mount
+  // before driver.js resolves the first step's anchor (which also switches to
+  // the Current tab itself).
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(5), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   useEffect(() => {
     if (
@@ -60,9 +71,18 @@ const LeadsContent = () => {
           onValueChange={handleTabChange}
         >
           <TabsList className="mb-4">
-            <TabsTrigger value="current">Current</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-            <TabsTrigger value="human-settings">Human Settings</TabsTrigger>
+            <TabsTrigger value="current" data-tour="leads-tab-current">
+              Current
+            </TabsTrigger>
+            <TabsTrigger value="settings" data-tour="leads-tab-settings">
+              Settings
+            </TabsTrigger>
+            <TabsTrigger
+              value="human-settings"
+              data-tour="leads-tab-human-settings"
+            >
+              Human Settings
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="current">
             <CurrentLeadsTab />

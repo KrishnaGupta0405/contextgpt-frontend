@@ -253,3 +253,78 @@
   color: var(--color-foreground);
   opacity: 0.6;
 }
+
+/* "Skip" is injected ahead of driver.js's own footer buttons, so it sits at the
+   left edge while Previous/Next stay grouped at the right — margin-right:auto
+   is what splits the two groups. It is deliberately quiet: skipping should be
+   findable, not competitive with the primary Next action. */
+.contextgpt-driver-popover .driver-popover-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contextgpt-driver-popover .contextgpt-driver-skip {
+  margin-right: auto;
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  font-size: 12.5px;
+  color: var(--color-foreground);
+  opacity: 0.55;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.contextgpt-driver-popover .contextgpt-driver-skip:hover {
+  opacity: 0.9;
+}
+
+/* Our replacement for driver.js's × (disabled along with allowClose). Absolute
+   against the popover wrapper, which driver.js already positions relative. The
+   title has padding-right so a long heading wraps before it reaches the ×. */
+.contextgpt-driver-popover .contextgpt-driver-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-foreground);
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.contextgpt-driver-popover .contextgpt-driver-close:hover {
+  opacity: 0.9;
+  background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+}
+
+.contextgpt-driver-popover .driver-popover-title {
+  padding-right: 28px;
+}
+
+/* When the tour highlights the Chat History filter popover, the popover sits
+   below driver.js's overlay (z-index 10000) and renders dimmed instead of
+   spotlit. Radix Popper wraps the content in a `[data-radix-popper-content-wrapper]`
+   div and sets its z-index INLINE, which establishes the stacking context and
+   caps the whole subtree — so bumping the content alone does nothing. While the
+   tour runs (driver.js adds `.driver-active` to <html>), lift the wrapper above
+   the overlay with !important to beat that inline z-index. */
+html.driver-active [data-radix-popper-content-wrapper] {
+  z-index: 10001 !important;
+}
+
+/* Nudge the Thread ID tour step further away from its anchor (side: "left"),
+   so it doesn't crowd the Thread ID box. Extra right margin pushes it aside. */
+.contextgpt-thread-id-popover.driver-popover {
+  margin-right: 16px;
+}

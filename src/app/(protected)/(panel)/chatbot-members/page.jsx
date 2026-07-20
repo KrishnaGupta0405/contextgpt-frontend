@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatbotMembers } from "./ChatbotMembers";
 import { OutgoingInvitations, IncomingInvitations } from "./Invitations";
 import { MemberUsageBadge } from "../account-members/MemberUsageBadge";
+import { useProductTour } from "@/hooks/use-product-tour";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,6 +14,16 @@ import {
 } from "@/components/ui/resizable";
 
 const MembersPage = () => {
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[9] — resumeTour(9) runs it when the Account Members leg
+  // handed off here, and no-ops otherwise. Same delay as the other legs,
+  // giving the members list a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(9), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
+
   return (
     <div className="animate-in fade-in zoom-in-95 container mx-auto flex h-[calc(100vh-80px)] max-w-7xl flex-col space-y-4 px-4 py-8 duration-500">
       {/* Header */}
@@ -42,7 +53,10 @@ const MembersPage = () => {
         <ResizablePanelGroup orientation="horizontal">
           {/* First Pane (Left Half): Account Members */}
           <ResizablePanel defaultSize="50%" minSize="40%" maxSize="60%">
-            <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div
+              className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8"
+              data-tour="chatbot-members-list"
+            >
               <h3 className="border-b border-gray-100 pb-2 text-sm font-semibold text-gray-600">
                 Chatbot Members
               </h3>

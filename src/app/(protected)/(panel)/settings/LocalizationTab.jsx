@@ -563,6 +563,11 @@ const LocalizationTab = () => {
           {sections.map((section) => (
             <div
               key={section.title}
+              data-tour={
+                section.fields.includes("localeCode")
+                  ? "settings-localization-language"
+                  : undefined
+              }
               className="grid grid-cols-1 gap-8 border-b py-8 md:grid-cols-4"
             >
               <div className="md:sticky md:top-14 md:col-span-1 md:self-start">

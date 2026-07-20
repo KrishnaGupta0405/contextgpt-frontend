@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Play } from "lucide-react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useUnsavedChanges } from "@/context/UnsavedChangesContext";
+import { useProductTour } from "@/hooks/use-product-tour";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -26,9 +27,19 @@ const VALID_TABS = [
 
 const SettingsPageContent = () => {
   const { guardNavigation } = useUnsavedChanges();
+  const { resumeTour } = useProductTour();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  // TOUR_LEGS[10] — resumeTour(10) runs it when the Chatbot Members
+  // Members leg handed off here, and no-ops otherwise. Same delay as the
+  // other legs, giving the General tab a frame to paint before the overlay
+  // lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(10), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   const tabParam = searchParams.get("tab");
 
@@ -89,6 +100,7 @@ const SettingsPageContent = () => {
           >
             <TabsTrigger
               value="general"
+              data-tour="settings-tab-general"
               className="px-0 pb-4 text-base font-medium data-[state=active]:text-blue-600 data-[state=active]:after:bg-blue-600"
             >
               General
@@ -101,24 +113,28 @@ const SettingsPageContent = () => {
             </TabsTrigger>
             <TabsTrigger
               value="chat-modes"
+              data-tour="settings-tab-chat-modes"
               className="px-0 pb-4 text-base font-medium data-[state=active]:text-blue-600 data-[state=active]:after:bg-blue-600"
             >
               Chat Modes
             </TabsTrigger>
             <TabsTrigger
               value="localization"
+              data-tour="settings-tab-localization"
               className="px-0 pb-4 text-base font-medium data-[state=active]:text-blue-600 data-[state=active]:after:bg-blue-600"
             >
               Localization
             </TabsTrigger>
             <TabsTrigger
               value="personas"
+              data-tour="settings-tab-personas"
               className="px-0 pb-4 text-base font-medium data-[state=active]:text-blue-600 data-[state=active]:after:bg-blue-600"
             >
               Personas
             </TabsTrigger>
             <TabsTrigger
               value="instructions"
+              data-tour="settings-tab-instructions"
               className="px-0 pb-4 text-base font-medium data-[state=active]:text-blue-600 data-[state=active]:after:bg-blue-600"
             >
               Instructions

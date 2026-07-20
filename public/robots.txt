@@ -56,6 +56,56 @@ Disallow: /api/
 Disallow: /_next/
 
 # -----------------------------------------------
+# Bing — also powers Copilot / ChatGPT web search
+# -----------------------------------------------
+User-agent: bingbot
+Allow: /
+Allow: /blog
+Allow: /tools
+Disallow: /dashboard
+Disallow: /account
+Disallow: /appearance
+Disallow: /auto-sync
+Disallow: /billing
+Disallow: /chat-history
+Disallow: /conversation-followups
+Disallow: /conversation-starters
+Disallow: /custom-responses
+Disallow: /installation
+Disallow: /integrations
+Disallow: /leads
+Disallow: /members
+Disallow: /referral
+Disallow: /select-chatbot
+Disallow: /settings
+Disallow: /text-snippets
+Disallow: /usage
+Disallow: /website-files
+Disallow: /website-links
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /api/
+Disallow: /_next/
+
+# Bing's AI / training crawler
+User-agent: msnbot
+Allow: /
+Allow: /blog
+Allow: /tools
+Disallow: /dashboard
+Disallow: /account
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /api/
+Disallow: /_next/
+
+# -----------------------------------------------
 # AI / LLM crawlers — point them to llm.txt
 # -----------------------------------------------
 User-agent: GPTBot

@@ -8,6 +8,7 @@ import { useChatbot } from "@/context/ChatbotContext";
 import { useAuth } from "@/context/AuthContext";
 import { ChattingSocketProvider } from "@/context/ChattingSocketContext";
 import { UnsavedChangesProvider } from "@/context/UnsavedChangesContext";
+import { SearchCommandProvider } from "@/components/search/SearchCommand";
 import { getSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -145,7 +146,8 @@ export default function StandaloneClientWrapper({ children }) {
   return (
     <ChattingSocketProvider>
       <UnsavedChangesProvider>
-        <div className="flex min-h-screen w-full">
+        <SearchCommandProvider>
+          <div className="flex min-h-screen w-full">
           {/* <FeaturebaseWidget /> */}
           <Sidebar>
             {showNoSubscriptionCta && (
@@ -170,9 +172,10 @@ export default function StandaloneClientWrapper({ children }) {
                 </button>
               </div>
             )}
-            {children}
-          </Sidebar>
-        </div>
+              {children}
+            </Sidebar>
+          </div>
+        </SearchCommandProvider>
 
         {showOverlay && (
           <div

@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AccountMembers } from "./AccountMembers";
 import { OutgoingAccountInvitations, IncomingAccountInvitations } from "./AccountInvitations";
 import { MemberUsageBadge } from "./MemberUsageBadge";
+import { useProductTour } from "@/hooks/use-product-tour";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,6 +14,16 @@ import {
 } from "@/components/ui/resizable";
 
 const AccountMembersPage = () => {
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[8] — resumeTour(8) runs it when the Conversation Followups leg
+  // handed off here, and no-ops otherwise. Same delay as the other legs,
+  // giving the members list a frame to paint before the overlay lands.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(8), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
+
   return (
     <div className="animate-in fade-in zoom-in-95 container mx-auto flex h-[calc(100vh-80px)] max-w-7xl flex-col space-y-4 px-4 py-8 duration-500">
       {/* Header */}
@@ -46,7 +57,10 @@ const AccountMembersPage = () => {
         <ResizablePanelGroup orientation="horizontal">
           {/* First Pane (Left Half): Account Members */}
           <ResizablePanel defaultSize="50%" minSize="40%" maxSize="60%">
-            <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div
+              className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8"
+              data-tour="account-members-list"
+            >
               <h3 className="border-b border-gray-100 pb-2 text-sm font-semibold text-gray-600">
                 Account Members
               </h3>

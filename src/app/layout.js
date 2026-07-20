@@ -57,6 +57,8 @@ export const metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import SessionClearer from "@/components/SessionClearer";
+import { Suspense } from "react";
+import GoogleOneTap from "@/components/auth/GoogleOneTap";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -129,9 +131,16 @@ export default function RootLayout({ children }) {
         <SessionClearer />
         <AuthProvider>
           <TooltipProvider>
+            {/* One Tap self-suppresses when a user is already logged in, so it
+                is safe to mount app-wide. It must live here rather than in a
+                route-group layout because "/" is served by src/app/page.jsx,
+                which sits outside every route group. */}
+            <Suspense fallback={null}>
+              <GoogleOneTap />
+            </Suspense>
             {/* <NavigationMenuDemo /> */}
             {children}
-            <Analytics />
+            {process.env.NODE_ENV !== "development" && <Analytics />}
             <Toaster position="bottom-right" richColors />
           </TooltipProvider>
         </AuthProvider>

@@ -78,6 +78,7 @@ api.interceptors.response.use(
       originalRequest.url === "/auth/refresh-token" ||
       originalRequest.url === "/auth/login" ||
       originalRequest.url === "/auth/logout" ||
+      originalRequest.url === "/auth/google/one-tap" ||
       originalRequest.url === "/users/current-user" ||
       originalRequest.url === "/billing/subscription/current"
     ) {

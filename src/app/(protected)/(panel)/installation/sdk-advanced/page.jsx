@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PanelNavbar } from "@/components/navbar/PanelNavbar";
 import { Link2 } from "lucide-react";
 import { useChatbot } from "@/context/ChatbotContext";
 import { ShikiCodeBlock } from "@/components/ui/ShikiCodeBlock";
 import { cn } from "@/lib/utils";
-import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
+import { useHashScroll } from "@/hooks/use-hash-scroll";
+import { useProductTour } from "@/hooks/use-product-tour";
 import {
   Tooltip,
   TooltipContent,
@@ -25,7 +26,7 @@ function SectionCard({ children, className = "", ...props }) {
   };
 
   return (
-    <div {...props} className={`rounded-[14px] border border-slate-200 bg-white p-6 shadow-sm group relative ${className}`}>
+    <div {...props} className={`rounded-[14px] border border-slate-200 bg-white p-6 shadow-sm group relative scroll-mt-20 ${className}`}>
       {props.id && (
         <button
           onClick={handleCopyUrl}
@@ -77,11 +78,24 @@ const SECTIONS = [
 ];
 
 export default function SdkAdvanced() {
-  useScrollRestoration();
+  // Scroll restoration already runs once in StandaloneClientWrapper; calling it
+  // again here created a second competing tween. Deep links use the hash hook.
+  useHashScroll();
   const { selectedChatbot } = useChatbot();
   const chatbotId = selectedChatbot?.id ?? "YOUR_CHATBOT_ID";
   const [activeSection, setActiveSection] = useState("quick-nav");
   const [showActualId, setShowActualId] = useState(true);
+  const { resumeTour } = useProductTour();
+
+  // TOUR_LEGS[1], the final leg — resumeTour(1) runs it when the installation
+  // leg handed off here, and no-ops otherwise. No chatbotId gate: unlike the
+  // installation page, every anchor here renders regardless of selection
+  // (chatbotId falls back to a placeholder above). useHashScroll may be
+  // animating a deep link, so the delay also lets that settle first.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(1), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   const scriptTag = `<script
   type="module"
@@ -194,7 +208,7 @@ export default function SdkAdvanced() {
           <div className="min-w-0 flex-1 space-y-5">
 
             {/* Overview */}
-            <SectionCard id="quick-nav">
+            <SectionCard id="quick-nav" data-tour="sdk-methods">
               <div className="flex items-start gap-2.5">
                 <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-100">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#155ded" viewBox="0 0 256 256"><path d="M71.68,97.22,34.74,128l36.94,30.78a12,12,0,1,1-15.36,18.44l-48-40a12,12,0,0,1,0-18.44l48-40A12,12,0,0,1,71.68,97.22Zm176,21.56-48-40a12,12,0,1,0-15.36,18.44L221.26,128l-36.94,30.78a12,12,0,1,0,15.36,18.44l48-40a12,12,0,0,0,0-18.44ZM164.1,28.72a12,12,0,0,0-15.38,7.18l-64,176a12,12,0,0,0,7.18,15.37A11.79,11.79,0,0,0,96,228a12,12,0,0,0,11.28-7.9l64-176A12,12,0,0,0,164.1,28.72Z"></path></svg>
@@ -305,8 +319,10 @@ window.$cgpt.push(['open']);
                     </div>
 
                     <div className="rounded-[10px] border border-slate-200 bg-white p-4">
+                      <span data-tour="sdk-multiple-instances">
                       <p className="mb-2 text-[13.5px] font-semibold text-slate-800">Multiple Instances of the Same Chatbot</p>
                       <p className="mb-2.5 text-[13px] text-slate-500">You can embed the same chatbot into multiple containers. Each gets its own isolated widget instance. Load the script once per container.</p>
+                       </span>
                       <ShikiCodeBlock lang="html" code={`<!-- Container 1 -->
 <div id="chat-sidebar" style="width: 100%; height: 400px;"></div>
 
@@ -363,8 +379,10 @@ window.$cgpt.push(['open']);
 
                   <div className="space-y-4">
 
-                    <div className="rounded-[10px] border border-slate-200 bg-white p-4">
+                    <div  className="rounded-[10px] border border-slate-200 bg-white p-4">
+                      <span data-tour="sdk-targeting-api">
                       <p className="mb-2 text-[13.5px] font-semibold text-slate-800">Targeting API Overview</p>
+                      </span>
                       <div className="overflow-hidden rounded-[8px] border border-slate-200 mt-2">
                         <table className="w-full text-[13px]">
                           <thead>
@@ -481,7 +499,7 @@ window.$cgpt.push([
             </SectionCard>
 
             {/* Quick Navigation */}
-            <SectionCard className="bg-black" id="quick-nav-panel">
+            <SectionCard className="bg-black" id="quick-nav-panel" data-tour="sdk-quick-nav">
               <div className="flex items-start gap-2.5 ">
                 <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-100">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#155ded" viewBox="0 0 256 256"><path d="M187.75,90.75l-144-48A8,8,0,0,0,32,50V200a8,8,0,0,0,11.75,7.25l144-48a8,8,0,0,0,0-15l-133-44,133-44a8,8,0,0,0,0-15ZM48,186.36V69.64L157.09,128Z"></path></svg>

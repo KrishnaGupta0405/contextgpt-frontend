@@ -468,8 +468,8 @@ const ThreadDetailSheet = ({
                     </div>
                     <span className="text-muted-foreground text-sm font-medium">
                       Thread ID
-                    </span>
-                    <div className="flex items-center gap-2 rounded-lg border bg-slate-50 p-3 text-xs text-slate-600 transition-colors hover:bg-slate-100">
+                    </span> 
+                    <div data-tour="chat-history-thread-id" className="flex items-center gap-2 rounded-lg border bg-slate-50 p-3 text-xs text-slate-600 transition-colors hover:bg-slate-100">
                       <span className="font-mono text-xs font-medium text-gray-500">
                         {threadDetails.id}
                       </span>

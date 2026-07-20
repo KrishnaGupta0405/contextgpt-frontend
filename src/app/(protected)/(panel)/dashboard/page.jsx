@@ -12,13 +12,31 @@ import { useProductTour } from "@/hooks/use-product-tour";
 export default function Dashboard() {
   const { selectedChatbot } = useChatbot();
   const chatbotId = selectedChatbot?.id ?? "";
-  const { startTour, hasSeenTour } = useProductTour();
+  const { startTour, pendingTour, resumeTour } = useProductTour();
 
+  // The tour stays anchored to the dashboard because two of its steps point at
+  // dashboard-only elements (chatbot ID, embed code) that exist nowhere else.
+  //
+  // Which tour runs is the server's call — it accounts for what has already
+  // been seen across devices, and for whether a plan upgrade earns a replay.
+  // This effect re-runs when the subscription changes (startTour depends on
+  // it), which is what makes a trial start or upgrade fire the matching tour
+  // live, without a reload.
   useEffect(() => {
-    if (!chatbotId || hasSeenTour()) return;
-    const timer = setTimeout(() => startTour(), 600);
+    if (!chatbotId) return;
+    const tourKey = pendingTour();
+    if (!tourKey) return;
+    const timer = setTimeout(() => startTour(tourKey), 600);
     return () => clearTimeout(timer);
-  }, [chatbotId, hasSeenTour, startTour]);
+  }, [chatbotId, pendingTour, startTour]);
+
+  // TOUR_LEGS[14], the final leg — resumeTour(14) runs the closing send-off
+  // when the Settings leg handed off here, and no-ops otherwise. Same delay
+  // as the other legs, matching pendingTour's startup timing above.
+  useEffect(() => {
+    const timer = setTimeout(() => resumeTour(14), 600);
+    return () => clearTimeout(timer);
+  }, [resumeTour]);
 
   return (
     <>

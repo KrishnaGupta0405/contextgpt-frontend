@@ -326,7 +326,10 @@ const IntegrationPageContent = () => {
             Integrations
           </h1>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            data-tour="integrations-platform-grid"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
               {PLATFORMS.map((platform) => {
                 const active = getActiveIntegration(platform.key);
                 const isConnected = !!active?.isConnected;
@@ -455,6 +458,11 @@ const IntegrationPageContent = () => {
                                 </button>
                               )}
                             <button
+                              data-tour={
+                                platform.key === "PERSONAL_WEBSITE"
+                                  ? "integrations-website-reconfigure"
+                                  : undefined
+                              }
                               onClick={() => openManualModal(platform)}
                               className="text-[13px] font-medium text-blue-600 hover:text-blue-700"
                             >
@@ -475,6 +483,13 @@ const IntegrationPageContent = () => {
                         </span>
                       ) : (
                         <button
+                          data-tour={
+                            platform.key === "ZENDESK"
+                              ? "integrations-zendesk-get-started"
+                              : platform.key === "PERSONAL_WEBSITE"
+                                ? "integrations-website-reconfigure"
+                                : undefined
+                          }
                           onClick={() => handleCardAction(platform)}
                           className="flex items-center gap-1.5 text-[13px] font-semibold text-blue-600 hover:text-blue-700"
                         >
@@ -502,7 +517,11 @@ const IntegrationPageContent = () => {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent
+          className="sm:max-w-md"
+          data-tour="integrations-connect-modal"
+          data-platform-key={connectModal?.key}
+        >
           <DialogHeader>
             <DialogTitle>
               {connectModalStep === 2

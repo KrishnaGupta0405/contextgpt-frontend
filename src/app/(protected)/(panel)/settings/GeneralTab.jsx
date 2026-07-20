@@ -571,7 +571,7 @@ const GeneralTab = () => {
           </div>
 
           {/* GPT Model */}
-          <div className="space-y-2">
+          <div className="space-y-2" data-tour="settings-gpt-model">
             <Label
               htmlFor="gpt-model"
               className="text-sm font-semibold text-gray-900"
