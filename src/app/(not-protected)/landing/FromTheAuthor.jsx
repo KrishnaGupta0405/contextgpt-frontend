@@ -6,6 +6,7 @@ export function IntegrationsSection() {
       <div className="mx-auto border-indigo-600 max-w-6xl text-center pt-20">
         <h2 className="mt-6 text-5xl font-medium tracking-tight text-slate-900 sm:text-6xl lg:text-[4rem] lg:leading-tight">
           <span
+            onClick={() => window.$cgpt?.push(["do", "message:send", "What are the list of integration, ContextGPT offers ? "])}
             className="underline underline-offset-4 decoration-dotted decoration-indigo-500 cursor-pointer hover:text-indigo-600 transition-colors"
             style={{ fontWeight: 700 }}
           >

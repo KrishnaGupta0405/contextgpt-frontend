@@ -256,7 +256,13 @@ export const IntegrationHero=()=>{
         Integrations
       </p> */}
       <h2 className="mt-6 text-5xl font-medium tracking-tight text-slate-900 sm:text-6xl lg:text-[4rem] lg:leading-tight">
-        <span className="underline underline-offset-4 decoration-dotted decoration-indigo-500 cursor-pointer hover:text-indigo-600 transition-colors" style={{fontWeight:700}} >Direct Integrations </span>
+        <span 
+          onClick={() => window.$cgpt?.push(["do", "message:send", "What are the list of integration, ContextGPT offers ? "])}
+          className="underline underline-offset-4 decoration-dotted decoration-indigo-500 cursor-pointer hover:text-indigo-600 transition-colors" 
+          style={{fontWeight:700}} 
+        >
+          Direct Integrations 
+        </span>
           with your<br/> favorite tools
       </h2>
       <h3 className="mx-auto mt-6 max-w-2xl text-xl text-slate-600">

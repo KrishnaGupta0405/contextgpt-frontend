@@ -5,17 +5,41 @@ import { Check } from 'lucide-react'
 
 const FeaturesSectionHero = () => {
   const problems = [
-    'Basic AI tools don’t actually know your business facts',
-    'Building your own bot is a total pain and always breaks',
-    'It takes forever to get new hires up to speed',
-    'Your team is stuck doing the same boring tasks over and over'
+    {
+      text: 'Basic AI tools don’t actually know your business facts',
+      chatMessage: 'Why don’t basic AI tools actually know my business facts, and how does ContextGPT fix that?',
+    },
+    {
+      text: 'Building your own bot is a total pain and always breaks',
+      chatMessage: 'Why is building my own chatbot such a pain, and how does ContextGPT make it easier?',
+    },
+    {
+      text: 'It takes forever to get new hires up to speed',
+      chatMessage: 'How can ContextGPT help get my new hires up to speed faster?',
+    },
+    {
+      text: 'Your team is stuck doing the same boring tasks over and over',
+      chatMessage: 'How does ContextGPT free up my team from repetitive, boring tasks?',
+    },
   ]
 
-const benefits = [
-    'Offer instant, reliable 24/7 support without the wait times',
-    'Handle most routine tickets automatically and accurately',
-    'Double the output of your current support staff',
-    'Shift your team’s energy toward high-value growth projects'
+  const benefits = [
+    {
+      text: 'Offer instant, reliable 24/7 support without the wait times',
+      chatMessage: 'How does ContextGPT let me offer instant, 24/7 support without wait times?',
+    },
+    {
+      text: 'Handle most routine tickets automatically and accurately',
+      chatMessage: 'How does ContextGPT automatically and accurately handle routine support tickets?',
+    },
+    {
+      text: 'Double the output of your current support staff',
+      chatMessage: 'How can ContextGPT double the output of my current support staff?',
+    },
+    {
+      text: 'Shift your team’s energy toward high-value growth projects',
+      chatMessage: 'How does ContextGPT free my team to focus on high-value growth projects?',
+    },
   ]
 
   return (
@@ -53,8 +77,11 @@ const benefits = [
               {problems.map((problem, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <span className="w-2 h-2 rounded-full bg-red-400 mt-2.5 flex-shrink-0" />
-                  <p className="text-base text-neutral-700 leading-relaxed underline underline-offset-5 decoration-blue-500 decoration-dashed">
-                    {problem}
+                  <p
+                    onClick={() => window.$cgpt?.push(["do", "message:send", problem.chatMessage])}
+                    className="text-base text-neutral-700 leading-relaxed underline underline-offset-5 decoration-blue-500 decoration-dashed cursor-pointer hover:text-blue-600"
+                  >
+                    {problem.text}
                   </p>
                 </li>
               ))}
@@ -76,8 +103,11 @@ const benefits = [
               {benefits.map((benefit, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-blue-50 leading-relaxed underline underline-offset-5 decoration-white decoration-dotted">
-                    {benefit}
+                  <p
+                    onClick={() => window.$cgpt?.push(["do", "message:send", benefit.chatMessage])}
+                    className="text-base text-blue-50 leading-relaxed underline underline-offset-5 decoration-white decoration-dotted cursor-pointer hover:text-white/80"
+                  >
+                    {benefit.text}
                   </p>
                 </li>
               ))}

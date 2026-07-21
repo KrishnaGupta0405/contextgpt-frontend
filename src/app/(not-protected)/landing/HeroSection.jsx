@@ -42,28 +42,9 @@ export default function HeroSection() {
     document.body.appendChild(embedded);
     // console.log("[HeroSection] embedded script injected");
 
-    // Floating widget — only inject if layout.js hasn't already mounted one
-    // (layout.js is deduplicated by Next.js on the landing page, so we load it here)
-    let floating = null;
-    const floatingAlreadyExists = !!document.getElementById("contextgpt-widget");
-    // console.log("[HeroSection] #contextgpt-widget already in DOM?", floatingAlreadyExists);
-    if (!floatingAlreadyExists) {
-      floating = document.createElement("script");
-      floating.type = "module";
-      floating.src = "https://contextgpt-widget-testing.vercel.app/loader.js?instance=floating&chatbotId=27df3d37-8395-4d1f-a084-5609237ae367";
-      floating.setAttribute("data-chatbot-id", "27df3d37-8395-4d1f-a084-5609237ae367");
-      if (process.env.NEXT_PUBLIC_ENV === "development") floating.setAttribute("data-server", "http://localhost:9000");
-      floating.setAttribute("data-instance", "floating");
-      document.body.appendChild(floating);
-      // console.log("[HeroSection] floating script injected");
-    } else {
-      // console.log("[HeroSection] floating script skipped — widget already exists from layout.js");
-    }
-
     return () => {
       // console.log("[HeroSection] useEffect cleanup (unmounting)");
       document.body.removeChild(embedded);
-      if (floating) document.body.removeChild(floating);
     };
   }, []);
 

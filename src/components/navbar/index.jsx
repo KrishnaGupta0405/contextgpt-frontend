@@ -98,17 +98,16 @@ export default function NavigationMenuDemo() {
           <NavigationMenuList className="gap-2">
             {NAV_LINKS.map(({ href, label }) => (
               <NavigationMenuItem key={href}>
-                <Link href={href} legacyBehavior passHref>
-                  <NavigationMenuLink
-                    className={cn(
-                      navigationMenuTriggerStyle(),
-                      pathname === href && "bg-gray-100 text-blue-500",
-                      "text-sm leading-loose tracking-tight"
-                    )}
-                  >
-                    {label}
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink
+                  render={<Link href={href} />}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname === href && "bg-gray-100 text-blue-500",
+                    "text-sm leading-loose tracking-tight"
+                  )}
+                >
+                  {label}
+                </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
             {/* Resources dropdown */}
