@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // The only host that should ever be indexed.
-const CANONICAL_HOST = 'contextgpt.in';
+const CANONICAL_HOST = 'contextgpt.co';
 
 export function middleware(request) {
   const response = NextResponse.next();
