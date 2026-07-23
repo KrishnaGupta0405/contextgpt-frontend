@@ -118,7 +118,7 @@ export const INSTALLATION_SECTION = [
     popover: {
       title: "Or embed it in a container",
       description:
-        'Prefer the chat inline instead of floating? Set data-mode="embedded" and point data-container at your own element — that is how the <a href="https://contextgpt.in/demo" target="_blank" rel="noopener noreferrer">ContextGPT demo</a> page does it.',
+        'Prefer the chat inline instead of floating? Set data-mode="embedded" and point data-container at your own element — that is how the <a href="https://contextgpt.co/demo" target="_blank" rel="noopener noreferrer">ContextGPT demo</a> page does it.',
       side: "top",
       align: "start",
     },
@@ -1415,7 +1415,7 @@ export const CLOSING_SECTION = [
     popover: {
       title: "That was it!",
       description:
-        'If you still can\'t find something, you can start the tour again any time. Still stuck? Reach us at <a href="mailto:support@contextgpt.in">support@contextgpt.in</a> or visit our <a href="https://context.in/contact" target="_blank" rel="noopener noreferrer">Contact Us page</a>.',
+        'If you still can\'t find something, you can start the tour again any time. Still stuck? Reach us at <a href="mailto:support@contextgpt.co">support@contextgpt.co</a> or visit our <a href="https://context.in/contact" target="_blank" rel="noopener noreferrer">Contact Us page</a>.',
     },
   },
 ];

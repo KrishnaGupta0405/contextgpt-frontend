@@ -9,14 +9,14 @@ export const metadata = {
     "train chatbot on Google Drive",
     "Google Drive AI assistant",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/google-drive-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/google-drive-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Google Drive ChatGPT Integration | ContextGPT",
     description: "Sync Google Drive files into ContextGPT and keep your chatbot's knowledge fresh automatically.",
-    url: "https://contextgpt.in/integration/google-drive-chatgpt-integration",
+    url: "https://contextgpt.co/integration/google-drive-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Google Drive ChatGPT integration dashboard" }],
   },
   twitter: {

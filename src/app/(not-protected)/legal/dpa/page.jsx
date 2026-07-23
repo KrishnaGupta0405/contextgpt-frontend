@@ -73,8 +73,8 @@ export default function DPA() {
               This DPA becomes effective only when signed by both parties.
               ContextGPT executes DPAs for customers on{" "}
               <strong>Enterprise plans</strong>. Contact{" "}
-              <a href="mailto:support@contextgpt.in" className="text-indigo-600">
-                support@contextgpt.in
+              <a href="mailto:support@contextgpt.co" className="text-indigo-600">
+                support@contextgpt.co
               </a>{" "}
               to discuss your requirements.
             </span>
@@ -226,8 +226,8 @@ export default function DPA() {
         <p>
           If you have questions about our data processing practices or need a
           customized agreement, please contact us at{" "}
-          <a href="mailto:support@contextgpt.in" className="text-indigo-600">
-            support@contextgpt.in
+          <a href="mailto:support@contextgpt.co" className="text-indigo-600">
+            support@contextgpt.co
           </a>
           .
         </p>

@@ -223,7 +223,7 @@ User tries to use the same link again
 
 ```env
 FRONTEND_URL=http://localhost:3000        # dev
-FRONTEND_URL=https://app.contextgpt.in   # prod
+FRONTEND_URL=https://app.contextgpt.co   # prod
 ```
 
 ---

@@ -6,7 +6,7 @@ export const metadata = {
   title: "AI Chat Tools — ContextGPT",
   description:
     "Upload or paste your text, website, document, PDF, or Word data and chat with AI to get instant answers. Free to use.",
-  alternates: { canonical: "https://contextgpt.in/tools/ai-chat-tools" },
+  alternates: { canonical: "https://contextgpt.co/tools/ai-chat-tools" },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -14,7 +14,7 @@ export const metadata = {
     title: "AI Chat Tools — ContextGPT",
     description:
       "Upload or paste your text, website, document, PDF, or Word data and chat with AI to get instant answers.",
-    url: "https://contextgpt.in/tools/ai-chat-tools",
+    url: "https://contextgpt.co/tools/ai-chat-tools",
   },
 };
 

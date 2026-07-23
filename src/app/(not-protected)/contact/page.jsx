@@ -4,14 +4,14 @@ import { Mail } from "lucide-react";
 export const metadata = {
   title: "ContextGPT | Contact Us",
   description: "Get in touch with the ContextGPT team — support, sales, or partnerships.",
-  alternates: { canonical: "https://contextgpt.in/contact" },
+  alternates: { canonical: "https://contextgpt.co/contact" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Contact Us",
     description: "Get in touch with the ContextGPT team — support, sales, or partnerships.",
-    url: "https://contextgpt.in/contact",
+    url: "https://contextgpt.co/contact",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Contact ContextGPT" }],
   },
   twitter: {
@@ -56,10 +56,10 @@ export default function Contact() {
             </span>
             , the founder of ContextGPT, directly at{" "}
             <a
-              href="mailto:support@contextgpt.in"
+              href="mailto:support@contextgpt.co"
               className="text-slate-800 underline font-semibold underline-offset-4 hover:text-blue-600"
             >
-              support@contextgpt.in
+              support@contextgpt.co
             </a>
             . You will get a response as soon as possible.
           </p>

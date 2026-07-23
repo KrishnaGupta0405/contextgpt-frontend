@@ -2,14 +2,14 @@ export const metadata = {
   title: "ContextGPT | Book a Demo",
   description: "Schedule a live demo and see how ContextGPT can automate your customer support and lead generation in minutes.",
   keywords: ["book demo", "ContextGPT demo", "AI chatbot demo", "schedule demo"],
-  alternates: { canonical: "https://contextgpt.in/book-a-demo" },
+  alternates: { canonical: "https://contextgpt.co/book-a-demo" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Book a Demo",
     description: "Schedule a live demo and see how ContextGPT can automate your customer support and lead generation.",
-    url: "https://contextgpt.in/book-a-demo",
+    url: "https://contextgpt.co/book-a-demo",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Book a ContextGPT Demo" }],
   },
   twitter: {

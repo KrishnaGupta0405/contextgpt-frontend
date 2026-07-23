@@ -190,10 +190,10 @@ export default function Footer() {
                 Instantly answer your visitors&apos; questions with a
                 personalized chatbot trained on your website content.
               </p>
-              <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> krishna@contextgpt.in</p>
+              <p className="text-blue-600 flex gap-2 items-center"> <MailOpen className="h-4 w-4 " /> krishna@contextgpt.co</p>
 
               <iframe
-                src="https://status.contextgpt.in/badge?theme=light"
+                src="https://status.contextgpt.co/badge?theme=light"
                 width="250"
                 height="30"
                 frameBorder="0"

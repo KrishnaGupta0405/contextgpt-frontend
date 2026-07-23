@@ -8,7 +8,7 @@ export async function POST(request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://contextgpt.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://contextgpt.co";
   const rootDomain = new URL(baseUrl).hostname.replace(/^www\./, "");
 
   const extractLocs = (xml) =>

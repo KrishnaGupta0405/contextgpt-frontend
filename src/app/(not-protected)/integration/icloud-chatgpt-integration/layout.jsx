@@ -9,14 +9,14 @@ export const metadata = {
     "iCloud Drive AI assistant",
     "train chatbot on iCloud",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/icloud-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/icloud-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "iCloud ChatGPT Integration | ContextGPT",
     description: "Sync iCloud Drive files into ContextGPT and train your chatbot on your Apple documents.",
-    url: "https://contextgpt.in/integration/icloud-chatgpt-integration",
+    url: "https://contextgpt.co/integration/icloud-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "iCloud ChatGPT integration dashboard" }],
   },
   twitter: {

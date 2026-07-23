@@ -6,7 +6,7 @@ export const metadata = {
   title: "Other Free Tools — ContextGPT",
   description:
     "Free sitemap tools, ROI calculators, email signature generators, and chatbot conversation analysis tools.",
-  alternates: { canonical: "https://contextgpt.in/tools/other-tools" },
+  alternates: { canonical: "https://contextgpt.co/tools/other-tools" },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -14,7 +14,7 @@ export const metadata = {
     title: "Other Free Tools — ContextGPT",
     description:
       "Free sitemap tools, ROI calculators, email signature generators, and chatbot conversation analysis tools.",
-    url: "https://contextgpt.in/tools/other-tools",
+    url: "https://contextgpt.co/tools/other-tools",
   },
 };
 

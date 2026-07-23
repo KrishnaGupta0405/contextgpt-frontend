@@ -9,14 +9,14 @@ export const metadata = {
     "Facebook Messenger AI assistant",
     "deploy chatbot on Facebook Messenger",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/messenger-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/messenger-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Facebook Messenger ChatGPT Integration | ContextGPT",
     description: "Deploy ContextGPT on Facebook Messenger for instant, always-on customer answers.",
-    url: "https://contextgpt.in/integration/messenger-chatgpt-integration",
+    url: "https://contextgpt.co/integration/messenger-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Facebook Messenger ChatGPT integration dashboard" }],
   },
   twitter: {

@@ -227,7 +227,7 @@ function CalculatorContent({ plans: rawPlans = [], models: rawModels = [], loadi
                   Enterprise is priced based on your message volume, chatbot count, team size, and compliance needs (HIPAA / BAA / custom DPA). Our team will size the plan with you on a 30-minute call.
                 </p>
                 <a
-                  href="mailto:contact@contextgpt.in?subject=Enterprise Plan Inquiry"
+                  href="mailto:contact@contextgpt.co?subject=Enterprise Plan Inquiry"
                   className="mt-4 inline-block rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 transition-colors"
                 >
                   Contact us
@@ -378,7 +378,7 @@ function CalculatorContent({ plans: rawPlans = [], models: rawModels = [], loadi
             {/* CTA */}
             {isEnterprise ? (
               <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11">
-                <a href="mailto:contact@contextgpt.in?subject=Enterprise Plan Inquiry">Contact us</a>
+                <a href="mailto:contact@contextgpt.co?subject=Enterprise Plan Inquiry">Contact us</a>
               </Button>
             ) : price ? (
               <>
@@ -411,7 +411,7 @@ function CalculatorContent({ plans: rawPlans = [], models: rawModels = [], loadi
               </>
             ) : (
               <Button asChild className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl h-11">
-                <a href="mailto:contact@contextgpt.in">Contact us</a>
+                <a href="mailto:contact@contextgpt.co">Contact us</a>
               </Button>
             )}
           </CardContent>

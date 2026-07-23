@@ -51,9 +51,9 @@ const NAV_LINKS = [
 
 const RESOURCE_LINKS = [
   { href: "/", title: "Blog", description: "Product updates, tips, and insights" },
-  { href: "https://docs.contextgpt.in/", title: "Docs", description: "API documentation and developer guides" },
+  { href: "https://docs.contextgpt.co/", title: "Docs", description: "API documentation and developer guides" },
   { href: "/book-a-demo", title: "Book a Demo", description: "Schedule a demo with our team" },
-  { href: "https://docs.contextgpt.in/docs/changelog/overview", title: "Changelog", description: "Stay up to date with the latest updates" },
+  { href: "https://docs.contextgpt.co/docs/changelog/overview", title: "Changelog", description: "Stay up to date with the latest updates" },
 ];
 
 export default function NavigationMenuDemo() {
@@ -123,9 +123,9 @@ export default function NavigationMenuDemo() {
                       <ul>
                         {[
                           { href: "/blog", icon: <Rss className="h-4 w-4" />, title: "Blog", description: "Product updates, tips, and insights" },
-                          { href: "https://docs.contextgpt.in/", icon: <FileText className="h-4 w-4" />, title: "Docs", description: "API documentation and developer guides" },
+                          { href: "https://docs.contextgpt.co/", icon: <FileText className="h-4 w-4" />, title: "Docs", description: "API documentation and developer guides" },
                           { href: "/book-a-demo", icon: <BookOpen className="h-4 w-4" />, title: "Book a Demo", description: "Schedule a demo with our team" },
-                          { href: "https://docs.contextgpt.in/docs/changelog/overview", icon: <Clock className="h-4 w-4" />, title: "Changelog", description: "Stay up to date with the latest updates" },
+                          { href: "https://docs.contextgpt.co/docs/changelog/overview", icon: <Clock className="h-4 w-4" />, title: "Changelog", description: "Stay up to date with the latest updates" },
                         ].map((item) => (
                           <li key={item.href}>
                             <NavigationMenuLink asChild>

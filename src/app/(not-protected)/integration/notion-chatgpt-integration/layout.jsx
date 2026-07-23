@@ -9,14 +9,14 @@ export const metadata = {
     "Notion AI assistant",
     "train chatbot on Notion",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/notion-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/notion-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Notion ChatGPT Integration | ContextGPT",
     description: "Sync your Notion workspace into ContextGPT and keep your chatbot aligned with your docs.",
-    url: "https://contextgpt.in/integration/notion-chatgpt-integration",
+    url: "https://contextgpt.co/integration/notion-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Notion ChatGPT integration dashboard" }],
   },
   twitter: {

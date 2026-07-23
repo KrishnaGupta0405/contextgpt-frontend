@@ -53,7 +53,7 @@ import {
 import { HOW_IT_WORKS_STEPS } from "../../features/features.config";
 import IntegrationsMarquee from "../IntegrationsMarquee";
 
-const SITE_URL = "https://contextgpt.in";
+const SITE_URL = "https://contextgpt.co";
 const NAME = "Google Drive";
 const TAGLINE =
   "Turn every doc, sheet, and slide sitting in Google Drive into an instant, self-learning AI chatbot knowledge base.";

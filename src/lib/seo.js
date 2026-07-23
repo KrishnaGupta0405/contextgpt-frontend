@@ -18,7 +18,7 @@ function resolveImageUrl(image, siteUrl) {
 
 export function getPostImageUrl(post, siteUrl) {
   const image = resolveImageUrl(post.ogImage, siteUrl) ?? resolveImageUrl(post.coverImage, siteUrl);
-  return image ?? `${siteUrl}/blog/${post.slug}/opengraph-image`;
+  return image ?? `${siteUrl}/og-img.png`;
 }
 
 export function getPostDates(post) {

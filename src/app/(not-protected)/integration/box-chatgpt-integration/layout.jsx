@@ -9,14 +9,14 @@ export const metadata = {
     "Box AI assistant",
     "train chatbot on Box",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/box-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/box-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Box ChatGPT Integration | ContextGPT",
     description: "Sync files from Box into ContextGPT and put your document repository to work as chatbot knowledge.",
-    url: "https://contextgpt.in/integration/box-chatgpt-integration",
+    url: "https://contextgpt.co/integration/box-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Box ChatGPT integration dashboard" }],
   },
   twitter: {

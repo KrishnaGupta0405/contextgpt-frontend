@@ -6,7 +6,7 @@ export const metadata = {
   title: "AI Generators — ContextGPT",
   description:
     "Free AI-powered generators for replies, prompts, FAQs, blog titles, chatbot names, brand names, and more. Generate professional content in seconds.",
-  alternates: { canonical: "https://contextgpt.in/tools/ai-generators" },
+  alternates: { canonical: "https://contextgpt.co/tools/ai-generators" },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -14,7 +14,7 @@ export const metadata = {
     title: "AI Generators — ContextGPT",
     description:
       "Free AI-powered generators for replies, prompts, FAQs, blog titles, chatbot names, brand names, and more.",
-    url: "https://contextgpt.in/tools/ai-generators",
+    url: "https://contextgpt.co/tools/ai-generators",
   },
 };
 

@@ -109,7 +109,7 @@ const TextSnippets = () => {
 The pricing of our product is $99.
 
 How to contact you?
-You can contact us by sending an email to support@contextgpt.in.
+You can contact us by sending an email to support@contextgpt.co.
 
 Do you offer any discounts?
 We currently do not have any kind of discounts. But we have a generous free plan which you can make use of.

@@ -6,61 +6,61 @@ ContextGPT is an AI chatbot platform that lets any business build and deploy a c
 
 ## Important Links
 
-- [Homepage](https://contextgpt.in/)
-- [Pricing](https://contextgpt.in/pricing)
-- [Features](https://contextgpt.in/features)
-- [Integrations](https://contextgpt.in/integration)
-- [Blog](https://contextgpt.in/blog)
-- [Lead Generation](https://contextgpt.in/lead-generation)
-- [Partners / Affiliates](https://contextgpt.in/partners)
-- [Book a Demo](https://contextgpt.in/book-a-demo)
-- [Demo](https://contextgpt.in/demo)
-- [Security](https://contextgpt.in/security)
-- [Contact](https://contextgpt.in/contact)
-- [Login](https://contextgpt.in/login)
+- [Homepage](https://contextgpt.co/)
+- [Pricing](https://contextgpt.co/pricing)
+- [Features](https://contextgpt.co/features)
+- [Integrations](https://contextgpt.co/integration)
+- [Blog](https://contextgpt.co/blog)
+- [Lead Generation](https://contextgpt.co/lead-generation)
+- [Partners / Affiliates](https://contextgpt.co/partners)
+- [Book a Demo](https://contextgpt.co/book-a-demo)
+- [Demo](https://contextgpt.co/demo)
+- [Security](https://contextgpt.co/security)
+- [Contact](https://contextgpt.co/contact)
+- [Login](https://contextgpt.co/login)
 
 ## Legal
 
-- [Privacy Policy](https://contextgpt.in/legal/privacy)
-- [Terms of Service](https://contextgpt.in/legal/terms)
-- [Data Processing Agreement](https://contextgpt.in/legal/dpa)
-- [Subprocessors](https://contextgpt.in/legal/subprocessors)
-- [Refund Policy](https://contextgpt.in/legal/refund)
+- [Privacy Policy](https://contextgpt.co/legal/privacy)
+- [Terms of Service](https://contextgpt.co/legal/terms)
+- [Data Processing Agreement](https://contextgpt.co/legal/dpa)
+- [Subprocessors](https://contextgpt.co/legal/subprocessors)
+- [Refund Policy](https://contextgpt.co/legal/refund)
 
 ## Free Tools
 
-ContextGPT offers a suite of free AI and web tools at [https://contextgpt.in/tools](https://contextgpt.in/tools) — no sign-up required.
+ContextGPT offers a suite of free AI and web tools at [https://contextgpt.co/tools](https://contextgpt.co/tools) — no sign-up required.
 
 ### AI Generators
 
-- [AI Prompt Optimizer](https://contextgpt.in/tools/ai-generators/ai-prompt-optimizer)
-- [AI Reply Generator](https://contextgpt.in/tools/ai-generators/ai-reply-generator)
-- [AI SaaS Brand Name Generator](https://contextgpt.in/tools/ai-generators/ai-saas-brand-name-generator)
+- [AI Prompt Optimizer](https://contextgpt.co/tools/ai-generators/ai-prompt-optimizer)
+- [AI Reply Generator](https://contextgpt.co/tools/ai-generators/ai-reply-generator)
+- [AI SaaS Brand Name Generator](https://contextgpt.co/tools/ai-generators/ai-saas-brand-name-generator)
 
 ### Convert to Markdown
 
-- [CSV to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-csv-to-markdown)
-- [DOCX to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-docx-to-markdown)
-- [Google Docs to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-google-docs-to-markdown)
-- [HTML to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-html-to-markdown)
-- [JSON to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-json-to-markdown)
-- [Notion to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-notion-to-markdown)
-- [Paste to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-paste-to-markdown)
-- [PDF to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-pdf-to-markdown)
-- [RTF to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-rtf-to-markdown)
-- [Webpage to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-webpage-to-markdown)
-- [XML to Markdown](https://contextgpt.in/tools/convert-to-markdown/convert-xml-to-markdown)
+- [CSV to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-csv-to-markdown)
+- [DOCX to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-docx-to-markdown)
+- [Google Docs to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-google-docs-to-markdown)
+- [HTML to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-html-to-markdown)
+- [JSON to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-json-to-markdown)
+- [Notion to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-notion-to-markdown)
+- [Paste to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-paste-to-markdown)
+- [PDF to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-pdf-to-markdown)
+- [RTF to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-rtf-to-markdown)
+- [Webpage to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-webpage-to-markdown)
+- [XML to Markdown](https://contextgpt.co/tools/convert-to-markdown/convert-xml-to-markdown)
 
 ### Other Utilities
 
-- [AI Chatbot Conversation Analysis](https://contextgpt.in/tools/other-tools/ai-chatbot-conversation-analysis)
-- [Chatbot ROI Calculator](https://contextgpt.in/tools/other-tools/chatbot-roi-calculator)
-- [Email Signature Generator](https://contextgpt.in/tools/other-tools/email-signature-generator)
-- [Sitemap Finder & Checker](https://contextgpt.in/tools/other-tools/sitemap-finder-checker)
-- [Sitemap URL Extractor](https://contextgpt.in/tools/other-tools/sitemap-url-extractor)
-- [Sitemap Validator](https://contextgpt.in/tools/other-tools/sitemap-validator)
-- [Website URL Extractor](https://contextgpt.in/tools/other-tools/website-url-extractor)
-- [XML Sitemap Generator](https://contextgpt.in/tools/other-tools/xml-sitemap-generator)
+- [AI Chatbot Conversation Analysis](https://contextgpt.co/tools/other-tools/ai-chatbot-conversation-analysis)
+- [Chatbot ROI Calculator](https://contextgpt.co/tools/other-tools/chatbot-roi-calculator)
+- [Email Signature Generator](https://contextgpt.co/tools/other-tools/email-signature-generator)
+- [Sitemap Finder & Checker](https://contextgpt.co/tools/other-tools/sitemap-finder-checker)
+- [Sitemap URL Extractor](https://contextgpt.co/tools/other-tools/sitemap-url-extractor)
+- [Sitemap Validator](https://contextgpt.co/tools/other-tools/sitemap-validator)
+- [Website URL Extractor](https://contextgpt.co/tools/other-tools/website-url-extractor)
+- [XML Sitemap Generator](https://contextgpt.co/tools/other-tools/xml-sitemap-generator)
 
 ## Documentation
 
@@ -68,14 +68,14 @@ ContextGPT supports training chatbots on: website pages, Notion docs, Zendesk ar
 
 ## Sitemap
 
-- [XML Sitemap](https://contextgpt.in/sitemap.xml)
-- [Pages Sitemap](https://contextgpt.in/sitemap-pages.xml)
-- [Tools Sitemap](https://contextgpt.in/sitemap-tools.xml)
-- [Blog Sitemap](https://contextgpt.in/sitemap-blog.xml)
+- [XML Sitemap](https://contextgpt.co/sitemap.xml)
+- [Pages Sitemap](https://contextgpt.co/sitemap-pages.xml)
+- [Tools Sitemap](https://contextgpt.co/sitemap-tools.xml)
+- [Blog Sitemap](https://contextgpt.co/sitemap-blog.xml)
 
 ## Blog
 
-- [Blog llms.txt](https://contextgpt.in/blog/llms.txt) — structured index of blog posts for AI crawlers.
+- [Blog llms.txt](https://contextgpt.co/blog/llms.txt) — structured index of blog posts for AI crawlers.
 
 ## Notes for AI Crawlers
 

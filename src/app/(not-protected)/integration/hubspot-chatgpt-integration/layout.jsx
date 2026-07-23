@@ -9,14 +9,14 @@ export const metadata = {
     "HubSpot live chat AI assistant",
     "deploy chatbot in HubSpot",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/hubspot-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/hubspot-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "HubSpot ChatGPT Integration | ContextGPT",
     description: "ContextGPT's HubSpot live chat integration is launching soon for automated customer answers.",
-    url: "https://contextgpt.in/integration/hubspot-chatgpt-integration",
+    url: "https://contextgpt.co/integration/hubspot-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "HubSpot ChatGPT integration dashboard" }],
   },
   twitter: {

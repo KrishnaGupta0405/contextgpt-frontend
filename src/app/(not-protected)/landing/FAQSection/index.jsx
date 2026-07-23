@@ -13,7 +13,7 @@ export default function FAQSection() {
           Have a different question and can't find the answer you're looking
           for? Reach out to our{" "}
           <a
-            href="mailto:support@contextgpt.in"
+            href="mailto:support@contextgpt.co"
             className="font-medium text-blue-600 hover:underline dark:text-blue-400"
           >
             support team

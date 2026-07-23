@@ -9,14 +9,14 @@ export const metadata = {
     "YouTube transcript AI assistant",
     "train chatbot on YouTube videos",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/youtube-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/youtube-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "YouTube ChatGPT Integration | ContextGPT",
     description: "Sync YouTube video transcripts into ContextGPT and let your chatbot answer from your videos.",
-    url: "https://contextgpt.in/integration/youtube-chatgpt-integration",
+    url: "https://contextgpt.co/integration/youtube-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "YouTube ChatGPT integration dashboard" }],
   },
   twitter: {

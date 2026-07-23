@@ -9,14 +9,14 @@ export const metadata = {
     "Slack AI assistant",
     "deploy chatbot in Slack",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/slack-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/slack-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Slack ChatGPT Integration | ContextGPT",
     description: "Deploy ContextGPT inside Slack channels for instant, always-on answers.",
-    url: "https://contextgpt.in/integration/slack-chatgpt-integration",
+    url: "https://contextgpt.co/integration/slack-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Slack ChatGPT integration dashboard" }],
   },
   twitter: {

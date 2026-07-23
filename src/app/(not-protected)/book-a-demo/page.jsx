@@ -46,7 +46,7 @@ export default function BookDemo() {
           Ask our chatbot
         </a>{" "}
         or reach out to our support team by sending{" "}
-        <strong>support@contextgpt.in</strong> an email and we&apos;ll get back to
+        <strong>support@contextgpt.co</strong> an email and we&apos;ll get back to
         you as soon as we can.
       </p>
     </div>

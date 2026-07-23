@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://contextgpt.in"),
+  metadataBase: new URL("https://contextgpt.co"),
   manifest: "/manifest.json",
   title: {
     default: "ContextGPT | AI Chatbot for Your Website",
@@ -23,7 +23,7 @@ export const metadata = {
   },
   description: "Turn your website into an AI chatbot in minutes. Train on your content, capture leads, and answer questions 24/7.",
   keywords: ["AI chatbot", "website chatbot", "customer support AI", "lead generation chatbot", "no-code chatbot"],
-  authors: [{ name: "ContextGPT", url: "https://contextgpt.in" }],
+  authors: [{ name: "ContextGPT", url: "https://contextgpt.co" }],
   creator: "ContextGPT",
   publisher: "ContextGPT",
   icons: {
@@ -60,7 +60,6 @@ import SessionClearer from "@/components/SessionClearer";
 import { Suspense } from "react";
 import GoogleOneTap from "@/components/auth/GoogleOneTap";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/next";
 
 const siteSchema = {
   "@context": "https://schema.org",
@@ -68,22 +67,22 @@ const siteSchema = {
     {
       "@type": "Organization",
       name: "ContextGPT",
-      url: "https://contextgpt.in",
-      logo: "https://contextgpt.in/icons/Contextgpt_icon.svg",
+      url: "https://contextgpt.co",
+      logo: "https://contextgpt.co/icons/Contextgpt_icon.svg",
       sameAs: [],
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer support",
-        url: "https://contextgpt.in/contact",
+        url: "https://contextgpt.co/contact",
       },
     },
     {
       "@type": "WebSite",
       name: "ContextGPT",
-      url: "https://contextgpt.in",
+      url: "https://contextgpt.co",
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://contextgpt.in/search?q={search_term_string}",
+        target: "https://contextgpt.co/search?q={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },
@@ -95,7 +94,7 @@ const siteSchema = {
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       description:
         "Turn your website into an AI chatbot in minutes. Train on your content, capture leads, and answer questions 24/7.",
-      url: "https://contextgpt.in",
+      url: "https://contextgpt.co",
     },
   ],
 };
@@ -140,7 +139,6 @@ export default function RootLayout({ children }) {
             </Suspense>
             {/* <NavigationMenuDemo /> */}
             {children}
-            {process.env.NODE_ENV !== "development" && <Analytics />}
             <Toaster position="bottom-right" richColors />
           </TooltipProvider>
         </AuthProvider>

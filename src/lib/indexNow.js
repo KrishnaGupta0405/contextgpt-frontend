@@ -7,7 +7,7 @@ export async function submitToIndexNow(urls) {
   const urlList = Array.isArray(urls) ? urls : [urls];
   if (!INDEXNOW_KEY || urlList.length === 0) return null;
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://contextgpt.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://contextgpt.co";
   const host = new URL(baseUrl).host;
 
   const res = await fetch(INDEXNOW_ENDPOINT, {

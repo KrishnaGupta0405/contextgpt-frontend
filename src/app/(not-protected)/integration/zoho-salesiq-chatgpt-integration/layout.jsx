@@ -9,14 +9,14 @@ export const metadata = {
     "Zoho SalesIQ AI assistant",
     "deploy chatbot in Zoho SalesIQ",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/zoho-salesiq-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/zoho-salesiq-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Zoho SalesIQ ChatGPT Integration | ContextGPT",
     description: "Connect ContextGPT with Zoho SalesIQ to answer visitor questions automatically.",
-    url: "https://contextgpt.in/integration/zoho-salesiq-chatgpt-integration",
+    url: "https://contextgpt.co/integration/zoho-salesiq-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Zoho SalesIQ ChatGPT integration dashboard" }],
   },
   twitter: {

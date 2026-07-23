@@ -1,4 +1,4 @@
-# robots.txt for https://contextgpt.in
+# robots.txt for https://contextgpt.co
 # Generated for ContextGPT — AI Chatbot Platform
 
 # -----------------------------------------------
@@ -245,7 +245,7 @@ Disallow: /_next/
 # -----------------------------------------------
 # Sitemaps
 # -----------------------------------------------
-Sitemap: https://contextgpt.in/sitemap.xml
+Sitemap: https://contextgpt.co/sitemap.xml
 
 #               @@@                        @@@
 #           @@@@@@@@                     @@@@@

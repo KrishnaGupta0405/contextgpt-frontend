@@ -9,14 +9,14 @@ export const metadata = {
     "Freshchat AI assistant",
     "deploy chatbot in Freshchat",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/freshchat-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/freshchat-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Freshchat ChatGPT Integration | ContextGPT",
     description: "Deploy ContextGPT inside the Freshchat widget for automated customer support.",
-    url: "https://contextgpt.in/integration/freshchat-chatgpt-integration",
+    url: "https://contextgpt.co/integration/freshchat-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Freshchat ChatGPT integration dashboard" }],
   },
   twitter: {

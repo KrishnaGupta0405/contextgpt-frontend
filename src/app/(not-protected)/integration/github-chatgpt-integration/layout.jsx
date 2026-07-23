@@ -9,14 +9,14 @@ export const metadata = {
     "GitHub AI assistant",
     "train chatbot on GitHub repositories",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/github-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/github-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "GitHub ChatGPT Integration | ContextGPT",
     description: "Sync GitHub repositories, issues, and wikis into ContextGPT for a technical support chatbot.",
-    url: "https://contextgpt.in/integration/github-chatgpt-integration",
+    url: "https://contextgpt.co/integration/github-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "GitHub ChatGPT integration dashboard" }],
   },
   twitter: {

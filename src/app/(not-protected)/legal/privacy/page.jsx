@@ -37,11 +37,11 @@ export default function Privacy() {
         <p>
           ContextGPT, operated by Krishna Gupta and our team (&ldquo;Company&rdquo;,
           &ldquo;us&rdquo;, &ldquo;we&rdquo;, or &ldquo;our&rdquo;) operates
-          <Link href="http://contextgpt.in" className="text-black underline">https://contextgpt.in</Link> (hereinafter referred to as
+          <Link href="http://contextgpt.co" className="text-black underline">https://contextgpt.co</Link> (hereinafter referred to as
           &ldquo;Service&rdquo;).
         </p>
         <p>
-          Our Privacy Policy governs your visit to <Link href="http://contextgpt.in" className="text-black underline">https://contextgpt.in</Link>, and explains
+          Our Privacy Policy governs your visit to <Link href="http://contextgpt.co" className="text-black underline">https://contextgpt.co</Link>, and explains
           how we collect, safeguard, and disclose information that results from
           your use of our Service.
         </p>
@@ -59,7 +59,7 @@ export default function Privacy() {
 
         <h2>Definitions</h2>
         <p>
-          <strong>Service</strong> means the <Link href="http://contextgpt.in" className="text-black underline">https://contextgpt.in</Link> website operated by
+          <strong>Service</strong> means the <Link href="http://contextgpt.co" className="text-black underline">https://contextgpt.co</Link> website operated by
           ContextGPT.
         </p>
         <p>
@@ -125,7 +125,7 @@ export default function Privacy() {
           of interest to you. You may opt out of receiving any, or all, of these
           communications from us by following the unsubscribe link or by
           emailing at{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+          <span className="underline text-black font-semibold">support@contextgpt.co</span>.
         </p>
 
         <h3>Usage Data</h3>
@@ -314,7 +314,7 @@ export default function Privacy() {
         <p>
           If you wish to be informed what Personal Data we hold about you and if
           you want it to be removed from our systems, please email us at{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+          <span className="underline text-black font-semibold">support@contextgpt.co</span>.
         </p>
         <p>
           In certain circumstances, you have the following data protection
@@ -395,7 +395,7 @@ export default function Privacy() {
           <li>
             Users are able to change their personal information by emailing us
             at{" "}
-            <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+            <span className="underline text-black font-semibold">support@contextgpt.co</span>.
           </li>
         </ul>
 
@@ -455,8 +455,8 @@ export default function Privacy() {
         <h2>Service Providers and Subprocessors</h2>
         <p>
           We use third-party service providers to help us deliver our services. A complete list of our current subprocessors is maintained at{" "}
-          <Link href="https://contextgpt.in/legal/subprocessors" className="text-black underline">
-            contextgpt.in/legal/subprocessors
+          <Link href="https://contextgpt.co/legal/subprocessors" className="text-black underline">
+            contextgpt.co/legal/subprocessors
           </Link>.
         </p>
         <p>Key service providers include:</p>
@@ -726,7 +726,7 @@ export default function Privacy() {
         <p>
           If you have any questions about this Privacy Policy, please contact us
           by email:{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+          <span className="underline text-black font-semibold">support@contextgpt.co</span>.
         </p>
       </article>
     </div>

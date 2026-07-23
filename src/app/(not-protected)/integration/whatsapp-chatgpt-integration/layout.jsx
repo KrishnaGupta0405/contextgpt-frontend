@@ -9,14 +9,14 @@ export const metadata = {
     "WhatsApp Business AI assistant",
     "deploy chatbot on WhatsApp",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/whatsapp-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/whatsapp-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "WhatsApp ChatGPT Integration | ContextGPT",
     description: "ContextGPT's WhatsApp Business integration is launching soon for automated customer chat.",
-    url: "https://contextgpt.in/integration/whatsapp-chatgpt-integration",
+    url: "https://contextgpt.co/integration/whatsapp-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "WhatsApp ChatGPT integration dashboard" }],
   },
   twitter: {

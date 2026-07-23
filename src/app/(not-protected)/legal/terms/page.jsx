@@ -4,14 +4,14 @@ import Link from "next/link";
 export const metadata = {
   title: "ContextGPT | Terms & Conditions",
   description: "Read ContextGPT's Terms & Conditions — the rules governing use of our platform and services.",
-  alternates: { canonical: "https://contextgpt.in/legal/terms" },
+  alternates: { canonical: "https://contextgpt.co/legal/terms" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Terms & Conditions",
     description: "Read ContextGPT's Terms & Conditions.",
-    url: "https://contextgpt.in/legal/terms",
+    url: "https://contextgpt.co/legal/terms",
   },
 };
 
@@ -54,13 +54,13 @@ export default function Terms() {
         <p>
           These Terms of Service (&ldquo;Terms&rdquo;, &ldquo;Terms of
           Service&rdquo;) govern your use of our web pages located at{" "}
-          <Link href="http://contextgpt.in/" className="text-black underline">https://contextgpt.in/</Link> operated by ContextGPT.
+          <Link href="http://contextgpt.co/" className="text-black underline">https://contextgpt.co/</Link> operated by ContextGPT.
         </p>
         <p>
           Our Privacy Policy also governs your use of our Service and explains
           how we collect, safeguard and disclose information that results from
           your use of our web pages. Please read it{" "}
-          <Link href="https://contextgpt.in/legal/privacy" className="text-black underline">https://contextgpt.in/legal/privacy</Link>.
+          <Link href="https://contextgpt.co/legal/privacy" className="text-black underline">https://contextgpt.co/legal/privacy</Link>.
         </p>
         <p>
           Your agreement with us includes these Terms and our Privacy Policy
@@ -70,7 +70,7 @@ export default function Terms() {
         <p>
           If you do not agree with (or cannot comply with) Agreements, then you
           may not use the Service, but please let us know by emailing at{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span> so
+          <span className="underline text-black font-semibold">support@contextgpt.co</span> so
           we can try to find a solution. These Terms apply to all visitors,
           users and others who wish to access or use Service.
         </p>
@@ -82,7 +82,7 @@ export default function Terms() {
           we may send. However, you may opt out of receiving any, or all, of
           these communications from us by following the unsubscribe link or by
           emailing at{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+          <span className="underline text-black font-semibold">support@contextgpt.co</span>.
         </p>
 
         <h2>Purchases</h2>
@@ -395,7 +395,7 @@ export default function Terms() {
           believe that the copyrighted work has been copied in a way that
           constitutes copyright infringement, please submit your claim via email
           to{" "}
-          <a href="mailto:security@contextgpt.in">security@contextgpt.in</a>,
+          <a href="mailto:security@contextgpt.co">security@contextgpt.co</a>,
           with the subject line: &ldquo;Copyright Infringement&rdquo; and
           include in your claim a detailed description of the alleged
           Infringement.
@@ -444,13 +444,13 @@ export default function Terms() {
         </ul>
         <p>
           You can contact our team via email at{" "}
-          <a href="mailto:support@contextgpt.in">support@contextgpt.in</a>.
+          <a href="mailto:support@contextgpt.co">support@contextgpt.co</a>.
         </p>
 
         <h2>Error Reporting and Feedback</h2>
         <p>
           You may provide us either directly at{" "}
-          <a href="mailto:support@contextgpt.in">support@contextgpt.in</a> or
+          <a href="mailto:support@contextgpt.co">support@contextgpt.co</a> or
           via third party sites and tools with information and feedback
           concerning errors, suggestions for improvements, ideas, problems,
           complaints, and other matters related to our Service
@@ -629,7 +629,7 @@ export default function Terms() {
         <h2>Contact Us</h2>
         <p>
           You can contact us by emailing to:{" "}
-          <a href="mailto:support@contextgpt.in">support@contextgpt.in</a> for
+          <a href="mailto:support@contextgpt.co">support@contextgpt.co</a> for
           any queries.
         </p>
       </article>

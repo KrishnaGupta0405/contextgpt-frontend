@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import AskTrigger from "@/components/AskTrigger";
 import IntegrationsMarquee from "./IntegrationsMarquee";
 
-const SITE_URL = "https://contextgpt.in";
+const SITE_URL = "https://contextgpt.co";
 
 /**
  * Shared template for all "<Source> ChatGPT Integration" landing pages.

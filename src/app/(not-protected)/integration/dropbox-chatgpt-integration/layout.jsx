@@ -9,14 +9,14 @@ export const metadata = {
     "train chatbot on Dropbox",
     "Dropbox AI assistant",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/dropbox-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/dropbox-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Dropbox ChatGPT Integration | ContextGPT",
     description: "Sync Dropbox files into ContextGPT and keep your chatbot's knowledge base current.",
-    url: "https://contextgpt.in/integration/dropbox-chatgpt-integration",
+    url: "https://contextgpt.co/integration/dropbox-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Dropbox ChatGPT integration dashboard" }],
   },
   twitter: {

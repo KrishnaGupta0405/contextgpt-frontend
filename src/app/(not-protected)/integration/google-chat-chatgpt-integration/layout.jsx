@@ -9,14 +9,14 @@ export const metadata = {
     "Google Workspace AI assistant",
     "deploy chatbot in Google Chat",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/google-chat-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/google-chat-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Google Chat ChatGPT Integration | ContextGPT",
     description: "Deploy ContextGPT inside Google Chat for instant, always-on answers within Workspace.",
-    url: "https://contextgpt.in/integration/google-chat-chatgpt-integration",
+    url: "https://contextgpt.co/integration/google-chat-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Google Chat ChatGPT integration dashboard" }],
   },
   twitter: {

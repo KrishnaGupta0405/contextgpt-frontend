@@ -118,8 +118,8 @@ export function generateDPAHtml(form) {
   <table>
     <tbody>
       <tr><td class="td-label">Name</td><td>Krishna Gupta trading as ContextGPT</td></tr>
-      <tr><td class="td-label">Email</td><td>support@contextgpt.in</td></tr>
-      <tr><td class="td-label">Website</td><td>https://contextgpt.in</td></tr>
+      <tr><td class="td-label">Email</td><td>support@contextgpt.co</td></tr>
+      <tr><td class="td-label">Website</td><td>https://contextgpt.co</td></tr>
     </tbody>
   </table>
 
@@ -218,7 +218,7 @@ export function generateDPAHtml(form) {
 
   <p class="section-title">7. Sub-processors</p>
   <p class="sub-title">7.1 Authorized Sub-processors</p>
-  <p>The Controller provides general authorization for the Processor to engage Sub-processors. A current list of Sub-processors is maintained at https://contextgpt.in/legal/subprocessors.</p>
+  <p>The Controller provides general authorization for the Processor to engage Sub-processors. A current list of Sub-processors is maintained at https://contextgpt.co/legal/subprocessors.</p>
   <p class="sub-title">7.2 Sub-processor Changes</p>
   <p>The Controller agrees to periodically review the Sub-processor list. Continued use of the Services after changes to the Sub-processor list constitutes acceptance of such changes.</p>
   <p class="sub-title">7.3 Sub-processor Agreements</p>
@@ -368,8 +368,8 @@ export function generateDPAHtml(form) {
   <p class="section-title">17. Contact Information</p>
   <p>For questions about this DPA or to exercise any rights, please contact:</p>
   <p style="font-size: 13px; margin-bottom: 4px;"><strong>ContextGPT (Data Processor)</strong></p>
-  <p style="font-size: 13px; margin-bottom: 4px;">Email: support@contextgpt.in</p>
-  <p style="font-size: 13px; margin-bottom: 0;">Website: https://contextgpt.in</p>
+  <p style="font-size: 13px; margin-bottom: 4px;">Email: support@contextgpt.co</p>
+  <p style="font-size: 13px; margin-bottom: 0;">Website: https://contextgpt.co</p>
 
   <hr style="margin-top: 36px;" />
   <p class="footer">Last updated: March 2026</p>

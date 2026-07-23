@@ -3,14 +3,14 @@ import { cn } from "@/lib/utils";
 export const metadata = {
   title: "ContextGPT | Refund Policy",
   description: "Read ContextGPT's refund policy — understand your rights and how to request a refund.",
-  alternates: { canonical: "https://contextgpt.in/legal/refund" },
+  alternates: { canonical: "https://contextgpt.co/legal/refund" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Refund Policy",
     description: "Read ContextGPT's refund policy.",
-    url: "https://contextgpt.in/legal/refund",
+    url: "https://contextgpt.co/legal/refund",
   },
 };
 
@@ -206,7 +206,7 @@ export default function Refund() {
           </li>
           <li>
             For questions or special circumstances, you may email us at{" "}
-            <a href="mailto:billing@contextgpt.in">billing@contextgpt.in</a>, and we will review your request.
+            <a href="mailto:billing@contextgpt.co">billing@contextgpt.co</a>, and we will review your request.
              However, refunds are generally not issued except in cases of billing errors .
           </li>
         </ul>

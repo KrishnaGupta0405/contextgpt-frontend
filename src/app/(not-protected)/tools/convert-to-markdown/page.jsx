@@ -6,7 +6,7 @@ export const metadata = {
   title: "Convert to Markdown Tools — ContextGPT",
   description:
     "Free tools to convert PDF, DOCX, HTML, CSV, JSON, XML, Notion, Google Docs, and more to clean Markdown instantly. No sign up required.",
-  alternates: { canonical: "https://contextgpt.in/tools/convert-to-markdown" },
+  alternates: { canonical: "https://contextgpt.co/tools/convert-to-markdown" },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -14,7 +14,7 @@ export const metadata = {
     title: "Convert to Markdown Tools — ContextGPT",
     description:
       "Free tools to convert PDF, DOCX, HTML, CSV, JSON, XML, Notion, Google Docs, and more to clean Markdown instantly.",
-    url: "https://contextgpt.in/tools/convert-to-markdown",
+    url: "https://contextgpt.co/tools/convert-to-markdown",
   },
 };
 

@@ -4,14 +4,14 @@ export const metadata = {
   title: "ContextGPT | Security",
   description: "Learn how ContextGPT keeps your data secure with enterprise-grade encryption, access controls, and compliance practices.",
   keywords: ["AI chatbot security", "data security", "GDPR chatbot", "enterprise security", "data encryption"],
-  alternates: { canonical: "https://contextgpt.in/security" },
+  alternates: { canonical: "https://contextgpt.co/security" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Security",
     description: "Enterprise-grade security — encryption, access controls, and compliance built into every layer.",
-    url: "https://contextgpt.in/security",
+    url: "https://contextgpt.co/security",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "ContextGPT Security" }],
   },
   twitter: {
@@ -396,8 +396,8 @@ const Security = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Found a vulnerability?</h2>
           <p className="text-blue-100 text-lg mb-8">
             If you've found a security issue in ContextGPT — the dashboard, the chat widget, or the API — please report it to{' '}
-            <a href="mailto:security@contextgpt.in" className="underline font-semibold text-white hover:text-blue-200 transition-colors">
-              security@contextgpt.in
+            <a href="mailto:security@contextgpt.co" className="underline font-semibold text-white hover:text-blue-200 transition-colors">
+              security@contextgpt.co
             </a>
             . We respond within 24 hours, won't take legal action against good-faith researchers, and credit those who help us improve.
           </p>

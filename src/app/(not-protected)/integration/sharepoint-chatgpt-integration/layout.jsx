@@ -9,14 +9,14 @@ export const metadata = {
     "SharePoint AI assistant",
     "train chatbot on SharePoint",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/sharepoint-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/sharepoint-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "SharePoint ChatGPT Integration | ContextGPT",
     description: "Sync SharePoint sites into ContextGPT and train your chatbot on internal knowledge.",
-    url: "https://contextgpt.in/integration/sharepoint-chatgpt-integration",
+    url: "https://contextgpt.co/integration/sharepoint-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "SharePoint ChatGPT integration dashboard" }],
   },
   twitter: {

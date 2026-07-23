@@ -2,11 +2,11 @@
 
 Every page should have link to
 
-https://contextgpt.in/
-https://contextgpt.in/lead-generation
-https://contextgpt.in/pricing
-https://contextgpt.in/features
-https://contextgpt.in/integration
+https://contextgpt.co/
+https://contextgpt.co/lead-generation
+https://contextgpt.co/pricing
+https://contextgpt.co/features
+https://contextgpt.co/integration
 related blogs
 
 Most important -> While writing try to make ContextGPT as the superior one, and write the same using flirty language.

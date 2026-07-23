@@ -4,14 +4,14 @@ import { cn } from "@/lib/utils";
 export const metadata = {
   title: "ContextGPT | Subprocessors",
   description: "List of third-party subprocessors used by ContextGPT to deliver its services.",
-  alternates: { canonical: "https://contextgpt.in/legal/subprocessors" },
+  alternates: { canonical: "https://contextgpt.co/legal/subprocessors" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Subprocessors",
     description: "List of third-party subprocessors used by ContextGPT.",
-    url: "https://contextgpt.in/legal/subprocessors",
+    url: "https://contextgpt.co/legal/subprocessors",
   },
 };
 
@@ -246,7 +246,7 @@ export default function Subprocesses() {
         <p>
           If you have any questions about our subprocessors or data processing
           practices, please contact us at{" "}
-          <span className="underline text-black font-semibold">support@contextgpt.in</span>.
+          <span className="underline text-black font-semibold">support@contextgpt.co</span>.
         </p>
       </article>
     </div>

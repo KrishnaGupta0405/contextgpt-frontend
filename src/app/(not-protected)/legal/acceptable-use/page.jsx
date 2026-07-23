@@ -5,14 +5,14 @@ import Link from "next/link";
 export const metadata = {
   title: "ContextGPT | Acceptable Use Policy",
   description: "Read ContextGPT's Acceptable Use Policy — guidelines on prohibited content and usage.",
-  alternates: { canonical: "https://contextgpt.in/legal/acceptable-use" },
+  alternates: { canonical: "https://contextgpt.co/legal/acceptable-use" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Acceptable Use Policy",
     description: "Read ContextGPT's Acceptable Use Policy.",
-    url: "https://contextgpt.in/legal/acceptable-use",
+    url: "https://contextgpt.co/legal/acceptable-use",
   },
 };
 
@@ -48,7 +48,7 @@ export default function AcceptableUsePolicy() {
           ContextGPT (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is committed to providing a safe,
           responsible, and compliant platform. This Acceptable Use Policy sets clear expectations for how our
           service should be used. By using ContextGPT, you agree to comply with this policy and our{" "}
-          <Link href="https://contextgpt.in/legal/terms" className="text-black underline">Terms of Service</Link>.
+          <Link href="https://contextgpt.co/legal/terms" className="text-black underline">Terms of Service</Link>.
         </p>
 
         <h2>Adult & NSFW Content</h2>
@@ -178,7 +178,7 @@ export default function AcceptableUsePolicy() {
         <p>
           If you have questions about this Acceptable Use Policy or believe someone is violating it,
           please contact us at{" "}
-          <a href="mailto:support@contextgpt.in">support@contextgpt.in</a>.
+          <a href="mailto:support@contextgpt.co">support@contextgpt.co</a>.
         </p>
 
         <h2>Changes to This Policy</h2>

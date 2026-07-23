@@ -2,14 +2,14 @@ export const metadata = {
   title: "ContextGPT | Features",
   description: "Explore all ContextGPT features — AI training from your website, lead capture, appointment booking, integrations, and analytics.",
   keywords: ["AI chatbot features", "chatbot training", "lead capture", "appointment booking bot", "chatbot integrations", "chatbot analytics"],
-  alternates: { canonical: "https://contextgpt.in/features" },
+  alternates: { canonical: "https://contextgpt.co/features" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Features",
     description: "AI training, lead capture, appointment booking, integrations, and analytics — everything you need in one chatbot platform.",
-    url: "https://contextgpt.in/features",
+    url: "https://contextgpt.co/features",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "ContextGPT Features" }],
   },
   twitter: {

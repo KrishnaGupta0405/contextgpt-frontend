@@ -9,14 +9,14 @@ export const metadata = {
     "Microsoft OneDrive AI assistant",
     "train chatbot on OneDrive",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/onedrive-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/onedrive-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "OneDrive ChatGPT Integration | ContextGPT",
     description: "Sync Microsoft OneDrive files into ContextGPT and keep your chatbot's knowledge current.",
-    url: "https://contextgpt.in/integration/onedrive-chatgpt-integration",
+    url: "https://contextgpt.co/integration/onedrive-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "OneDrive ChatGPT integration dashboard" }],
   },
   twitter: {

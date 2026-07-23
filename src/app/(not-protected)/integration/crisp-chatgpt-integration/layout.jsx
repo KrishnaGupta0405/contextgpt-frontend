@@ -9,14 +9,14 @@ export const metadata = {
     "Crisp live chat AI",
     "deploy chatbot in Crisp",
   ],
-  alternates: { canonical: "https://contextgpt.in/integration/crisp-chatgpt-integration" },
+  alternates: { canonical: "https://contextgpt.co/integration/crisp-chatgpt-integration" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "Crisp ChatGPT Integration | ContextGPT",
     description: "Deploy ContextGPT inside your Crisp live chat widget for automated customer support.",
-    url: "https://contextgpt.in/integration/crisp-chatgpt-integration",
+    url: "https://contextgpt.co/integration/crisp-chatgpt-integration",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "Crisp ChatGPT integration dashboard" }],
   },
   twitter: {

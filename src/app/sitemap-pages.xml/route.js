@@ -27,7 +27,7 @@ ${integrationUrls}
   <url><loc>${baseUrl}/tools</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/book-a-demo</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://status.contextgpt.in/</loc><priority>0.5</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://status.contextgpt.co/</loc><priority>0.5</priority><changefreq>daily</changefreq></url>
   <url><loc>${baseUrl}/legal/privacy</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
   <url><loc>${baseUrl}/legal/terms</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
   <url><loc>${baseUrl}/legal/dpa</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>

@@ -5,14 +5,14 @@ import { ArrowLeft } from 'lucide-react';
 export const metadata = {
   title: "ContextGPT | Partners",
   description: "Join the ContextGPT partner program and grow your business with AI.",
-  alternates: { canonical: "https://contextgpt.in/partners" },
+  alternates: { canonical: "https://contextgpt.co/partners" },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "ContextGPT",
     title: "ContextGPT | Partners",
     description: "Join the ContextGPT partner program and grow your business with AI.",
-    url: "https://contextgpt.in/partners",
+    url: "https://contextgpt.co/partners",
     images: [{ url: "/icons/Contextgpt_icon.svg", width: 1200, height: 630, alt: "ContextGPT Partners" }],
   },
   twitter: {

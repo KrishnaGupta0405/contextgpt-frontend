@@ -1,7 +1,7 @@
-export const SUPPORT_EMAIL = "support@contextgpt.in"
+export const SUPPORT_EMAIL = "support@contextgpt.co"
 
-export const ADMIN_EMAIL = "support@contextgpt.in"
+export const ADMIN_EMAIL = "support@contextgpt.co"
 
-export const BILLING_EMAIL = "billing@contextgpt.in"
+export const BILLING_EMAIL = "billing@contextgpt.co"
 
-export const SECURITY_EMAIL = "security@contextgpt.in"
+export const SECURITY_EMAIL = "security@contextgpt.co"
