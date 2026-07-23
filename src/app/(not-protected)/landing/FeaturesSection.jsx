@@ -1,7 +1,6 @@
-'use client'
-
 import React from 'react'
 import { Check } from 'lucide-react'
+import AskTrigger from '@/components/AskTrigger'
 
 const FeaturesSectionHero = () => {
   const problems = [
@@ -77,12 +76,13 @@ const FeaturesSectionHero = () => {
               {problems.map((problem, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <span className="w-2 h-2 rounded-full bg-red-400 mt-2.5 flex-shrink-0" />
-                  <p
-                    onClick={() => window.$cgpt?.push(["do", "message:send", problem.chatMessage])}
+                  <AskTrigger
+                    as="p"
+                    message={problem.chatMessage}
                     className="text-base text-neutral-700 leading-relaxed underline underline-offset-5 decoration-blue-500 decoration-dashed cursor-pointer hover:text-blue-600"
                   >
                     {problem.text}
-                  </p>
+                  </AskTrigger>
                 </li>
               ))}
             </ul>
@@ -103,12 +103,13 @@ const FeaturesSectionHero = () => {
               {benefits.map((benefit, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                  <p
-                    onClick={() => window.$cgpt?.push(["do", "message:send", benefit.chatMessage])}
+                  <AskTrigger
+                    as="p"
+                    message={benefit.chatMessage}
                     className="text-base text-blue-50 leading-relaxed underline underline-offset-5 decoration-white decoration-dotted cursor-pointer hover:text-white/80"
                   >
                     {benefit.text}
-                  </p>
+                  </AskTrigger>
                 </li>
               ))}
             </ul>
@@ -196,12 +197,13 @@ const FeaturesSectionLead = () => {
               {problems.map((problem, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <span className="w-2 h-2 rounded-full bg-red-400 mt-2.5 flex-shrink-0" />
-                  <p
-                    onClick={() => window.$cgpt?.push(["do", "message:send", problem.chatMessage])}
+                  <AskTrigger
+                    as="p"
+                    message={problem.chatMessage}
                     className="text-base text-neutral-700 leading-relaxed underline underline-offset-4 decoration-neutral-400 decoration-dotted hover:text-blue-600 hover:decoration-blue-500 cursor-pointer"
                   >
                     <strong>{problem.bold}</strong>{problem.rest}
-                  </p>
+                  </AskTrigger>
                 </li>
               ))}
             </ul>
@@ -222,12 +224,13 @@ const FeaturesSectionLead = () => {
               {benefits.map((benefit, idx) => (
                 <li key={idx} className="flex gap-3 items-start">
                   <Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                  <p
-                    onClick={() => window.$cgpt?.push(["do", "message:send", benefit.chatMessage])}
+                  <AskTrigger
+                    as="p"
+                    message={benefit.chatMessage}
                     className="text-base text-blue-50 leading-relaxed underline underline-offset-4 decoration-blue-300 decoration-dotted hover:text-white hover:decoration-white cursor-pointer"
                   >
                     <strong>{benefit.bold}</strong>{benefit.rest}
-                  </p>
+                  </AskTrigger>
                 </li>
               ))}
             </ul>

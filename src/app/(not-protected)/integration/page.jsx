@@ -48,6 +48,7 @@ const fadeUp = {
 const DATA_SOURCES = [
   {
     name: "Google Drive",
+    slug: "google-drive-chatgpt-integration",
     description:
       "Seamlessly access and sync chatbot training data stored in Google Drive, enabling easy management and updating of resources.",
     Icon: GoogleDriveIcon,
@@ -56,6 +57,7 @@ const DATA_SOURCES = [
   },
   {
     name: "Dropbox",
+    slug: "dropbox-chatgpt-integration",
     description:
       "Integrate with Dropbox to utilize stored documents and files for chatbot training, ensuring data is readily available and up-to-date.",
     Icon: DropboxIcon,
@@ -64,6 +66,7 @@ const DATA_SOURCES = [
   },
   {
     name: "OneDrive",
+    slug: "onedrive-chatgpt-integration",
     description:
       "Connect your Microsoft OneDrive files to quickly pull in documents, spreadsheets, and presentations as knowledge.",
     Icon: OneDriveIcon,
@@ -72,6 +75,7 @@ const DATA_SOURCES = [
   },
   {
     name: "SharePoint",
+    slug: "sharepoint-chatgpt-integration",
     description:
       "Pull content from SharePoint sites to securely train your chatbot on internal team wikis and organizational knowledge.",
     Icon: SharePointIcon,
@@ -80,6 +84,7 @@ const DATA_SOURCES = [
   },
   {
     name: "Notion",
+    slug: "notion-chatgpt-integration",
     description:
       "Sync your Notion workspace pages and databases to keep your chatbot's knowledge perfectly aligned with your documentation.",
     Icon: NotionIcon,
@@ -88,6 +93,7 @@ const DATA_SOURCES = [
   },
   {
     name: "Confluence",
+    slug: "confluence-chatgpt-integration",
     description:
       "Import from Atlassian Confluence to easily ingest your technical documentation and team playbooks.",
     Icon: ConfluenceIcon,
@@ -96,6 +102,7 @@ const DATA_SOURCES = [
   },
   {
     name: "Gitbook",
+    slug: "gitbook-chatgpt-integration",
     description:
       "Connect your Gitbook documentation to automatically train your chatbot on your public or private technical guides.",
     Icon: GitBookIcon,
@@ -104,6 +111,7 @@ const DATA_SOURCES = [
   },
   {
     name: "Box",
+    slug: "box-chatgpt-integration",
     description:
       "Import files from Box cloud storage to seamlessly use enterprise-grade document repositories as a training source.",
     Icon: BoxIcon,
@@ -112,6 +120,7 @@ const DATA_SOURCES = [
   },
   {
     name: "GitHub",
+    slug: "github-chatgpt-integration",
     description:
       "Sync repositories, issues, and wikis directly from GitHub to empower your bot with technical context.",
     Icon: GithubIcon,
@@ -120,6 +129,7 @@ const DATA_SOURCES = [
   },
   {
     name: "iCloud",
+    slug: "icloud-chatgpt-integration",
     description:
       "Pull content directly from iCloud Drive to train your chatbot using personal or business documents stored on Apple devices.",
     Icon: ICloudIcon,
@@ -136,6 +146,7 @@ const DATA_SOURCES = [
   // },
   {
     name: "Intercom",
+    slug: "intercom-chatgpt-integration",
     description:
       "Import your Intercom help center articles to provide your chatbot with accurate and detailed support resolutions.",
     Icon: IntercomIcon,
@@ -144,6 +155,7 @@ const DATA_SOURCES = [
   },
   {
     name: "YouTube",
+    slug: "youtube-chatgpt-integration",
     description:
       "Train your chatbot on video transcripts from YouTube, allowing it to extract insights and answer questions based on your video content.",
     Icon: YoutubeIcon,
@@ -155,6 +167,7 @@ const DATA_SOURCES = [
 const CHAT_PLATFORMS = [
   {
     name: "Slack",
+    slug: "slack-chatgpt-integration",
     description: "Deploy your chatbot in Slack channels.",
     available: true,
     Icon: SlackIcon,
@@ -163,6 +176,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Google Chat",
+    slug: "google-chat-chatgpt-integration",
     description: "Add ContextGPT to Google Chat.",
     available: true,
     Icon: GoogleChatIcon,
@@ -170,7 +184,8 @@ const CHAT_PLATFORMS = [
     bgCircleClass: "bg-[#FFFFFF]",
   },
   {
-    name: "Messenger",
+    name: "Facebook Messenger",
+    slug: "messenger-chatgpt-integration",
     description: "Connect to Facebook Messenger.",
     available: true,
     Icon: MessengerIcon,
@@ -179,6 +194,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Crisp",
+    slug: "crisp-chatgpt-integration",
     description: "Integrate with Crisp live chat.",
     available: true,
     Icon: CrispIcon,
@@ -187,6 +203,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Freshchat",
+    slug: "freshchat-chatgpt-integration",
     description: "Deploy in Freshchat widget.",
     available: true,
     Icon: FreshdeskIcon,
@@ -195,6 +212,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Zendesk Chat",
+    slug: "zendesk-chatgpt-integration",
     description: "Embed in Zendesk messaging.",
     available: true,
     Icon: ZendeskIcon,
@@ -203,6 +221,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Zoho SalesIQ",
+    slug: "zoho-salesiq-chatgpt-integration",
     description: "Connect with Zoho SalesIQ.",
     available: true,
     Icon: ZohoIcon,
@@ -211,6 +230,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "WhatsApp",
+    slug: "whatsapp-chatgpt-integration",
     description: "Deploy on WhatsApp Business.",
     available: false,
     Icon: WhatsAppIcon,
@@ -219,6 +239,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "Intercom Chat",
+    slug: "intercom-chatgpt-integration",
     description: "Integrate with Intercom Messenger.",
     available: false,
     Icon: IntercomIcon,
@@ -227,6 +248,7 @@ const CHAT_PLATFORMS = [
   },
   {
     name: "HubSpot",
+    slug: "hubspot-chatgpt-integration",
     description: "Connect to HubSpot live chat.",
     available: false,
     Icon: HubspotIcon,
@@ -377,7 +399,11 @@ export default function Integrations() {
             {DATA_SOURCES.map((source, i) => {
               const Icon = source.Icon;
               return (
-                <div key={source.name} className="flex flex-col">
+                <Link
+                  key={source.name}
+                  href={`/integration/${source.slug}`}
+                  className="flex flex-col"
+                >
                   <div
                     className={`flex h-32 w-full items-center justify-center rounded-2xl sm:h-48 md:h-[280px] md:rounded-3xl ${source.bgClass}`}
                   >
@@ -393,7 +419,7 @@ export default function Integrations() {
                   <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-600 sm:text-sm md:mt-4 md:line-clamp-none md:text-lg">
                     {source.description}
                   </p>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -426,8 +452,11 @@ export default function Integrations() {
             {CHAT_PLATFORMS.map((platform, i) => {
               const Icon = platform.Icon;
               return (
-                <div key={platform.name} className="relative flex flex-col">
-                  
+                <Link
+                  key={platform.name}
+                  href={`/integration/${platform.slug}`}
+                  className="relative flex flex-col"
+                >
                   <div
                     className={`flex h-32 w-full items-center justify-center rounded-2xl sm:h-48 md:h-[280px] md:rounded-3xl ${platform.bgClass}`}
                   >
@@ -450,7 +479,7 @@ export default function Integrations() {
                   <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-600 sm:text-sm md:mt-4 md:line-clamp-none md:text-lg">
                     {platform.description}
                   </p>
-                </div>
+                </Link>
               );
             })}
           </div>

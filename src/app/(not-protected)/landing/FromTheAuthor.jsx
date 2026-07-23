@@ -1,17 +1,17 @@
-"use client";
+import AskTrigger from "@/components/AskTrigger";
 
 export function IntegrationsSection() {
   return (
     <section>
       <div className="mx-auto border-indigo-600 max-w-6xl text-center pt-20">
         <h2 className="mt-6 text-5xl font-medium tracking-tight text-slate-900 sm:text-6xl lg:text-[4rem] lg:leading-tight">
-          <span
-            onClick={() => window.$cgpt?.push(["do", "message:send", "What are the list of integration, ContextGPT offers ? "])}
+          <AskTrigger
+            message="What are the list of integration, ContextGPT offers ? "
             className="underline underline-offset-4 decoration-dotted decoration-indigo-500 cursor-pointer hover:text-indigo-600 transition-colors"
             style={{ fontWeight: 700 }}
           >
             Direct Integrations{" "}
-          </span>
+          </AskTrigger>
           with your favorite tools
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-xl text-slate-600">
@@ -56,13 +56,14 @@ export function ThreeStepsSection() {
             >
               1
             </div>
-            <h3
-              onClick={() => window.$cgpt?.push(["do", "message:send", "How do I sync my website or files as training data for my chatbot?"])}
+            <AskTrigger
+              as="h3"
+              message="How do I sync my website or files as training data for my chatbot?"
               className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Sync training data
-            </h3>
+            </AskTrigger>
             <p className="text-base leading-relaxed" style={{ color: "#64748b" }}>
               Enter your URL for ContextGPT to scan, or upload files, or drop
               in raw text content.
@@ -76,13 +77,14 @@ export function ThreeStepsSection() {
             >
               2
             </div>
-            <h3
-              onClick={() => window.$cgpt?.push(["do", "message:send", "How do I install ContextGPT on my website?"])}
+            <AskTrigger
+              as="h3"
+              message="How do I install ContextGPT on my website?"
               className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Install on your site
-            </h3>
+            </AskTrigger>
             <p className="text-base leading-relaxed" style={{ color: "#64748b" }}>
               Embed a chatbot on as many sites as you want — your marketing
               site, in-app, help center... wherever.
@@ -96,13 +98,14 @@ export function ThreeStepsSection() {
             >
               3
             </div>
-            <h3
-              onClick={() => window.$cgpt?.push(["do", "message:send", "How can I improve my chatbot with real chat history?"])}
+            <AskTrigger
+              as="h3"
+              message="How can I improve my chatbot with real chat history?"
               className="text-xl font-bold underline decoration-blue-600 decoration-dashed cursor-pointer hover:text-blue-600"
               style={{ color: "#0f172a" }}
             >
               Learn and refine
-            </h3>
+            </AskTrigger>
             <p className="text-base leading-relaxed" style={{ color: "#64748b" }}>
               Use real chat history to improve your chatbot by providing
               feedback that allows it to improve with every interaction.

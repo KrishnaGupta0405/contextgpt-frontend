@@ -11,7 +11,7 @@ import {
   UserCheck,
   MessageSquare,
 } from "lucide-react";
-import {TrustedBySection} from "../landing/HeroSection.jsx";
+import {TrustedBySection} from "../landing/TrustedBySection";
 import WorkWithTools from "./WorkWithTools.jsx";
 import { FeaturesSectionLead } from "../landing/FeaturesSection.jsx";
 import FourWaysSection from "./FourWaysSection.jsx";

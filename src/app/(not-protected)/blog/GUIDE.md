@@ -1,6 +1,19 @@
 # Writing a Blog Post
 
+Every page should have link to
+
+https://contextgpt.in/
+https://contextgpt.in/lead-generation
+https://contextgpt.in/pricing
+https://contextgpt.in/features
+https://contextgpt.in/integration
+related blogs
+
 Most important -> While writing try to make ContextGPT as the superior one, and write the same using flirty language.
+
+Implement primary keyword in first 100 words od the para
+
+Include max 2-3 external links from sites like .gov,.edv, or very big sites
 
 ## Where posts actually live (read this first)
 
@@ -46,7 +59,7 @@ Blog posts written as local files live in `content/blog/*.mdx`. Each file is one
 `slug` in frontmatter is **optional**. If you omit it, the filename is used as the slug automatically (`src/lib/blog.js` — `readLocalPostFile`):
 
 ```js
-slug: frontmatter.slug || filenameSlug
+slug: frontmatter.slug || filenameSlug;
 ```
 
 Two things worth knowing:
@@ -85,7 +98,7 @@ Frontmatter is validated with a Zod schema (`src/lib/blogSchema.js`) when the po
 | Field          | Required | Notes                                                                                                                                                                                                                                                                                                                                                                         |
 | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `title`        | yes      | Page `<title>` and `<h1>`-equivalent metadata.                                                                                                                                                                                                                                                                                                                                |
-| `slug`         | no       | URL slug. Defaults to the filename (minus `.mdx`) if omitted. See [`slug` frontmatter vs. filename](#slug-frontmatter-vs-filename) above — the filename also stays reachable as a backup URL even after you set an explicit `slug`.                                                                                                                                       |
+| `slug`         | no       | URL slug. Defaults to the filename (minus `.mdx`) if omitted. See [`slug` frontmatter vs. filename](#slug-frontmatter-vs-filename) above — the filename also stays reachable as a backup URL even after you set an explicit `slug`.                                                                                                                                           |
 | `description`  | yes      | Used for SEO meta description, OG, and Twitter cards.                                                                                                                                                                                                                                                                                                                         |
 | `publishedAt`  | yes      | ISO date string (`YYYY-MM-DD`). Posts are sorted newest-first by this field.                                                                                                                                                                                                                                                                                                  |
 | `author`       | no       | Author id string, e.g. `"krishna-gupta"`, or an array of ids for co-authored posts, e.g. `["krishna-gupta", "jane-doe"]` — each must match a key in the author registry (`src/lib/authors.js`). Defaults to the registry's `DEFAULT_AUTHOR_SLUG` if omitted. The first author is treated as the primary author (`post.author`); the full list is available as `post.authors`. |

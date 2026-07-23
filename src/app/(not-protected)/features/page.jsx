@@ -1,11 +1,10 @@
-"use client";
-
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import DemoClient from "@/app/(not-protected)/demo/DemoClient";
 import FAQSection from "@/app/(not-protected)/landing/FAQSection";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
+import AskTrigger from "@/components/AskTrigger";
 import { FEATURE_CATEGORIES } from "./features.config.jsx";
 import FromTheAuthor from "../landing/FromTheAuthor.jsx";
 
@@ -72,13 +71,13 @@ export default function Features() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-blue-50/60 to-white" />
         <div className="mx-auto max-w-6xl text-center p-20 -mb-40">
           <h2 className="mt-6 text-5xl font-medium tracking-tight text-slate-900 sm:text-6xl lg:text-[4rem] lg:leading-tight">
-            <span
-            onClick={() => window.$cgpt?.push(["do", "message:send", "What are the list of integration, ContextGPT offers ? "])}
+            <AskTrigger
+              message="What are the list of integration, ContextGPT offers ? "
               className="underline underline-offset-4 decoration-dotted decoration-indigo-500 cursor-pointer hover:text-indigo-600 transition-colors"
               style={{ fontWeight: 700 }}
             >
               Direct Integrations{" "}
-            </span>
+            </AskTrigger>
             with your
             <br /> favorite tools
           </h2>
@@ -111,13 +110,9 @@ export default function Features() {
                   chatMessage: "Which languages do you support?",
                 },
               ].map(({ text, chatMessage }) => (
-                <span
+                <AskTrigger
                   key={text}
-                  onClick={
-                    chatMessage
-                      ? () => window.$cgpt?.push(["do", "message:send", chatMessage])
-                      : undefined
-                  }
+                  message={chatMessage}
                   className={cn(
                     "flex items-center gap-2 text-base font-medium text-slate-800 hover:text-blue-600",
                     chatMessage && "hover:cursor-pointer"
@@ -132,7 +127,7 @@ export default function Features() {
                   >
                     {text}
                   </span>
-                </span>
+                </AskTrigger>
               ))}
             </div>
           </div>

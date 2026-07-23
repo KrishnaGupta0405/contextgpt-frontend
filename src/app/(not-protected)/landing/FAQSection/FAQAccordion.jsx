@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Link from "next/link";
+import AskTrigger from "@/components/AskTrigger";
 
 function AskIcon(props) {
   return (
@@ -47,16 +48,15 @@ function FAQColumn({ items, startIndex }) {
         <AccordionItem key={startIndex + i} value={`item-${startIndex + i}`}>
           <AccordionTrigger className="flex items-start gap-3 py-4 text-left text-sm font-medium text-gray-900 hover:no-underline dark:text-white [&>svg]:shrink-0">
             <span className="flex-1">{item.question}</span>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                window.$cgpt?.push(["do", "message:send", item.question]);
-              }}
+            <AskTrigger
+              as="div"
+              message={item.question}
+              onClick={(e) => e.stopPropagation()}
               className="ml-2 flex shrink-0 items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 cursor-pointer"
             >
               <AskIcon className="h-3.5 w-3.5" />
               Ask
-            </div>
+            </AskTrigger>
           </AccordionTrigger>
           <AccordionContent className="pb-4 text-sm text-gray-500 dark:text-gray-400">
             {item.parts ? (

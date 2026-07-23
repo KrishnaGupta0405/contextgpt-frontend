@@ -1,5 +1,12 @@
+import { INTEGRATIONS } from "../(not-protected)/integration/integrationsMeta";
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const integrationUrls = INTEGRATIONS.map(
+    (i) =>
+      `  <url><loc>${baseUrl}/integration/${i.slug}</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>`
+  ).join("\n");
 
   const pagesSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
@@ -15,6 +22,7 @@ export async function GET() {
   <url><loc>${baseUrl}/demo</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/features</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/integration</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+${integrationUrls}
   <url><loc>${baseUrl}/security</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>${baseUrl}/tools</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>${baseUrl}/book-a-demo</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
