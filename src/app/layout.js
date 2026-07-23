@@ -109,11 +109,14 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
         />
-        <Script
-          src="https://cdn.datafast.io/v1/tracker.js"
-          data-site-id={process.env.NEXT_PUBLIC_DATAFAST_SITE_ID}
-          strategy="afterInteractive"
-        />
+        {process.env.NEXT_PUBLIC_DATAFAST_SITE_ID &&
+          process.env.NEXT_PUBLIC_DATAFAST_SITE_ID !== "-" && (
+            <Script
+              src="https://cdn.datafast.io/v1/tracker.js"
+              data-site-id={process.env.NEXT_PUBLIC_DATAFAST_SITE_ID}
+              strategy="afterInteractive"
+            />
+          )}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-2BY19ZN098"

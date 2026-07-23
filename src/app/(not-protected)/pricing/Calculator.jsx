@@ -102,7 +102,7 @@ function buildFeatures(plan) {
 }
 
 const fmt = (n) => n?.toLocaleString() ?? "—";
-const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1) ?? "";
+const capitalize = (str) => (str ? str.charAt(0).toUpperCase() + str.slice(1) : "");
 
 function CalculatorContent({ plans: rawPlans = [], models: rawModels = [], loading = true }) {
   const plans = mergePlans(rawPlans);

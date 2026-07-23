@@ -7,7 +7,7 @@ export default function RecaptchaProvider({ children }) {
 
   // If no site key is configured, render children without the provider
   // so dev environments work without reCAPTCHA setup
-  if (!siteKey) return <>{children}</>;
+  if (!siteKey || siteKey === "-") return <>{children}</>;
 
   return (
     // <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
